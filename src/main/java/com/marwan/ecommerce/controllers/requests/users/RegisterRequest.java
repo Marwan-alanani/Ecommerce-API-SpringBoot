@@ -1,4 +1,4 @@
-package com.marwan.ecommerce.controllers.requests;
+package com.marwan.ecommerce.controllers.requests.users;
 
 public record RegisterRequest(
         String firstName,

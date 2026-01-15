@@ -1,28 +1,32 @@
 package com.marwan.ecommerce.services;
 
-import com.marwan.ecommerce.controllers.requests.RegisterRequest;
+import com.marwan.ecommerce.controllers.requests.users.LoginRequest;
+import com.marwan.ecommerce.controllers.requests.users.RegisterRequest;
 import com.marwan.ecommerce.dto.AuthenticationDto;
 import com.marwan.ecommerce.dto.UserDto;
+import com.marwan.ecommerce.exceptions.user.InvalidCredentialsException;
 import com.marwan.ecommerce.mappers.UserMapper;
-import com.marwan.ecommerce.models.entities.User;
+import com.marwan.ecommerce.models.users.entities.User;
 import com.marwan.ecommerce.repositories.UserRepository;
-import com.marwan.ecommerce.errors.exceptions.user.EmailExistsException;
-import com.marwan.ecommerce.errors.exceptions.user.UserNotFoundException;
+import com.marwan.ecommerce.exceptions.user.EmailExistsException;
+import com.marwan.ecommerce.exceptions.user.UserNotFoundException;
+import com.marwan.ecommerce.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final JwtService jwtService;
     //    private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, JwtService jwtService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -38,12 +42,13 @@ public class UserService {
                 passwordEncoder.encode(request.password())
         );
         userRepository.save(user);
-        return UserMapper.mapToAuthenticationDto(user, "");
+        String token = jwtService.generate(user);
+        return UserMapper.mapToAuthenticationDto(user, token);
     }
 
-    public void remove(UUID id) throws UserNotFoundException {
-        User user = userRepository.findById(id).
-                orElseThrow(() -> new UserNotFoundException(id));
+    public void remove(String email) throws UserNotFoundException {
+        User user = userRepository.findByEmail(email).
+                orElseThrow(() -> new UserNotFoundException(email));
         user.setEnabled(false);
         userRepository.save(user);
     }
@@ -55,21 +60,16 @@ public class UserService {
         return userDtoList;
     }
 
-//    public AuthenticationResponse login(LoginRequest request) {
-////        Optional<User> user = userRepository.findByEmail(request.email());
-////        if (user.isEmpty()) {
-////            throw new Error("Invalid user id");
-////        }
-////        if (!passwordEncoder.matches(request.password(), user.get().getPassword())) {
-////            throw new Error("Invalid Credentials");
-////        }
-////        return UserMapper.mapToAuthenticationResponse(user.get(), "");
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        request.email(),
-//                        request.password()
-//                )
-//        );
-//    }
+    public AuthenticationDto login(LoginRequest loginRequest) {
+        User user = userRepository.findByEmail(loginRequest.email())
+                .orElseThrow(() -> new UserNotFoundException(loginRequest.email()));
+
+        if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
+            throw new InvalidCredentialsException();
+        }
+        String token = jwtService.generate(user);
+        return UserMapper.mapToAuthenticationDto(user, token);
+    }
+
 
 }

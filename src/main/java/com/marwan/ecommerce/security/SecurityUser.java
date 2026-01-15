@@ -1,6 +1,6 @@
 package com.marwan.ecommerce.security;
 
-import com.marwan.ecommerce.models.entities.User;
+import com.marwan.ecommerce.models.users.entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

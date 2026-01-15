@@ -1,11 +1,12 @@
 package com.marwan.ecommerce.controllers;
 
-import com.marwan.ecommerce.controllers.requests.RegisterRequest;
+import com.marwan.ecommerce.controllers.requests.users.LoginRequest;
+import com.marwan.ecommerce.controllers.requests.users.RegisterRequest;
 import com.marwan.ecommerce.dto.AuthenticationDto;
 import com.marwan.ecommerce.dto.UserDto;
-import com.marwan.ecommerce.errors.exceptions.user.UserNotFoundException;
+import com.marwan.ecommerce.exceptions.user.UserNotFoundException;
 import com.marwan.ecommerce.services.UserService;
-import com.marwan.ecommerce.errors.exceptions.user.EmailExistsException;
+import com.marwan.ecommerce.exceptions.user.EmailExistsException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,18 +30,18 @@ public class UsersController {
     }
 
     @PostMapping("/remove")
-    public ResponseEntity remove(UUID userId)
+    public ResponseEntity remove(String email)
             throws UserNotFoundException {
 
-        userService.remove(userId);
+        userService.remove(email);
         return ResponseEntity.ok().build();
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest request) {
-//        AuthenticationResponse user = userService.login(request);
-//        return ResponseEntity.ok(user);
-//    }
+    @PostMapping("/login")
+    public ResponseEntity<AuthenticationDto> login(@RequestBody LoginRequest request) {
+        AuthenticationDto user = userService.login(request);
+        return ResponseEntity.ok(user);
+    }
 
     @GetMapping("/users")
     public ResponseEntity<List<UserDto>> getAllUsers() {

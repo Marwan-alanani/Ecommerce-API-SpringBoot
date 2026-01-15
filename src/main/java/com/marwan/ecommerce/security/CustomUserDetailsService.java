@@ -1,5 +1,5 @@
 package com.marwan.ecommerce.security;
-import com.marwan.ecommerce.models.entities.User;
+import com.marwan.ecommerce.models.users.entities.User;
 import com.marwan.ecommerce.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

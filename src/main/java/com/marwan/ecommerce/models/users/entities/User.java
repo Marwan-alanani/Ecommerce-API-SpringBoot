@@ -1,5 +1,5 @@
-package com.marwan.ecommerce.models.entities;
-import com.marwan.ecommerce.models.enums.UserRole;
+package com.marwan.ecommerce.models.users.entities;
+import com.marwan.ecommerce.models.users.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
