@@ -4,13 +4,14 @@ import com.marwan.ecommerce.controller.requests.users.LoginRequest;
 import com.marwan.ecommerce.controller.requests.users.RegisterRequest;
 import com.marwan.ecommerce.dto.AuthenticationDto;
 import com.marwan.ecommerce.dto.UserDto;
-import com.marwan.ecommerce.exception.user.UserNotFoundException;
+import com.marwan.ecommerce.exception.user.UserIdNotFoundException;
 import com.marwan.ecommerce.service.UserService;
 import com.marwan.ecommerce.exception.user.EmailExistsException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -29,10 +30,10 @@ public class UsersController {
     }
 
     @PostMapping("/remove")
-    public ResponseEntity remove(String email)
-            throws UserNotFoundException {
+    public ResponseEntity<?> remove(UUID id)
+            throws UserIdNotFoundException {
 
-        userService.remove(email);
+        userService.remove(id);
         return ResponseEntity.ok().build();
     }
 

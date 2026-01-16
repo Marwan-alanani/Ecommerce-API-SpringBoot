@@ -1,6 +1,6 @@
 package com.marwan.ecommerce.security;
 
-import com.marwan.ecommerce.domain.users.entities.User;
+import com.marwan.ecommerce.domain.user.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class JwtService {
         return Jwts.builder()
                 .setId(UUID.randomUUID().toString())
                 .setClaims(claims)
-                .setSubject(user.getEmail())
+                .setSubject(user.getId().toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
                 .signWith(secretKey, SignatureAlgorithm.HS256)

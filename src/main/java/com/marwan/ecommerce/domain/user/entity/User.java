@@ -1,5 +1,6 @@
-package com.marwan.ecommerce.domain.users.entities;
-import com.marwan.ecommerce.domain.users.enums.UserRole;
+package com.marwan.ecommerce.domain.user.entity;
+
+import com.marwan.ecommerce.domain.user.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -50,12 +51,13 @@ public final class User {
     public static User Create(
             String firstName,
             String lastName,
+            UserRole role,
             String email,
             String password) {
         return new User(UUID.randomUUID(),
                 firstName,
                 lastName,
-                UserRole.Customer,
+                role,
                 email,
                 password,
                 true);
