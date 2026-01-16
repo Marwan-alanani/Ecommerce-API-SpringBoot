@@ -23,7 +23,7 @@ public class ECommerceApplication {
             userRepository.save(User.Create(
                     "Marwan",
                     "Walid",
-                    UserRole.Admin,
+                    UserRole.ADMIN,
                     "marwan@mail.com",
                     passwordEncoder.encode("password"))
             );
@@ -31,14 +31,14 @@ public class ECommerceApplication {
             userRepository.save(User.Create(
                     "Mazen",
                     "Walid",
-                    UserRole.Customer,
+                    UserRole.USER,
                     "mazen@mail.com",
                     passwordEncoder.encode("password"))
             );
             userRepository.save(User.Create(
                     "Malik",
                     "Walid",
-                    UserRole.Customer,
+                    UserRole.USER,
                     "malik@mail.com",
                     passwordEncoder.encode("password"))
             );

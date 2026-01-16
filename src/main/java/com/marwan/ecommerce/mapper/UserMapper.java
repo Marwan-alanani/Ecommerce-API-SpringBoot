@@ -7,9 +7,9 @@ import com.marwan.ecommerce.domain.user.entity.User;
 public class UserMapper {
     public static AuthenticationDto mapToAuthenticationDto(User user, String token) {
         return new AuthenticationDto(
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
+//                user.getFirstName(),
+//                user.getLastName(),
+//                user.getEmail(),
                 token
         );
     }

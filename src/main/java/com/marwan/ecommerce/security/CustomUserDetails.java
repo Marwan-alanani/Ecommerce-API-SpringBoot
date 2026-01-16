@@ -8,11 +8,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
     private final User user;
 
+    public UUID getUserId() {
+        return user.getId();
+    }
     @Override
     public String getUsername() {
         return user.getEmail();

@@ -4,6 +4,7 @@ import com.marwan.ecommerce.exception.abstractions.NotFoundException;
 import com.marwan.ecommerce.exception.abstractions.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -15,6 +16,7 @@ public class GlobalExceptionHandler {
         HttpStatus status = switch (exception) {
             case NotFoundException e -> HttpStatus.NOT_FOUND;
             case ValidationException e -> HttpStatus.BAD_REQUEST;
+            case BadCredentialsException e -> HttpStatus.UNAUTHORIZED;
             default -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
         ProblemDetail problemDetail = ProblemDetail.forStatus(status.value());

@@ -5,8 +5,11 @@ import com.marwan.ecommerce.controller.requests.users.RegisterRequest;
 import com.marwan.ecommerce.dto.AuthenticationDto;
 import com.marwan.ecommerce.dto.UserDto;
 import com.marwan.ecommerce.exception.user.UserIdNotFoundException;
+import com.marwan.ecommerce.security.JwtService;
+import com.marwan.ecommerce.service.AuthService;
 import com.marwan.ecommerce.service.UserService;
-import com.marwan.ecommerce.exception.user.EmailExistsException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,33 +17,30 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/auth")
 public class UsersController {
     private final UserService userService;
-
-    public UsersController(UserService userService) {
-        this.userService = userService;
-    }
+    private final AuthService authService;
+    private final JwtService jwtService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationDto> register(@RequestBody RegisterRequest request)
-            throws EmailExistsException {
-        AuthenticationDto user = userService.register(request);
-        return ResponseEntity.ok(user);
+    @ResponseStatus(HttpStatus.CREATED)
+    public AuthenticationDto register(@RequestBody RegisterRequest request) {
+        return authService.registerAndLogin(request);
     }
 
     @PostMapping("/remove")
     public ResponseEntity<?> remove(UUID id)
             throws UserIdNotFoundException {
 
-        userService.remove(id);
+        userService.deactivate(id);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationDto> login(@RequestBody LoginRequest request) {
-        AuthenticationDto user = userService.login(request);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(authService.login(request));
     }
 
     @GetMapping("/users")

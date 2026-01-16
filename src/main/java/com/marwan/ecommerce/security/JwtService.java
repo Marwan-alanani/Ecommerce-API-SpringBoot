@@ -1,8 +1,8 @@
 package com.marwan.ecommerce.security;
 
-import com.marwan.ecommerce.domain.user.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -18,13 +18,19 @@ public class JwtService {
             "super-secret-signing-key-super-secret-signing-key"
                     .getBytes(StandardCharsets.UTF_8));
 
-    public String generate(User user) {
+    public String generateToken(Authentication authentication) {
+
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", user.getRole().toString());
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String userId = userDetails instanceof CustomUserDetails cu ?
+                cu.getUserId().toString() :
+                userDetails.getUsername();
+
+        claims.put("role", userDetails.getAuthorities().stream().findFirst().toString());
         return Jwts.builder()
                 .setId(UUID.randomUUID().toString())
                 .setClaims(claims)
-                .setSubject(user.getId().toString())
+                .setSubject(userId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
