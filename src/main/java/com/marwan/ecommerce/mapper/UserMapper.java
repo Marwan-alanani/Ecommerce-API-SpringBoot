@@ -1,8 +1,8 @@
-package com.marwan.ecommerce.mappers;
+package com.marwan.ecommerce.mapper;
 
 import com.marwan.ecommerce.dto.AuthenticationDto;
 import com.marwan.ecommerce.dto.UserDto;
-import com.marwan.ecommerce.models.users.entities.User;
+import com.marwan.ecommerce.domain.users.entities.User;
 
 public class UserMapper {
     public static AuthenticationDto mapToAuthenticationDto(User user, String token) {

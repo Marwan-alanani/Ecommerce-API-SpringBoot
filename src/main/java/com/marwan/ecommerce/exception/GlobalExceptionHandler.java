@@ -1,7 +1,7 @@
-package com.marwan.ecommerce.exceptions;
+package com.marwan.ecommerce.exception;
 
-import com.marwan.ecommerce.exceptions.abstractions.NotFoundException;
-import com.marwan.ecommerce.exceptions.abstractions.ValidationException;
+import com.marwan.ecommerce.exception.abstractions.NotFoundException;
+import com.marwan.ecommerce.exception.abstractions.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;

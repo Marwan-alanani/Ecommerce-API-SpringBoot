@@ -1,20 +1,16 @@
-package com.marwan.ecommerce.models.users.entities;
-import com.marwan.ecommerce.models.users.enums.UserRole;
+package com.marwan.ecommerce.domain.users.entities;
+import com.marwan.ecommerce.domain.users.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
-@Setter
+@Data
 public final class User {
     @Id
     @Setter(AccessLevel.NONE) // Can't set id

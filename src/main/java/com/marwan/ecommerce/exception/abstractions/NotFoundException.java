@@ -1,4 +1,4 @@
-package com.marwan.ecommerce.exceptions.abstractions;
+package com.marwan.ecommerce.exception.abstractions;
 
 public abstract class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {

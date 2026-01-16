@@ -1,8 +1,6 @@
-package com.marwan.ecommerce.exceptions.user;
+package com.marwan.ecommerce.exception.user;
 
-import com.marwan.ecommerce.exceptions.abstractions.NotFoundException;
-
-import java.util.UUID;
+import com.marwan.ecommerce.exception.abstractions.NotFoundException;
 
 public class UserNotFoundException extends NotFoundException {
     public UserNotFoundException(String email) {

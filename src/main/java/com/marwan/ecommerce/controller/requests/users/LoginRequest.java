@@ -1,4 +1,4 @@
-package com.marwan.ecommerce.controllers.requests.users;
+package com.marwan.ecommerce.controller.requests.users;
 
 public record LoginRequest(
         String email,

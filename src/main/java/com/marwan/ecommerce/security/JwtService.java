@@ -1,45 +1,56 @@
 package com.marwan.ecommerce.security;
 
-import com.marwan.ecommerce.models.users.entities.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
+import com.marwan.ecommerce.domain.users.entities.User;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class JwtService {
+    private final SecretKey secretKey = Keys.hmacShaKeyFor(
+            "super-secret-signing-key-super-secret-signing-key"
+                    .getBytes(StandardCharsets.UTF_8));
+
     public String generate(User user) {
         Map<String, Object> claims = new HashMap<>();
-        var key = Keys.hmacShaKeyFor(
-                Decoders.BASE64.decode("supergsecretsigningkeysupersecretsigningkey")
-        );
+        claims.put("role", user.getRole().toString());
         return Jwts.builder()
+                .setId(UUID.randomUUID().toString())
                 .setClaims(claims)
                 .setSubject(user.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .setIssuer("Ecommerce App")
+                .setAudience("localhost")
                 .compact();
     }
 
-    public String extractUsername(String token) {
-        throw new NotImplementedException();
+    public String extractEmail(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.getSubject();
+
     }
 
     public String extractRole(String token) {
-
-        throw new NotImplementedException();
+        Claims claims = extractAllClaims(token);
+        return (String) (claims.get("role"));
     }
 
     public Claims extractAllClaims(String token) {
 
-        throw new NotImplementedException();
+        JwtParserBuilder parserBuilder = Jwts.parser()
+                .setSigningKey(secretKey);
+        JwtParser parser = parserBuilder.build();
+        return parser
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

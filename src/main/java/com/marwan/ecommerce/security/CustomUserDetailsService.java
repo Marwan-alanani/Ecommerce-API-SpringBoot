@@ -1,9 +1,10 @@
 package com.marwan.ecommerce.security;
-import com.marwan.ecommerce.models.users.entities.User;
-import com.marwan.ecommerce.repositories.UserRepository;
+
+import com.marwan.ecommerce.exception.user.UserNotFoundException;
+import com.marwan.ecommerce.domain.users.entities.User;
+import com.marwan.ecommerce.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,10 +16,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UserNotFoundException {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(email));
 
-        return new SecurityUser(user);
+        return new CustomUserDetails(user);
     }
 }

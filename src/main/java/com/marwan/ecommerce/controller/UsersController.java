@@ -1,17 +1,16 @@
-package com.marwan.ecommerce.controllers;
+package com.marwan.ecommerce.controller;
 
-import com.marwan.ecommerce.controllers.requests.users.LoginRequest;
-import com.marwan.ecommerce.controllers.requests.users.RegisterRequest;
+import com.marwan.ecommerce.controller.requests.users.LoginRequest;
+import com.marwan.ecommerce.controller.requests.users.RegisterRequest;
 import com.marwan.ecommerce.dto.AuthenticationDto;
 import com.marwan.ecommerce.dto.UserDto;
-import com.marwan.ecommerce.exceptions.user.UserNotFoundException;
-import com.marwan.ecommerce.services.UserService;
-import com.marwan.ecommerce.exceptions.user.EmailExistsException;
+import com.marwan.ecommerce.exception.user.UserNotFoundException;
+import com.marwan.ecommerce.service.UserService;
+import com.marwan.ecommerce.exception.user.EmailExistsException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")

@@ -1,6 +1,6 @@
-package com.marwan.ecommerce.exceptions.user;
+package com.marwan.ecommerce.exception.user;
 
-import com.marwan.ecommerce.exceptions.abstractions.ValidationException;
+import com.marwan.ecommerce.exception.abstractions.ValidationException;
 
 public class EmailExistsException extends ValidationException {
     public EmailExistsException(String email) {
