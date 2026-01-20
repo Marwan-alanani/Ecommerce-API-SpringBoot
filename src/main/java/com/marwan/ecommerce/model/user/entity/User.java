@@ -34,11 +34,11 @@ public final class User
 
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
-    private Date CreatedDateTime;
+    private Date createdDateTime;
 
     @Setter(AccessLevel.PRIVATE)
     @Column(nullable = false)
-    private Date UpdatedDateTime;
+    private Date updatedDateTime;
 
     private User(
             UUID id,
@@ -58,8 +58,8 @@ public final class User
         this.email = email;
         this.password = password;
         this.isEnabled = isEnabled;
-        this.CreatedDateTime = createdDateTime;
-        this.UpdatedDateTime = updatedDateTime;
+        this.createdDateTime = createdDateTime;
+        this.updatedDateTime = updatedDateTime;
     }
 
 

@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -28,11 +29,17 @@ public class Product
     private double price;
     @Column(nullable = false)
     private String pictureUrl;
+
     @Column(nullable = false)
     private int balance;
 
     @Column(nullable = false)
     private UUID categoryId;
+
+    @Column(nullable = false)
+    private Date createdDateTime;
+    @Column(nullable = false)
+    private Date updatedDateTime;
 
     public static Product create(
             String name,
@@ -41,6 +48,7 @@ public class Product
             String pictureUrl,
             UUID categoryId)
     {
+        Date currentDate = new Date();
         return new Product(
                 UUID.randomUUID(),
                 name,
@@ -48,7 +56,9 @@ public class Product
                 price,
                 pictureUrl,
                 0,
-                categoryId
+                categoryId,
+                currentDate,
+                currentDate
 
         );
     }

@@ -3,6 +3,7 @@ package com.marwan.ecommerce.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,24 +28,41 @@ public class SecurityConfig
     {
         http
                 .authorizeHttpRequests(auth -> auth
-                                               .requestMatchers(
-                                                       "/**",
-                                                       "/swagger-ui/**",
-                                                       "/v3/api-docs/**",
-                                                       "/auth/**",
-                                                       "/login"
-                                                               ).permitAll()  // allow Swagger
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()  // allow Swagger
+                        .requestMatchers(
+                                "/auth/**",
+                                "/login"
+                        ).permitAll()
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/categories",
+                                "/categories/**").permitAll()
 
-                                               .anyRequest()
-                                               .authenticated()
-                                      )
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/categories/**").hasRole("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/products",
+                                "/products/**").permitAll()
+
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/products/**").hasRole("ADMIN")
+
+                        .anyRequest().authenticated()
+                )
                 //                .httpBasic(Customizer.withDefaults()) // optional for testing
                 .addFilterBefore(new JwtFilter(jwtService, userDetailsService),
-                                 UsernamePasswordAuthenticationFilter.class)
+                        UsernamePasswordAuthenticationFilter.class)
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(
                         sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                                  );       // optional for
+                );       // optional for
         // POST testing in Swagger
 
         return http.build();

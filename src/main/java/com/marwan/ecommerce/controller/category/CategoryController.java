@@ -4,13 +4,10 @@ import com.marwan.ecommerce.controller.category.request.CreateCategoryRequest;
 import com.marwan.ecommerce.controller.category.request.UpdateCategoryRequest;
 import com.marwan.ecommerce.dto.category.CategoryResponseDto;
 import com.marwan.ecommerce.dto.category.CategoryWithProductsCountDto;
-import com.marwan.ecommerce.dto.product.ProductDetailsDto;
 import com.marwan.ecommerce.exception.category.CategoryIdNotFoundException;
 import com.marwan.ecommerce.exception.category.CategoryNameExistsException;
 import com.marwan.ecommerce.mapper.CategoryMapper;
-import com.marwan.ecommerce.mapper.ProductMapper;
 import com.marwan.ecommerce.model.category.Category;
-import com.marwan.ecommerce.model.product.entity.Product;
 import com.marwan.ecommerce.service.category.CategoryService;
 import com.marwan.ecommerce.service.category.command.CreateCategoryCommand;
 import com.marwan.ecommerce.service.category.command.UpdateCategoryCommand;
@@ -25,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/categories")
 @RequiredArgsConstructor
 public class CategoryController
 {
@@ -49,7 +46,7 @@ public class CategoryController
             throws CategoryIdNotFoundException
     {
         return ResponseEntity.status(HttpStatus.OK).body(
-                categoryService.getCategory(categoryId)
+                categoryService.getCategoryWithProductCount(categoryId)
         );
     }
 

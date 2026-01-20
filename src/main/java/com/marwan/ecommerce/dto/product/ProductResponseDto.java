@@ -2,15 +2,14 @@ package com.marwan.ecommerce.dto.product;
 
 import java.util.UUID;
 
-public record ProductDetailsDto(
+public record ProductResponseDto(
         UUID id,
         String name,
         String description,
         double price,
-
         String pictureUrl,
         int balance,
-        String category
+        UUID categoryId
 )
 {
 }

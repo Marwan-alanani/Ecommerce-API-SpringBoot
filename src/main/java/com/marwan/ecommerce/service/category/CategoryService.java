@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,7 +42,7 @@ public class CategoryService
         return categoryRepository.findById(id).isPresent();
     }
 
-    public CategoryWithProductsCountDto getCategory(UUID categoryId)
+    public CategoryWithProductsCountDto getCategoryWithProductCount(UUID categoryId)
             throws CategoryIdNotFoundException
     {
         Optional<Category> category = categoryRepository.findById(categoryId);
@@ -53,6 +54,16 @@ public class CategoryService
                 category.get(),
                 productCount
         );
+    }
+
+    public Category getCategory(UUID categoryId)
+            throws CategoryIdNotFoundException
+    {
+        Optional<Category> category = categoryRepository.findById(categoryId);
+        if (category.isEmpty()) {
+            throw new CategoryIdNotFoundException(categoryId);
+        }
+        return category.get();
     }
 
     public void deleteCategory(UUID categoryId) throws CategoryIdNotFoundException
@@ -75,6 +86,7 @@ public class CategoryService
             throw new CategoryNameExistsException(command.name());
         }
         category.get().setName(command.name());
+        category.get().setUpdatedDateTime(new Date());
         categoryRepository.save(category.get());
         return category.get();
     }

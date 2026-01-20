@@ -1,17 +1,20 @@
 package com.marwan.ecommerce.service.product;
 
 import com.marwan.ecommerce.dto.product.ProductDetailsDto;
+import com.marwan.ecommerce.exception.category.CategoryIdNotFoundException;
+import com.marwan.ecommerce.exception.product.ProductIdNotFoundException;
 import com.marwan.ecommerce.mapper.ProductMapper;
+import com.marwan.ecommerce.model.category.Category;
 import com.marwan.ecommerce.model.product.entity.Product;
 import com.marwan.ecommerce.repository.ProductRepository;
 import com.marwan.ecommerce.service.category.CategoryService;
 import com.marwan.ecommerce.service.product.command.CreateProductCommand;
+import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +24,13 @@ public class ProductService
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
 
-    public ProductDetailsDto createProduct(CreateProductCommand command)
+    public Product createProduct(CreateProductCommand command)
+            throws CategoryIdNotFoundException
     {
+        if (command.categoryId() != null && !categoryService.categoryExists(command.categoryId())) {
+            throw new CategoryIdNotFoundException(command.categoryId());
+        }
+
         Product product = Product.create(
                 command.name(),
                 command.description(),
@@ -31,14 +39,84 @@ public class ProductService
                 command.categoryId()
         );
         productRepository.save(product);
-        return ProductMapper.mapProductToProductDetailsDto(product);
+        return product;
     }
 
-    public List<Product> getCategoryProducts(UUID categoryId) throws Exception
+    public ProductDetailsDto getProductWithCategoryNameById(UUID id)
+            throws ProductIdNotFoundException
     {
-        if (!categoryService.categoryExists(categoryId)) {
-            throw new Exception("doesn't exist");
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isEmpty()) {
+            throw new ProductIdNotFoundException(id);
         }
-        return productRepository.findByCategoryId(categoryId);
+        Product product = optionalProduct.get();
+        if (product.getCategoryId() == null) {
+            return ProductMapper.mapProductToProductDetailsDto(product, null);
+        }
+        String categoryName = categoryService.getCategory(product.getCategoryId()).getName();
+        return ProductMapper.mapProductToProductDetailsDto(product, categoryName);
+
+    }
+
+    public Product getProduct(UUID id)
+            throws ProductIdNotFoundException
+    {
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isEmpty()) {
+            throw new ProductIdNotFoundException(id);
+        }
+        return optionalProduct.get();
+    }
+
+    public List<ProductDetailsDto> getProductsByCategoryId(UUID categoryId)
+            throws CategoryIdNotFoundException
+    {
+        Category category = categoryService.getCategory(categoryId);
+        List<Product> productList = productRepository.findByCategoryId(categoryId);
+        List<ProductDetailsDto> productDetailsDtos = new ArrayList<>();
+        productList.forEach(product -> {
+            productDetailsDtos.add(
+                    ProductMapper.mapProductToProductDetailsDto(
+                            product,
+                            category.getName())
+            );
+        });
+        return productDetailsDtos;
+
+    }
+
+    public List<Product> getAllProducts()
+    {
+        return productRepository.findAll();
+    }
+
+    public Product updateProduct(UpdateProductCommand command)
+            throws ProductIdNotFoundException, CategoryIdNotFoundException
+    {
+        Optional<Product> optionalProduct = productRepository.findById(command.id());
+        if (optionalProduct.isEmpty()) {
+            throw new ProductIdNotFoundException(command.id());
+        }
+        Product product = optionalProduct.get();
+        if (command.categoryId() != null && !categoryService.categoryExists(command.categoryId())) {
+            throw new CategoryIdNotFoundException(command.categoryId());
+        }
+        product.setName(command.name());
+        product.setDescription(command.description());
+        product.setPrice(command.price());
+        product.setPictureUrl(command.pictureUrl());
+        product.setCategoryId(command.categoryId());
+        product.setUpdatedDateTime(new Date());
+        productRepository.save(product);
+        return product;
+    }
+
+    public void deleteProduct(UUID id)
+            throws ProductIdNotFoundException
+    {
+        if (!productRepository.existsById(id)) {
+            throw new ProductIdNotFoundException(id);
+        }
+        productRepository.deleteById(id);
     }
 }

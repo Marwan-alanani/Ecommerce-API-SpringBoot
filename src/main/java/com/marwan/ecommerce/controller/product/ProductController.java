@@ -1,12 +1,18 @@
 package com.marwan.ecommerce.controller.product;
 
 import com.marwan.ecommerce.controller.product.request.CreateProductRequest;
+import com.marwan.ecommerce.controller.product.request.UpdateProductRequest;
 import com.marwan.ecommerce.dto.product.ProductDetailsDto;
+import com.marwan.ecommerce.dto.product.ProductResponseDto;
+import com.marwan.ecommerce.exception.category.CategoryIdNotFoundException;
+import com.marwan.ecommerce.exception.product.ProductIdNotFoundException;
 import com.marwan.ecommerce.mapper.ProductMapper;
 import com.marwan.ecommerce.model.product.entity.Product;
 import com.marwan.ecommerce.service.product.ProductService;
 import com.marwan.ecommerce.service.product.command.CreateProductCommand;
+import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,26 +28,69 @@ public class ProductController
 {
     private final ProductService productService;
 
-    @PostMapping
-    public ResponseEntity<ProductDetailsDto> CreateProduct(
+    @PostMapping("/create")
+    public ResponseEntity<ProductResponseDto> createProduct(
             @RequestBody CreateProductRequest request)
+            throws CategoryIdNotFoundException
     {
         CreateProductCommand command =
                 ProductMapper.mapCreateProductRequestToCreateProductCommand(request);
-        ProductDetailsDto productDetailsDto = productService.createProduct(command);
+        Product product = productService.createProduct(command);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                ProductMapper.mapProductToProductResponseDto(product)
+        );
+    }
+
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductDetailsDto> getProduct(@PathVariable UUID productId)
+            throws ProductIdNotFoundException
+    {
+        ProductDetailsDto productDetailsDto =
+                productService.getProductWithCategoryNameById(productId);
         return ResponseEntity.ok(productDetailsDto);
     }
 
-    @GetMapping("/{categoryId}/products")
+    @PostMapping("/update")
+    public ResponseEntity<ProductResponseDto> updateProduct(
+            @RequestBody UpdateProductRequest request)
+            throws ProductIdNotFoundException, CategoryIdNotFoundException
+    {
+        UpdateProductCommand command =
+                ProductMapper.mapUpdateProductRequestToUpdateProductCommand(request);
+
+        Product product = productService.updateProduct(command);
+        return ResponseEntity.ok(
+                ProductMapper.mapProductToProductResponseDto(product)
+        );
+    }
+
+    @PostMapping("/delete/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable UUID productId)
+            throws ProductIdNotFoundException
+    {
+        productService.deleteProduct(productId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProductResponseDto>> getAllProducts()
+    {
+        List<Product> products = productService.getAllProducts();
+        List<ProductResponseDto> productResponseDtos = new ArrayList<>();
+        products.forEach(product -> {
+            productResponseDtos.add(ProductMapper.mapProductToProductResponseDto(product));
+        });
+        return ResponseEntity.ok(productResponseDtos);
+    }
+
+
+    @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<ProductDetailsDto>> getCategoryProducts(
             @PathVariable UUID categoryId)
-            throws Exception
+            throws CategoryIdNotFoundException
     {
-        List<Product> productList = productService.getCategoryProducts(categoryId);
-        List<ProductDetailsDto> productDetailsDtos = new ArrayList<>();
-        productList.forEach(product -> {
-            productDetailsDtos.add(ProductMapper.mapProductToProductDetailsDto(product));
-        });
+        List<ProductDetailsDto> productDetailsDtos =
+                productService.getProductsByCategoryId(categoryId);
         return ResponseEntity.status(HttpStatus.OK).body(productDetailsDtos);
     }
 

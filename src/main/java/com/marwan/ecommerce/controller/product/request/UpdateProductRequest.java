@@ -1,16 +1,15 @@
-package com.marwan.ecommerce.dto.product;
+package com.marwan.ecommerce.controller.product.request;
 
 import java.util.UUID;
 
-public record ProductDetailsDto(
+public record UpdateProductRequest(
+
         UUID id,
         String name,
         String description,
         double price,
-
         String pictureUrl,
-        int balance,
-        String category
+        UUID categoryId
 )
 {
 }
