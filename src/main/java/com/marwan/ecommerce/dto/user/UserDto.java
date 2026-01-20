@@ -1,4 +1,4 @@
-package com.marwan.ecommerce.dto;
+package com.marwan.ecommerce.dto.user;
 
 import java.util.UUID;
 

@@ -1,7 +1,7 @@
 package com.marwan.ecommerce;
 
-import com.marwan.ecommerce.domain.user.entity.User;
-import com.marwan.ecommerce.domain.user.enums.UserRole;
+import com.marwan.ecommerce.model.user.entity.User;
+import com.marwan.ecommerce.model.user.enums.UserRole;
 import com.marwan.ecommerce.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,7 +20,7 @@ public class ECommerceApplication {
     @Bean
     CommandLineRunner init(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
-            userRepository.save(User.Create(
+            userRepository.save(User.create(
                     "Marwan",
                     "Walid",
                     UserRole.ADMIN,
@@ -28,14 +28,14 @@ public class ECommerceApplication {
                     passwordEncoder.encode("password"))
             );
 
-            userRepository.save(User.Create(
+            userRepository.save(User.create(
                     "Mazen",
                     "Walid",
                     UserRole.USER,
                     "mazen@mail.com",
                     passwordEncoder.encode("password"))
             );
-            userRepository.save(User.Create(
+            userRepository.save(User.create(
                     "Malik",
                     "Walid",
                     UserRole.USER,

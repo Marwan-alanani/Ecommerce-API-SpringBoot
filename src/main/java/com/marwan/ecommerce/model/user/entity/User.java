@@ -1,18 +1,20 @@
-package com.marwan.ecommerce.domain.user.entity;
+package com.marwan.ecommerce.model.user.entity;
 
-import com.marwan.ecommerce.domain.user.enums.UserRole;
+import com.marwan.ecommerce.model.user.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(name = "[user]")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Data
-public final class User {
+public final class User
+{
     @Id
     @Setter(AccessLevel.NONE) // Can't set id
     private UUID id;
@@ -30,6 +32,14 @@ public final class User {
     @Column(nullable = false)
     private boolean isEnabled;
 
+    @Column(nullable = false)
+    @Setter(AccessLevel.NONE)
+    private Date CreatedDateTime;
+
+    @Setter(AccessLevel.PRIVATE)
+    @Column(nullable = false)
+    private Date UpdatedDateTime;
+
     private User(
             UUID id,
             String firstName,
@@ -37,7 +47,10 @@ public final class User {
             UserRole role,
             String email,
             String password,
-            boolean isEnabled) {
+            boolean isEnabled,
+            Date createdDateTime,
+            Date updatedDateTime)
+    {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -45,21 +58,27 @@ public final class User {
         this.email = email;
         this.password = password;
         this.isEnabled = isEnabled;
+        this.CreatedDateTime = createdDateTime;
+        this.UpdatedDateTime = updatedDateTime;
     }
 
 
-    public static User Create(
+    public static User create(
             String firstName,
             String lastName,
             UserRole role,
             String email,
-            String password) {
+            String password)
+    {
+        Date currentDate = new Date();
         return new User(UUID.randomUUID(),
-                firstName,
-                lastName,
-                role,
-                email,
-                password,
-                true);
+                        firstName,
+                        lastName,
+                        role,
+                        email,
+                        password,
+                        true,
+                        currentDate,
+                        currentDate);
     }
 }

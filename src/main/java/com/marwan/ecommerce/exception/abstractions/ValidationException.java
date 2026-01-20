@@ -1,7 +1,9 @@
 package com.marwan.ecommerce.exception.abstractions;
 
-public abstract class ValidationException extends RuntimeException {
-    public ValidationException(String message) {
-        super(message);
+public abstract class ValidationException extends CustomException
+{
+    public ValidationException(int code,String message)
+    {
+        super(code,message);
     }
 }

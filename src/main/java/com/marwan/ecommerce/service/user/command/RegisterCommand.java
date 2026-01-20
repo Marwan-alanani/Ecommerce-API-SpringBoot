@@ -1,10 +1,10 @@
-package com.marwan.ecommerce.controller.requests.users;
+package com.marwan.ecommerce.service.user.command;
 
-public record RegisterRequest(
+public record RegisterCommand(
         String firstName,
         String lastName,
         String email,
         String password
-) {
+)
+{
 }
-

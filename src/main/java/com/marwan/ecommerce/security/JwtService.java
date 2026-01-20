@@ -13,50 +13,82 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class JwtService {
-    private final SecretKey secretKey = Keys.hmacShaKeyFor(
-            "super-secret-signing-key-super-secret-signing-key"
-                    .getBytes(StandardCharsets.UTF_8));
+public class JwtService
+{
+    private final SecretKey secretKey = Jwts.SIG.HS256.key().build();
 
-    public String generateToken(Authentication authentication) {
+    public boolean isTokenValid(String token)
+    {
+        if (token == null || token.trim().isEmpty())
+            return false;
 
+        try {
+            Jwts.parser()
+                    .verifyWith(secretKey)
+                    .requireIssuer("Ecommerce App")
+                    .requireAudience("localhost")
+                    .build()
+                    .parseSignedClaims(token);
+            return true;
+        } catch (JwtException e) {
+            return false;
+        }
+
+
+    }
+
+    public String generateToken(Authentication authentication)
+    {
         Map<String, Object> claims = new HashMap<>();
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String userId = userDetails instanceof CustomUserDetails cu ?
-                cu.getUserId().toString() :
-                userDetails.getUsername();
+        String userId = userDetails instanceof CustomUserDetails cu ? cu.getUserId().toString() : userDetails.getUsername();
 
-        claims.put("role", userDetails.getAuthorities().stream().findFirst().toString());
+        claims.put("role", userDetails.getAuthorities().stream().findFirst().get().getAuthority());
         return Jwts.builder()
-                .setId(UUID.randomUUID().toString())
-                .setClaims(claims)
-                .setSubject(userId)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
-                .signWith(secretKey, SignatureAlgorithm.HS256)
-                .setIssuer("Ecommerce App")
-                .setAudience("localhost")
+                .header()
+                .type("JWT")
+                .and()
+                .id(UUID.randomUUID().toString())
+                .claim(
+                        "role",
+                        userDetails.getAuthorities().stream().findFirst().get().getAuthority())
+                .claim(
+                        "email",
+                        userDetails.getUsername())
+                .subject(userId)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+                .signWith(secretKey)
+                .issuer("Ecommerce App")
+                .audience().add("localhost").and()
                 .compact();
     }
 
-    public String extractEmail(String token) {
+    public String extractEmail(String token)
+    {
         Claims claims = extractAllClaims(token);
-        return claims.getSubject();
+        return (String) claims.get("email");
+
+    }
+    public String extractId(String token)
+    {
+        Claims claims = extractAllClaims(token);
+        return claims.getId();
 
     }
 
-    public String extractRole(String token) {
+    public String extractRole(String token)
+    {
         Claims claims = extractAllClaims(token);
         return (String) (claims.get("role"));
     }
 
-    public Claims extractAllClaims(String token) {
-
-        JwtParserBuilder parserBuilder = Jwts.parser()
-                .setSigningKey(secretKey);
-        JwtParser parser = parserBuilder.build();
-        return parser
-                .parseClaimsJws(token)
-                .getBody();
+    public Claims extractAllClaims(String token)
+    {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }

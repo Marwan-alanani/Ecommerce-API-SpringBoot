@@ -1,6 +1,6 @@
 package com.marwan.ecommerce.security;
 
-import com.marwan.ecommerce.domain.user.entity.User;
+import com.marwan.ecommerce.model.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,7 +29,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(user.getRole().name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
     }
 
     @Override
