@@ -25,6 +25,7 @@ import java.util.UUID;
 public class UsersController
 {
     private final UserService userService;
+    private final UserMapper userMapper;
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
@@ -33,8 +34,8 @@ public class UsersController
     {
 
         return authenticationService.registerAndLogin(
-                UserMapper.mapRegisterRequestToRegisterCommand(request)
-                                                     );
+                userMapper.registerRequestToRegisterCommand(request)
+        );
     }
 
     @PostMapping("/remove")
@@ -50,16 +51,15 @@ public class UsersController
     public ResponseEntity<AuthenticationDto> login(@Valid @RequestBody LoginRequest request)
     {
         return ResponseEntity.ok(authenticationService.login(
-                UserMapper.mapLoginRequestToLoginQuery(request)
-                                                            ));
+                userMapper.loginRequestToLoginQuery(request)
+        ));
     }
 
     @GetMapping("/users")
     public ResponseEntity<List<UserDto>> getAllUsers()
     {
         List<User> userList = userService.getAll();
-        List<UserDto> userDtoList = new ArrayList<>();
-        userList.forEach(user -> userDtoList.add(UserMapper.mapUserToUserDto(user)));
+        List<UserDto> userDtoList = userMapper.userListToUserDtoList(userList);
         return ResponseEntity.ok(userDtoList);
     }
 }

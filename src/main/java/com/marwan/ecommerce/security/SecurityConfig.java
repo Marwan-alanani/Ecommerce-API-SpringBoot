@@ -54,6 +54,8 @@ public class SecurityConfig
                                 HttpMethod.POST,
                                 "/products/**").hasRole("ADMIN")
 
+                        .requestMatchers("/suppliers").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 //                .httpBasic(Customizer.withDefaults()) // optional for testing

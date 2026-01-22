@@ -3,7 +3,7 @@ package com.marwan.ecommerce.dto.product;
 import java.util.UUID;
 
 public record ProductResponseDto(
-        UUID id,
+        UUID productId,
         String name,
         String description,
         double price,

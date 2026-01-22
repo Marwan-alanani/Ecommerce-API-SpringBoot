@@ -4,7 +4,7 @@ import com.marwan.ecommerce.dto.category.CategoryWithProductsCountDto;
 import com.marwan.ecommerce.exception.category.CategoryIdNotFoundException;
 import com.marwan.ecommerce.exception.category.CategoryNameExistsException;
 import com.marwan.ecommerce.mapper.CategoryMapper;
-import com.marwan.ecommerce.model.category.Category;
+import com.marwan.ecommerce.model.category.entity.Category;
 import com.marwan.ecommerce.repository.CategoryRepository;
 import com.marwan.ecommerce.repository.ProductRepository;
 import com.marwan.ecommerce.service.category.command.CreateCategoryCommand;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,6 +23,7 @@ import java.util.UUID;
 public class CategoryService
 {
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
     private final ProductRepository productRepository;
 
     public Category create(CreateCategoryCommand command) throws CategoryNameExistsException
@@ -50,10 +50,9 @@ public class CategoryService
             throw new CategoryIdNotFoundException(categoryId);
         }
         int productCount = productRepository.countByCategoryId(categoryId);
-        return CategoryMapper.mapCategoryToCategoryWithProductCountDto(
+        return categoryMapper.categoryAndProductCountToCategoryWithProductsCountDto(
                 category.get(),
-                productCount
-        );
+                productCount);
     }
 
     public Category getCategory(UUID categoryId)
@@ -78,17 +77,17 @@ public class CategoryService
     public Category updateCategory(UpdateCategoryCommand command)
             throws CategoryIdNotFoundException, CategoryNameExistsException
     {
-        Optional<Category> category = categoryRepository.findById(command.id());
-        if (category.isEmpty()) {
-            throw new CategoryIdNotFoundException(command.id());
+        Optional<Category> optionalCategory = categoryRepository.findById(command.categoryId());
+        if (optionalCategory.isEmpty()) {
+            throw new CategoryIdNotFoundException(command.categoryId());
         }
         if (categoryRepository.findByName(command.name()).isPresent()) {
             throw new CategoryNameExistsException(command.name());
         }
-        category.get().setName(command.name());
-        category.get().setUpdatedDateTime(new Date());
-        categoryRepository.save(category.get());
-        return category.get();
+        Category category = optionalCategory.get();
+        categoryMapper.updateFromCommand(category, command);
+        categoryRepository.save(category);
+        return category;
     }
 
     public List<Category> getAllCategories()

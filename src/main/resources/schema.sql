@@ -6,7 +6,7 @@
 -- =============================================
 CREATE TABLE IF NOT EXISTS "user"
 (
-    id                uuid PRIMARY KEY,
+    user_id           uuid PRIMARY KEY,
     first_name        varchar(100) NOT NULL,
     last_name         varchar(100) NOT NULL,
     role              varchar(50)  NOT NULL, -- stored as string ('ADMIN', 'USER', etc.)
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS "user"
 -- =============================================
 CREATE TABLE IF NOT EXISTS category
 (
-    id                uuid PRIMARY KEY,
+    category_id       uuid PRIMARY KEY,
     name              varchar(100) NOT NULL UNIQUE,
     created_date_time timestamp    NOT NULL,
     updated_date_time timestamp    NOT NULL
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS category
 -- =============================================
 CREATE TABLE IF NOT EXISTS product
 (
-    id                uuid PRIMARY KEY,
+    product_id        uuid PRIMARY KEY,
     name              varchar(100)     NOT NULL,
     description       text             NULL,
     price             double precision NOT NULL,
@@ -46,6 +46,15 @@ CREATE TABLE IF NOT EXISTS product
 
     CONSTRAINT fk_product_category
         FOREIGN KEY (category_id)
-            REFERENCES category (id)
+            REFERENCES category (category_id)
             ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS supplier
+(
+    supplier_id       uuid PRIMARY KEY,
+    name              varchar(100) NOT NULL,
+    email             varchar(255) NOT NULL UNIQUE,
+    created_date_time timestamp    NOT NULL,
+    updated_date_time timestamp    NOT NULL
 );

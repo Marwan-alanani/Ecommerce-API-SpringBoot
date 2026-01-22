@@ -17,7 +17,7 @@ public final class User
 {
     @Id
     @Setter(AccessLevel.NONE) // Can't set id
-    private UUID id;
+    private UUID userId;
     @Column(nullable = false)
     private String firstName;
     @Column(nullable = false)
@@ -41,7 +41,7 @@ public final class User
     private Date updatedDateTime;
 
     private User(
-            UUID id,
+            UUID userId,
             String firstName,
             String lastName,
             UserRole role,
@@ -51,7 +51,7 @@ public final class User
             Date createdDateTime,
             Date updatedDateTime)
     {
-        this.id = id;
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;

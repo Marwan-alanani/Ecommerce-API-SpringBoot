@@ -7,59 +7,29 @@ import com.marwan.ecommerce.dto.product.ProductResponseDto;
 import com.marwan.ecommerce.model.product.entity.Product;
 import com.marwan.ecommerce.service.product.command.CreateProductCommand;
 import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-public class ProductMapper
+import java.util.List;
+
+@Mapper(componentModel = "spring")
+public interface ProductMapper
 {
-    public static ProductDetailsDto mapProductToProductDetailsDto(
-            Product product,
-            String categoryName)
-    {
-        return new ProductDetailsDto(
-                product.getId(),
-                product.getName(),
-                product.getDescription(),
-                product.getPrice(),
-                product.getPictureUrl(),
-                product.getBalance(),
-                categoryName
-        );
-    }
+    UpdateProductCommand updateProductRequestToUpdateProductCommand(
+            UpdateProductRequest request);
 
-    public static ProductResponseDto mapProductToProductResponseDto(
-            Product product)
-    {
-        return new ProductResponseDto(
-                product.getId(),
-                product.getName(),
-                product.getDescription(),
-                product.getPrice(),
-                product.getPictureUrl(),
-                product.getBalance(),
-                product.getCategoryId()
-        );
-    }
+    CreateProductCommand createProductRequestToCreateProductCommand(
+            CreateProductRequest request);
 
-    public static CreateProductCommand mapCreateProductRequestToCreateProductCommand(
-            CreateProductRequest request)
-    {
-        return new CreateProductCommand(
-                request.name(),
-                request.description(),
-                request.price(),
-                request.pictureUrl(),
-                request.categoryId()
-        );
-    }
-    public static UpdateProductCommand mapUpdateProductRequestToUpdateProductCommand(
-            UpdateProductRequest request)
-    {
-        return new UpdateProductCommand(
-                request.id(),
-                request.name(),
-                request.description(),
-                request.price(),
-                request.pictureUrl(),
-                request.categoryId()
-        );
-    }
+    ProductResponseDto productToProductResponseDto(Product product);
+
+    List<ProductResponseDto> productListToProductResponseDtoList(List<Product> productList);
+
+    ProductDetailsDto productToProductDetailsDto(Product product, String categoryName);
+
+    @Mapping(target = "updatedDateTime", expression = "java(new java.util.Date())")
+    void updateFromCommand(
+            @MappingTarget Product product,
+            UpdateProductCommand command);
 }

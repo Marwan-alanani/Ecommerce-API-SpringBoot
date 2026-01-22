@@ -15,7 +15,7 @@ public class CustomUserDetails implements UserDetails {
     private final User user;
 
     public UUID getUserId() {
-        return user.getId();
+        return user.getUserId();
     }
     @Override
     public String getUsername() {

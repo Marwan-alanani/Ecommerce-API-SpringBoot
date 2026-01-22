@@ -1,48 +1,40 @@
 package com.marwan.ecommerce.mapper;
-
 import com.marwan.ecommerce.controller.category.request.CreateCategoryRequest;
 import com.marwan.ecommerce.controller.category.request.UpdateCategoryRequest;
 import com.marwan.ecommerce.dto.category.CategoryResponseDto;
 import com.marwan.ecommerce.dto.category.CategoryWithProductsCountDto;
-import com.marwan.ecommerce.model.category.Category;
+import com.marwan.ecommerce.model.category.entity.Category;
 import com.marwan.ecommerce.service.category.command.CreateCategoryCommand;
 import com.marwan.ecommerce.service.category.command.UpdateCategoryCommand;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-public class CategoryMapper
+import java.util.List;
+
+@Mapper(componentModel = "spring")
+public interface CategoryMapper
 {
-    public static CreateCategoryCommand mapCreateCategoryRequestToCreateCategoryCommand(
-            CreateCategoryRequest request)
-    {
-        return new CreateCategoryCommand(
-                request.name()
-        );
-    }
+    CategoryResponseDto categoryToCategoryResponseDto(Category category);
 
-    public static UpdateCategoryCommand mapUpdateCategoryRequestToUpdateCategoryCommand(
-            UpdateCategoryRequest request)
-    {
-        return new UpdateCategoryCommand(
-                request.id(),
-                request.name()
-        );
-    }
+    List<CategoryResponseDto> categoryListToCategoryResponseDtoList(List<Category> categoryList);
 
-    public static CategoryResponseDto mapCategoryToCategoryResponseDto(Category category)
-    {
-        return new CategoryResponseDto(
-                category.getId(),
-                category.getName()
-        );
-    }
+    CreateCategoryCommand createCategoryRequestToCreateCategoryCommand(
+            CreateCategoryRequest request);
 
-    public static CategoryWithProductsCountDto mapCategoryToCategoryWithProductCountDto(
+    UpdateCategoryCommand updateCategoryRequestToUpdateCategoryCommand(
+            UpdateCategoryRequest request);
+
+    default CategoryWithProductsCountDto categoryAndProductCountToCategoryWithProductsCountDto(
             Category category,
             int productCount)
     {
         return new CategoryWithProductsCountDto(
-                category.getId(),
+                category.getCategoryId(),
                 category.getName(),
-                productCount
-        );
+                productCount);
     }
+
+    @Mapping(target = "updatedDateTime", expression = "java(new java.util.Date())")
+    void updateFromCommand(@MappingTarget Category category, UpdateCategoryCommand command);
 }

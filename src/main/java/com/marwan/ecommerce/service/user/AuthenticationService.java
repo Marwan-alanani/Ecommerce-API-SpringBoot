@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationService
 {
+    private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtService jwtService;
@@ -25,24 +26,23 @@ public class AuthenticationService
         userService.create(command);
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(command.email(), command.password())
-                                                                          );
+        );
 
         String token = jwtService.generateToken(authentication);
-        return UserMapper.mapUserDetailsToAuthenticationDto(
-                (UserDetails) authentication.getPrincipal(), token);
+        return userMapper.userDetailsToAuthenticationDto(
+                (UserDetails) authentication.getPrincipal(),
+                token);
     }
 
     public AuthenticationDto login(LoginQuery query)
     {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(query.email(), query.password())
-                                                                          );
+        );
         String token = jwtService.generateToken(authentication);
-        return UserMapper.mapUserDetailsToAuthenticationDto(
+        return userMapper.userDetailsToAuthenticationDto(
                 (UserDetails) authentication.getPrincipal(),
                 token
-                                                           );
+        );
     }
-
-
 }

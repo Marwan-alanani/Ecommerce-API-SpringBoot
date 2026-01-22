@@ -12,12 +12,9 @@ import com.marwan.ecommerce.service.product.ProductService;
 import com.marwan.ecommerce.service.product.command.CreateProductCommand;
 import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +24,7 @@ import java.util.UUID;
 public class ProductController
 {
     private final ProductService productService;
+    private final ProductMapper productMapper;
 
     @PostMapping("/create")
     public ResponseEntity<ProductResponseDto> createProduct(
@@ -34,11 +32,10 @@ public class ProductController
             throws CategoryIdNotFoundException
     {
         CreateProductCommand command =
-                ProductMapper.mapCreateProductRequestToCreateProductCommand(request);
+                productMapper.createProductRequestToCreateProductCommand(request);
         Product product = productService.createProduct(command);
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                ProductMapper.mapProductToProductResponseDto(product)
-        );
+        ProductResponseDto productResponseDto = productMapper.productToProductResponseDto(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productResponseDto);
     }
 
     @GetMapping("/{productId}")
@@ -56,12 +53,11 @@ public class ProductController
             throws ProductIdNotFoundException, CategoryIdNotFoundException
     {
         UpdateProductCommand command =
-                ProductMapper.mapUpdateProductRequestToUpdateProductCommand(request);
+                productMapper.updateProductRequestToUpdateProductCommand(request);
 
         Product product = productService.updateProduct(command);
-        return ResponseEntity.ok(
-                ProductMapper.mapProductToProductResponseDto(product)
-        );
+        ProductResponseDto productResponseDto = productMapper.productToProductResponseDto(product);
+        return ResponseEntity.ok(productResponseDto);
     }
 
     @PostMapping("/delete/{productId}")
@@ -76,10 +72,8 @@ public class ProductController
     public ResponseEntity<List<ProductResponseDto>> getAllProducts()
     {
         List<Product> products = productService.getAllProducts();
-        List<ProductResponseDto> productResponseDtos = new ArrayList<>();
-        products.forEach(product -> {
-            productResponseDtos.add(ProductMapper.mapProductToProductResponseDto(product));
-        });
+        List<ProductResponseDto> productResponseDtos =
+                productMapper.productListToProductResponseDtoList(products);
         return ResponseEntity.ok(productResponseDtos);
     }
 

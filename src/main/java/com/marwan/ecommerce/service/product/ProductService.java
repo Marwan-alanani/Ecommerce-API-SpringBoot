@@ -4,7 +4,7 @@ import com.marwan.ecommerce.dto.product.ProductDetailsDto;
 import com.marwan.ecommerce.exception.category.CategoryIdNotFoundException;
 import com.marwan.ecommerce.exception.product.ProductIdNotFoundException;
 import com.marwan.ecommerce.mapper.ProductMapper;
-import com.marwan.ecommerce.model.category.Category;
+import com.marwan.ecommerce.model.category.entity.Category;
 import com.marwan.ecommerce.model.product.entity.Product;
 import com.marwan.ecommerce.repository.ProductRepository;
 import com.marwan.ecommerce.service.category.CategoryService;
@@ -22,6 +22,7 @@ import java.util.*;
 public class ProductService
 {
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
     private final CategoryService categoryService;
 
     public Product createProduct(CreateProductCommand command)
@@ -51,10 +52,10 @@ public class ProductService
         }
         Product product = optionalProduct.get();
         if (product.getCategoryId() == null) {
-            return ProductMapper.mapProductToProductDetailsDto(product, null);
+            return productMapper.productToProductDetailsDto(product, null);
         }
         String categoryName = categoryService.getCategory(product.getCategoryId()).getName();
-        return ProductMapper.mapProductToProductDetailsDto(product, categoryName);
+        return productMapper.productToProductDetailsDto(product, categoryName);
 
     }
 
@@ -76,7 +77,7 @@ public class ProductService
         List<ProductDetailsDto> productDetailsDtos = new ArrayList<>();
         productList.forEach(product -> {
             productDetailsDtos.add(
-                    ProductMapper.mapProductToProductDetailsDto(
+                    productMapper.productToProductDetailsDto(
                             product,
                             category.getName())
             );
@@ -93,20 +94,21 @@ public class ProductService
     public Product updateProduct(UpdateProductCommand command)
             throws ProductIdNotFoundException, CategoryIdNotFoundException
     {
-        Optional<Product> optionalProduct = productRepository.findById(command.id());
+        Optional<Product> optionalProduct = productRepository.findById(command.productId());
         if (optionalProduct.isEmpty()) {
-            throw new ProductIdNotFoundException(command.id());
+            throw new ProductIdNotFoundException(command.productId());
         }
         Product product = optionalProduct.get();
         if (command.categoryId() != null && !categoryService.categoryExists(command.categoryId())) {
             throw new CategoryIdNotFoundException(command.categoryId());
         }
-        product.setName(command.name());
-        product.setDescription(command.description());
-        product.setPrice(command.price());
-        product.setPictureUrl(command.pictureUrl());
-        product.setCategoryId(command.categoryId());
-        product.setUpdatedDateTime(new Date());
+        //        product.setName(command.name());
+        //        product.setDescription(command.description());
+        //        product.setPrice(command.price());
+        //        product.setPictureUrl(command.pictureUrl());
+        //        product.setCategoryId(command.categoryId());
+        //        product.setUpdatedDateTime(new Date());
+        productMapper.updateFromCommand(product, command);
         productRepository.save(product);
         return product;
     }

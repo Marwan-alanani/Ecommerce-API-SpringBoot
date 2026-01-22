@@ -14,11 +14,11 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Product
+public final class Product
 {
     @Id
     @Setter(AccessLevel.NONE)
-    private UUID id;
+    private UUID productId;
     @Column(nullable = false)
     private String name;
 

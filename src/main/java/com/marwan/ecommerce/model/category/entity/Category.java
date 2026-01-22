@@ -1,4 +1,4 @@
-package com.marwan.ecommerce.model.category;
+package com.marwan.ecommerce.model.category.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,7 +15,7 @@ public class Category
 {
     @Id
     @Setter(AccessLevel.NONE)
-    private UUID id;
+    private UUID categoryId;
     @Column(unique = true, nullable = false)
     private String name;
 

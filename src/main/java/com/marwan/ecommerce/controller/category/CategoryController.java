@@ -7,11 +7,10 @@ import com.marwan.ecommerce.dto.category.CategoryWithProductsCountDto;
 import com.marwan.ecommerce.exception.category.CategoryIdNotFoundException;
 import com.marwan.ecommerce.exception.category.CategoryNameExistsException;
 import com.marwan.ecommerce.mapper.CategoryMapper;
-import com.marwan.ecommerce.model.category.Category;
+import com.marwan.ecommerce.model.category.entity.Category;
 import com.marwan.ecommerce.service.category.CategoryService;
 import com.marwan.ecommerce.service.category.command.CreateCategoryCommand;
 import com.marwan.ecommerce.service.category.command.UpdateCategoryCommand;
-import com.marwan.ecommerce.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,17 +26,17 @@ import java.util.UUID;
 public class CategoryController
 {
     private final CategoryService categoryService;
-    private final ProductService productService;
+    private final CategoryMapper categoryMapper;
 
     @PostMapping("/create")
     public ResponseEntity<CategoryResponseDto> create(@RequestBody CreateCategoryRequest request)
             throws CategoryNameExistsException
     {
         CreateCategoryCommand command =
-                CategoryMapper.mapCreateCategoryRequestToCreateCategoryCommand(request);
+                categoryMapper.createCategoryRequestToCreateCategoryCommand(request);
         Category category = categoryService.create(command);
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                CategoryMapper.mapCategoryToCategoryResponseDto(category)
+                categoryMapper.categoryToCategoryResponseDto(category)
         );
     }
 
@@ -64,11 +63,11 @@ public class CategoryController
             throws CategoryIdNotFoundException, CategoryNameExistsException
     {
         UpdateCategoryCommand command =
-                CategoryMapper.mapUpdateCategoryRequestToUpdateCategoryCommand(request);
+                categoryMapper.updateCategoryRequestToUpdateCategoryCommand(request);
 
         Category category = categoryService.updateCategory(command);
         return ResponseEntity.status(HttpStatus.OK).body(
-                CategoryMapper.mapCategoryToCategoryResponseDto(category)
+                categoryMapper.categoryToCategoryResponseDto(category)
         );
     }
 
@@ -76,11 +75,10 @@ public class CategoryController
     public ResponseEntity<List<CategoryResponseDto>> getAllCategories()
     {
         List<Category> categories = categoryService.getAllCategories();
-        List<CategoryResponseDto> categoryResponseDtos = new ArrayList<>();
-        categories.forEach(category -> {
-            categoryResponseDtos.add(CategoryMapper.mapCategoryToCategoryResponseDto(category));
-        });
-        return ResponseEntity.status(HttpStatus.OK).body(categoryResponseDtos);
+        List<CategoryResponseDto> categoryResponseDtoList =
+                categoryMapper.categoryListToCategoryResponseDtoList(categories);
+
+        return ResponseEntity.status(HttpStatus.OK).body(categoryResponseDtoList);
     }
 
 }

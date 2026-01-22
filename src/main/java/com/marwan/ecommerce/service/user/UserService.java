@@ -36,8 +36,8 @@ public class UserService
                 command.lastName(),
                 UserRole.USER,
                 command.email(),
-                passwordEncoder.encode(command.password())
-                               );
+                passwordEncoder.encode(command.password()));
+
         userRepository.save(user);
         return user;
     }
