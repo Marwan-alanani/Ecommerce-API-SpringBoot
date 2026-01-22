@@ -6,7 +6,7 @@ import com.marwan.ecommerce.dto.user.AuthenticationDto;
 import com.marwan.ecommerce.dto.user.UserDto;
 import com.marwan.ecommerce.exception.user.UserIdNotFoundException;
 import com.marwan.ecommerce.mapper.UserMapper;
-import com.marwan.ecommerce.model.user.entity.User;
+import com.marwan.ecommerce.model.entity.User;
 import com.marwan.ecommerce.service.user.AuthenticationService;
 import com.marwan.ecommerce.service.user.UserService;
 import jakarta.validation.Valid;
@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

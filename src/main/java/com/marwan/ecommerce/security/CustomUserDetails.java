@@ -1,6 +1,6 @@
 package com.marwan.ecommerce.security;
 
-import com.marwan.ecommerce.model.user.entity.User;
+import com.marwan.ecommerce.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

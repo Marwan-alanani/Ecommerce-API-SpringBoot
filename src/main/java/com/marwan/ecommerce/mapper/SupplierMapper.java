@@ -3,7 +3,7 @@ package com.marwan.ecommerce.mapper;
 import com.marwan.ecommerce.controller.supplier.request.CreateSupplierRequest;
 import com.marwan.ecommerce.controller.supplier.request.UpdateSupplierRequest;
 import com.marwan.ecommerce.dto.supplier.SupplierDto;
-import com.marwan.ecommerce.model.supplier.entity.Supplier;
+import com.marwan.ecommerce.model.entity.Supplier;
 import com.marwan.ecommerce.service.supplier.command.CreateSupplierCommand;
 import com.marwan.ecommerce.service.supplier.command.UpdateSupplierCommand;
 import org.mapstruct.Mapper;

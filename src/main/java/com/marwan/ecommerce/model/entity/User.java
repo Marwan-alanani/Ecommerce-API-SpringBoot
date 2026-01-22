@@ -1,6 +1,6 @@
-package com.marwan.ecommerce.model.user.entity;
+package com.marwan.ecommerce.model.entity;
 
-import com.marwan.ecommerce.model.user.enums.UserRole;
+import com.marwan.ecommerce.model.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -36,7 +36,6 @@ public final class User
     @Setter(AccessLevel.NONE)
     private Date createdDateTime;
 
-    @Setter(AccessLevel.PRIVATE)
     @Column(nullable = false)
     private Date updatedDateTime;
 

@@ -3,11 +3,12 @@ package com.marwan.ecommerce.dto.user;
 import java.util.UUID;
 
 public record UserDto(
-        UUID id,
+        UUID userId,
         String firstName,
         String lastName,
         String email,
         boolean isEnabled
-) {
+)
+{
 }
 

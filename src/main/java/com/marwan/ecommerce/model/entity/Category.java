@@ -1,4 +1,4 @@
-package com.marwan.ecommerce.model.category.entity;
+package com.marwan.ecommerce.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,12 +6,12 @@ import lombok.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Data
 @Entity
+@Data
 @Table(name = "category")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Category
+public final class Category
 {
     @Id
     @Setter(AccessLevel.NONE)
@@ -20,6 +20,7 @@ public class Category
     private String name;
 
     @Column(nullable = false)
+    @Setter(AccessLevel.NONE)
     private Date createdDateTime;
 
     @Column(nullable = false)
@@ -38,9 +39,4 @@ public class Category
                 currentDate,
                 currentDate);
     }
-
-    //    public void addProduct(Product product)
-    //    {
-    //        this.products.add(product);
-    //    }
 }

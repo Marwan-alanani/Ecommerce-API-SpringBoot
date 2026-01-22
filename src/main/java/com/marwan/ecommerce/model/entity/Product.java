@@ -1,4 +1,4 @@
-package com.marwan.ecommerce.model.product.entity;
+package com.marwan.ecommerce.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,9 +37,13 @@ public final class Product
     private UUID categoryId;
 
     @Column(nullable = false)
+    @Setter(AccessLevel.NONE)
     private Date createdDateTime;
     @Column(nullable = false)
     private Date updatedDateTime;
+
+    @Column(nullable = false)
+    private double maxPurchasePrice;
 
     public static Product create(
             String name,
@@ -58,8 +62,8 @@ public final class Product
                 0,
                 categoryId,
                 currentDate,
-                currentDate
-
+                currentDate,
+                0
         );
     }
 

@@ -1,6 +1,6 @@
 package com.marwan.ecommerce.repository;
 
-import com.marwan.ecommerce.model.product.entity.Product;
+import com.marwan.ecommerce.model.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

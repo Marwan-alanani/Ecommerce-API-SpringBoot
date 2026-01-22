@@ -7,7 +7,7 @@ import com.marwan.ecommerce.dto.product.ProductResponseDto;
 import com.marwan.ecommerce.exception.category.CategoryIdNotFoundException;
 import com.marwan.ecommerce.exception.product.ProductIdNotFoundException;
 import com.marwan.ecommerce.mapper.ProductMapper;
-import com.marwan.ecommerce.model.product.entity.Product;
+import com.marwan.ecommerce.model.entity.Product;
 import com.marwan.ecommerce.service.product.ProductService;
 import com.marwan.ecommerce.service.product.command.CreateProductCommand;
 import com.marwan.ecommerce.service.product.command.UpdateProductCommand;

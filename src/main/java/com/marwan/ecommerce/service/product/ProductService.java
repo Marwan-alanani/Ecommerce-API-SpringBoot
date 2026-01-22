@@ -4,8 +4,8 @@ import com.marwan.ecommerce.dto.product.ProductDetailsDto;
 import com.marwan.ecommerce.exception.category.CategoryIdNotFoundException;
 import com.marwan.ecommerce.exception.product.ProductIdNotFoundException;
 import com.marwan.ecommerce.mapper.ProductMapper;
-import com.marwan.ecommerce.model.category.entity.Category;
-import com.marwan.ecommerce.model.product.entity.Product;
+import com.marwan.ecommerce.model.entity.Category;
+import com.marwan.ecommerce.model.entity.Product;
 import com.marwan.ecommerce.repository.ProductRepository;
 import com.marwan.ecommerce.service.category.CategoryService;
 import com.marwan.ecommerce.service.product.command.CreateProductCommand;
@@ -59,14 +59,22 @@ public class ProductService
 
     }
 
-    public Product getProduct(UUID id)
+    public Product getProduct(UUID productId)
             throws ProductIdNotFoundException
     {
-        Optional<Product> optionalProduct = productRepository.findById(id);
+        Optional<Product> optionalProduct = productRepository.findById(productId);
         if (optionalProduct.isEmpty()) {
-            throw new ProductIdNotFoundException(id);
+            throw new ProductIdNotFoundException(productId);
         }
         return optionalProduct.get();
+    }
+
+    public boolean productExists(UUID id)
+    {
+        if (productRepository.existsById(id)) {
+            return true;
+        }
+        return false;
     }
 
     public List<ProductDetailsDto> getProductsByCategoryId(UUID categoryId)
@@ -102,12 +110,6 @@ public class ProductService
         if (command.categoryId() != null && !categoryService.categoryExists(command.categoryId())) {
             throw new CategoryIdNotFoundException(command.categoryId());
         }
-        //        product.setName(command.name());
-        //        product.setDescription(command.description());
-        //        product.setPrice(command.price());
-        //        product.setPictureUrl(command.pictureUrl());
-        //        product.setCategoryId(command.categoryId());
-        //        product.setUpdatedDateTime(new Date());
         productMapper.updateFromCommand(product, command);
         productRepository.save(product);
         return product;

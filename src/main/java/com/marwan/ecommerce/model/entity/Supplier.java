@@ -1,4 +1,4 @@
-package com.marwan.ecommerce.model.supplier.entity;
+package com.marwan.ecommerce.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

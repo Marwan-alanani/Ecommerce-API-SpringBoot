@@ -4,7 +4,7 @@ import com.marwan.ecommerce.dto.category.CategoryWithProductsCountDto;
 import com.marwan.ecommerce.exception.category.CategoryIdNotFoundException;
 import com.marwan.ecommerce.exception.category.CategoryNameExistsException;
 import com.marwan.ecommerce.mapper.CategoryMapper;
-import com.marwan.ecommerce.model.category.entity.Category;
+import com.marwan.ecommerce.model.entity.Category;
 import com.marwan.ecommerce.repository.CategoryRepository;
 import com.marwan.ecommerce.repository.ProductRepository;
 import com.marwan.ecommerce.service.category.command.CreateCategoryCommand;

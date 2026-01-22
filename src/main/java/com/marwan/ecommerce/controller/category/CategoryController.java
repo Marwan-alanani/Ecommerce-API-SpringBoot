@@ -7,7 +7,7 @@ import com.marwan.ecommerce.dto.category.CategoryWithProductsCountDto;
 import com.marwan.ecommerce.exception.category.CategoryIdNotFoundException;
 import com.marwan.ecommerce.exception.category.CategoryNameExistsException;
 import com.marwan.ecommerce.mapper.CategoryMapper;
-import com.marwan.ecommerce.model.category.entity.Category;
+import com.marwan.ecommerce.model.entity.Category;
 import com.marwan.ecommerce.service.category.CategoryService;
 import com.marwan.ecommerce.service.category.command.CreateCategoryCommand;
 import com.marwan.ecommerce.service.category.command.UpdateCategoryCommand;
@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

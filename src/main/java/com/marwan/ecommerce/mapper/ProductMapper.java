@@ -4,9 +4,10 @@ import com.marwan.ecommerce.controller.product.request.CreateProductRequest;
 import com.marwan.ecommerce.controller.product.request.UpdateProductRequest;
 import com.marwan.ecommerce.dto.product.ProductDetailsDto;
 import com.marwan.ecommerce.dto.product.ProductResponseDto;
-import com.marwan.ecommerce.model.product.entity.Product;
+import com.marwan.ecommerce.model.entity.Product;
 import com.marwan.ecommerce.service.product.command.CreateProductCommand;
 import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
+import com.marwan.ecommerce.service.purchase.event.PurchaseCreatedEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -16,6 +17,8 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ProductMapper
 {
+
+
     UpdateProductCommand updateProductRequestToUpdateProductCommand(
             UpdateProductRequest request);
 

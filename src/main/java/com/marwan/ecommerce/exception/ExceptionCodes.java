@@ -11,4 +11,5 @@ public class ExceptionCodes
     public static final String SupplierNameExistsException = "supplier/supplierNameExists";
     public static final String SupplierEmailExistsException = "supplier/supplierEmailExists";
     public static final String SupplierIdNotFoundException = "supplier/supplierIdNotFound";
+    public static final String PurchaseIdNotFoundException = "purchase/purchaseIdNotFound";
 }

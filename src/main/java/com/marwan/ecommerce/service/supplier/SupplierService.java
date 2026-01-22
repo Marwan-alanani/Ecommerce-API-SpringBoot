@@ -4,7 +4,7 @@ import com.marwan.ecommerce.exception.supplier.SupplierEmailExistsException;
 import com.marwan.ecommerce.exception.supplier.SupplierIdNotFoundException;
 import com.marwan.ecommerce.exception.supplier.SupplierNameExistsException;
 import com.marwan.ecommerce.mapper.SupplierMapper;
-import com.marwan.ecommerce.model.supplier.entity.Supplier;
+import com.marwan.ecommerce.model.entity.Supplier;
 import com.marwan.ecommerce.repository.SupplierRepository;
 import com.marwan.ecommerce.service.supplier.command.CreateSupplierCommand;
 import com.marwan.ecommerce.service.supplier.command.UpdateSupplierCommand;
@@ -38,7 +38,6 @@ public class SupplierService
         supplierRepository.save(supplier);
         return supplier;
     }
-
     public Supplier get(UUID supplierId)
             throws SupplierIdNotFoundException
     {
@@ -47,6 +46,14 @@ public class SupplierService
             throw new SupplierIdNotFoundException(supplierId);
         }
         return optionalSupplier.get();
+    }
+
+    public boolean supplierExists(UUID supplierId)
+    {
+        if (supplierRepository.existsById(supplierId)) {
+            return true;
+        }
+        return false;
     }
 
     public List<Supplier> getAll()

@@ -3,7 +3,7 @@ import com.marwan.ecommerce.controller.category.request.CreateCategoryRequest;
 import com.marwan.ecommerce.controller.category.request.UpdateCategoryRequest;
 import com.marwan.ecommerce.dto.category.CategoryResponseDto;
 import com.marwan.ecommerce.dto.category.CategoryWithProductsCountDto;
-import com.marwan.ecommerce.model.category.entity.Category;
+import com.marwan.ecommerce.model.entity.Category;
 import com.marwan.ecommerce.service.category.command.CreateCategoryCommand;
 import com.marwan.ecommerce.service.category.command.UpdateCategoryCommand;
 import org.mapstruct.Mapper;

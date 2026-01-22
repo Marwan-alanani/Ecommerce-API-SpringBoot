@@ -8,7 +8,8 @@ public record UpdateProductCommand(
         String description,
         double price,
         String pictureUrl,
-        UUID categoryId
+        UUID categoryId,
+        double maxPurchasePrice
 )
 {
 }

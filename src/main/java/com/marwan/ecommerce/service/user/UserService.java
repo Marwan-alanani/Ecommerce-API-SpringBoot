@@ -1,9 +1,7 @@
 package com.marwan.ecommerce.service.user;
 
-import com.marwan.ecommerce.model.user.enums.UserRole;
-import com.marwan.ecommerce.dto.user.UserDto;
-import com.marwan.ecommerce.mapper.UserMapper;
-import com.marwan.ecommerce.model.user.entity.User;
+import com.marwan.ecommerce.model.enums.UserRole;
+import com.marwan.ecommerce.model.entity.User;
 import com.marwan.ecommerce.repository.UserRepository;
 import com.marwan.ecommerce.exception.user.EmailExistsException;
 import com.marwan.ecommerce.exception.user.UserIdNotFoundException;
@@ -13,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

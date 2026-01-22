@@ -7,7 +7,7 @@ import com.marwan.ecommerce.exception.supplier.SupplierEmailExistsException;
 import com.marwan.ecommerce.exception.supplier.SupplierIdNotFoundException;
 import com.marwan.ecommerce.exception.supplier.SupplierNameExistsException;
 import com.marwan.ecommerce.mapper.SupplierMapper;
-import com.marwan.ecommerce.model.supplier.entity.Supplier;
+import com.marwan.ecommerce.model.entity.Supplier;
 import com.marwan.ecommerce.service.supplier.SupplierService;
 import com.marwan.ecommerce.service.supplier.command.CreateSupplierCommand;
 import com.marwan.ecommerce.service.supplier.command.UpdateSupplierCommand;

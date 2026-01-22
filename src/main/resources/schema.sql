@@ -33,15 +33,16 @@ CREATE TABLE IF NOT EXISTS category
 -- =============================================
 CREATE TABLE IF NOT EXISTS product
 (
-    product_id        uuid PRIMARY KEY,
-    name              varchar(100)     NOT NULL,
-    description       text             NULL,
-    price             double precision NOT NULL,
-    picture_url       varchar(512)     NOT NULL,
-    balance           integer          NOT NULL, -- you can add DEFAULT 0 if wanted
-    category_id       uuid             NULL,     -- nullable as requested
-    created_date_time timestamp        NOT NULL,
-    updated_date_time timestamp        NOT NULL,
+    product_id         uuid PRIMARY KEY,
+    name               varchar(100)     NOT NULL,
+    description        text             NULL,
+    price              double precision NOT NULL,
+    picture_url        varchar(512)     NOT NULL,
+    balance            integer          NOT NULL, -- you can add DEFAULT 0 if wanted
+    category_id        uuid             NULL,     -- nullable as requested
+    created_date_time  timestamp        NOT NULL,
+    updated_date_time  timestamp        NOT NULL,
+    max_purchase_price double precision NOT NULL,
 
 
     CONSTRAINT fk_product_category
@@ -57,4 +58,24 @@ CREATE TABLE IF NOT EXISTS supplier
     email             varchar(255) NOT NULL UNIQUE,
     created_date_time timestamp    NOT NULL,
     updated_date_time timestamp    NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS purchase
+(
+    purchase_id       uuid PRIMARY KEY,
+    product_id        uuid             NULL,
+    price             double precision NOT NULL,
+    quantity          integer          NOT NULL,
+    supplier_id       uuid             NULL,
+    created_date_time timestamp        NOT NULL,
+    CONSTRAINT fk_purchase_product
+        FOREIGN KEY (product_id)
+            REFERENCES product (product_id)
+            ON DELETE SET NULL,
+
+    CONSTRAINT fk_purchase_supplier
+        FOREIGN KEY (supplier_id)
+            REFERENCES supplier (supplier_id)
+            ON DELETE SET NULL
+
 );
