@@ -11,17 +11,15 @@ import java.util.UUID;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, UUID>
 {
-    Optional<Product> findByProductIdAndIsEnabledTrue(UUID productId);
+    Optional<Product> findByProductIdAndIsEnabled(UUID productId, boolean isEnabled);
 
     List<Product> findByCategoryId(UUID categoryId);
 
-    boolean existsByProductIdAndIsEnabledTrue(UUID productId);
+    boolean existsByProductIdAndIsEnabled(UUID productId, boolean isEnabled);
 
-    List<Product> findByCategoryIdAndIsEnabledTrue(UUID categoryId);
+    List<Product> findByCategoryIdAndIsEnabled(UUID categoryId, boolean isEnabled);
 
-    List<Product> findAllByIsEnabledTrue();
-
-    int countByCategoryId(UUID categoryId);
+    List<Product> findAllByIsEnabled(boolean isEnabled);
 
     int countByCategoryIdAndIsEnabledTrue(UUID categoryId);
 }

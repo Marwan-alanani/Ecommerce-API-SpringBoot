@@ -24,7 +24,7 @@ public class SupplierService
     private final SupplierRepository supplierRepository;
     private final SupplierMapper supplierMapper;
 
-    public Supplier create(CreateSupplierCommand command)
+    public Supplier createSupplier(CreateSupplierCommand command)
             throws SupplierEmailExistsException, SupplierNameExistsException
     {
         if (supplierRepository.existsByEmail(command.email())) {
@@ -39,11 +39,11 @@ public class SupplierService
         return supplier;
     }
 
-    public Supplier get(UUID supplierId)
+    public Supplier get(UUID supplierId, boolean isEnabled)
             throws SupplierIdNotFoundException
     {
-        Optional<Supplier> optionalSupplier = supplierRepository.findBySupplierIdAndIsEnabledTrue(
-                supplierId);
+        Optional<Supplier> optionalSupplier = supplierRepository
+                .findBySupplierIdAndIsEnabled(supplierId, isEnabled);
 
         if (optionalSupplier.isEmpty()) {
             throw new SupplierIdNotFoundException(supplierId);
@@ -51,9 +51,9 @@ public class SupplierService
         return optionalSupplier.get();
     }
 
-    public boolean supplierExists(UUID supplierId)
+    public boolean supplierExists(UUID supplierId, boolean isEnabled)
     {
-        if (supplierRepository.existsBySupplierIdAndIsEnabledTrue(supplierId)) {
+        if (supplierRepository.existsBySupplierIdAndIsEnabled(supplierId, isEnabled)) {
             return true;
         }
         return false;
@@ -64,11 +64,13 @@ public class SupplierService
         return supplierRepository.findAll();
     }
 
-    public Supplier update(UpdateSupplierCommand command)
+    public Supplier update(UpdateSupplierCommand command, boolean isEnabled)
             throws SupplierIdNotFoundException, SupplierNameExistsException,
             SupplierEmailExistsException
     {
-        Optional<Supplier> optionalSupplier = supplierRepository.findById(command.supplierId());
+        Optional<Supplier> optionalSupplier = supplierRepository
+                .findBySupplierIdAndIsEnabled(command.supplierId(), isEnabled);
+
         if (optionalSupplier.isEmpty()) {
             throw new SupplierIdNotFoundException(command.supplierId());
         }
@@ -89,20 +91,12 @@ public class SupplierService
         return supplier;
     }
 
-    //    public void delete(UUID supplierId)
-    //            throws SupplierIdNotFoundException
-    //    {
-    //        if (!supplierRepository.existsById(supplierId)) {
-    //            throw new SupplierIdNotFoundException(supplierId);
-    //        }
-    //        supplierRepository.deleteById(supplierId);
-    //
-    //    }
-    public void deactivate(UUID supplierId)
+    public void deactivate(UUID supplierId, boolean isEnabled)
             throws SupplierIdNotFoundException
     {
-        Optional<Supplier> optionalSupplier = supplierRepository.findBySupplierIdAndIsEnabledTrue(
-                supplierId);
+        Optional<Supplier> optionalSupplier = supplierRepository
+                .findBySupplierIdAndIsEnabled(supplierId, isEnabled);
+
         if (optionalSupplier.isEmpty()) {
             throw new SupplierIdNotFoundException(supplierId);
         }

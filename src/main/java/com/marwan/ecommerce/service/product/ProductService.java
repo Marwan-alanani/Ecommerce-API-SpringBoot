@@ -28,8 +28,8 @@ public class ProductService
     public Product createProduct(CreateProductCommand command)
             throws CategoryIdNotFoundException
     {
-        if (command.categoryId() != null && !categoryService.categoryExists(command.categoryId()
-                , true)) {
+        if (command.categoryId() != null && !categoryService.categoryExists(command.categoryId(),
+                true)) {
             throw new CategoryIdNotFoundException(command.categoryId());
         }
 
@@ -44,47 +44,52 @@ public class ProductService
         return product;
     }
 
-    public ProductDetailsDto getProductWithCategoryNameById(UUID id)
+    public ProductDetailsDto getProductWithCategoryNameById(UUID id, boolean isEnabled)
             throws ProductIdNotFoundException
     {
-        Optional<Product> optionalProduct = productRepository.findByProductIdAndIsEnabledTrue(id);
+        Optional<Product> optionalProduct = productRepository
+                .findByProductIdAndIsEnabled(id, isEnabled);
         if (optionalProduct.isEmpty()) {
             throw new ProductIdNotFoundException(id);
         }
+
         Product product = optionalProduct.get();
         if (product.getCategoryId() == null) {
             return productMapper.productToProductDetailsDto(product, null);
         }
         String categoryName = categoryService
-                .getCategory(product.getCategoryId(), true)
+                .getCategory(product.getCategoryId(), isEnabled)
                 .getName();
         return productMapper.productToProductDetailsDto(product, categoryName);
 
     }
 
-    public Product getProduct(UUID productId)
+    public Product getProduct(UUID productId, boolean isEnabled)
             throws ProductIdNotFoundException
     {
-        Optional<Product> optionalProduct = productRepository.findByProductIdAndIsEnabledTrue(productId);
+        Optional<Product> optionalProduct = productRepository
+                .findByProductIdAndIsEnabled(productId, isEnabled);
         if (optionalProduct.isEmpty()) {
             throw new ProductIdNotFoundException(productId);
         }
         return optionalProduct.get();
     }
 
-    public boolean productExists(UUID id)
+    public boolean productExists(UUID id, boolean isEnabled)
     {
-        if (productRepository.existsByProductIdAndIsEnabledTrue(id)) {
+        if (productRepository.existsByProductIdAndIsEnabled(id, isEnabled)) {
             return true;
         }
         return false;
     }
 
-    public List<ProductDetailsDto> getProductsByCategoryId(UUID categoryId)
+    public List<ProductDetailsDto> getProductsByCategoryId(UUID categoryId, boolean isEnabled)
             throws CategoryIdNotFoundException
     {
         Category category = categoryService.getCategory(categoryId, true);
-        List<Product> productList = productRepository.findByCategoryIdAndIsEnabledTrue(categoryId);
+        List<Product> productList = productRepository
+                .findByCategoryIdAndIsEnabled(categoryId, isEnabled);
+
         List<ProductDetailsDto> productDetailsDtos = new ArrayList<>();
         productList.forEach(product -> {
             productDetailsDtos.add(
@@ -97,16 +102,16 @@ public class ProductService
 
     }
 
-    public List<Product> getAllProducts()
+    public List<Product> getAllProducts(boolean isEnabled)
     {
-        return productRepository.findAllByIsEnabledTrue();
+        return productRepository.findAllByIsEnabled(isEnabled);
     }
 
-    public Product updateProduct(UpdateProductCommand command)
+    public Product updateProduct(UpdateProductCommand command, boolean isEnabled)
             throws ProductIdNotFoundException, CategoryIdNotFoundException
     {
         Optional<Product> optionalProduct = productRepository
-                .findByProductIdAndIsEnabledTrue(command.productId());
+                .findByProductIdAndIsEnabled(command.productId(), isEnabled);
 
         if (optionalProduct.isEmpty()) {
             throw new ProductIdNotFoundException(command.productId());
@@ -129,10 +134,12 @@ public class ProductService
     //        }
     //        productRepository.deleteById(id);
     //    }
-    public void deactivateProduct(UUID productId)
+    public void deactivateProduct(UUID productId, boolean isEnabled)
             throws ProductIdNotFoundException
     {
-        Optional<Product> optionalProduct = productRepository.findByProductIdAndIsEnabledTrue(productId);
+        Optional<Product> optionalProduct = productRepository.findByProductIdAndIsEnabled(
+                productId, isEnabled);
+
         if (optionalProduct.isEmpty()) {
             throw new ProductIdNotFoundException(productId);
         }

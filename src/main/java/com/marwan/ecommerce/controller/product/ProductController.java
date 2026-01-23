@@ -44,7 +44,7 @@ public class ProductController
             throws ProductIdNotFoundException
     {
         ProductDetailsDto productDetailsDto =
-                productService.getProductWithCategoryNameById(productId);
+                productService.getProductWithCategoryNameById(productId, true);
         return ResponseEntity.ok(productDetailsDto);
     }
 
@@ -56,7 +56,7 @@ public class ProductController
         UpdateProductCommand command =
                 productMapper.updateProductRequestToUpdateProductCommand(request);
 
-        Product product = productService.updateProduct(command);
+        Product product = productService.updateProduct(command, true);
         ProductResponseDto productResponseDto = productMapper.productToProductResponseDto(product);
         return ResponseEntity.ok(productResponseDto);
     }
@@ -65,14 +65,14 @@ public class ProductController
     public ResponseEntity<?> deactivateProduct(@PathVariable UUID productId)
             throws ProductIdNotFoundException
     {
-        productService.deactivateProduct(productId);
+        productService.deactivateProduct(productId, true);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> getAllProducts()
     {
-        List<Product> products = productService.getAllProducts();
+        List<Product> products = productService.getAllProducts(true);
         List<ProductResponseDto> productResponseDtos =
                 productMapper.productListToProductResponseDtoList(products);
         return ResponseEntity.ok(productResponseDtos);
@@ -85,7 +85,7 @@ public class ProductController
             throws CategoryIdNotFoundException
     {
         List<ProductDetailsDto> productDetailsDtos =
-                productService.getProductsByCategoryId(categoryId);
+                productService.getProductsByCategoryId(categoryId, true);
         return ResponseEntity.status(HttpStatus.OK).body(productDetailsDtos);
     }
 

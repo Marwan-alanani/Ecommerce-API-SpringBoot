@@ -33,7 +33,7 @@ public class SupplierController
     {
         CreateSupplierCommand command =
                 supplierMapper.createSupplierRequestToCreateSupplierCommand(request);
-        Supplier supplier = supplierService.create(command);
+        Supplier supplier = supplierService.createSupplier(command);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 supplierMapper.supplierToSupplierDto(supplier)
@@ -44,7 +44,7 @@ public class SupplierController
     public ResponseEntity<SupplierDto> get(@PathVariable UUID supplierId)
             throws SupplierIdNotFoundException
     {
-        Supplier supplier = supplierService.get(supplierId);
+        Supplier supplier = supplierService.get(supplierId, true);
         return ResponseEntity.ok(
                 supplierMapper.supplierToSupplierDto(supplier)
         );
@@ -68,7 +68,7 @@ public class SupplierController
     {
         UpdateSupplierCommand command =
                 supplierMapper.updateSupplierRequestToUpdateSupplierCommand(request);
-        Supplier supplier = supplierService.update(command);
+        Supplier supplier = supplierService.update(command, true);
         return ResponseEntity.ok(supplierMapper.supplierToSupplierDto(supplier));
     }
 
@@ -77,7 +77,7 @@ public class SupplierController
     public ResponseEntity<?> deactivate(@PathVariable UUID supplierId)
             throws SupplierIdNotFoundException
     {
-        supplierService.deactivate(supplierId);
+        supplierService.deactivate(supplierId, true);
         return ResponseEntity.ok().build();
     }
 }
