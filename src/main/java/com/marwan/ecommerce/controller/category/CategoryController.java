@@ -33,7 +33,7 @@ public class CategoryController
     {
         CreateCategoryCommand command =
                 categoryMapper.createCategoryRequestToCreateCategoryCommand(request);
-        Category category = categoryService.create(command);
+        Category category = categoryService.create(command, true);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 categoryMapper.categoryToCategoryResponseDto(category)
         );
@@ -44,15 +44,15 @@ public class CategoryController
             throws CategoryIdNotFoundException
     {
         return ResponseEntity.status(HttpStatus.OK).body(
-                categoryService.getCategoryWithProductCount(categoryId)
+                categoryService.getCategoryWithProductCount(categoryId, true)
         );
     }
 
     @PostMapping("/delete/{categoryId}")
-    public ResponseEntity<?> deleteCategory(@PathVariable UUID categoryId)
+    public ResponseEntity<?> deactivateCategory(@PathVariable UUID categoryId)
             throws CategoryIdNotFoundException
     {
-        categoryService.deleteCategory(categoryId);
+        categoryService.deactivateCategory(categoryId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -64,7 +64,7 @@ public class CategoryController
         UpdateCategoryCommand command =
                 categoryMapper.updateCategoryRequestToUpdateCategoryCommand(request);
 
-        Category category = categoryService.updateCategory(command);
+        Category category = categoryService.updateCategory(command, true);
         return ResponseEntity.status(HttpStatus.OK).body(
                 categoryMapper.categoryToCategoryResponseDto(category)
         );
@@ -73,7 +73,7 @@ public class CategoryController
     @GetMapping
     public ResponseEntity<List<CategoryResponseDto>> getAllCategories()
     {
-        List<Category> categories = categoryService.getAllCategories();
+        List<Category> categories = categoryService.getAllCategories(true);
         List<CategoryResponseDto> categoryResponseDtoList =
                 categoryMapper.categoryListToCategoryResponseDtoList(categories);
 

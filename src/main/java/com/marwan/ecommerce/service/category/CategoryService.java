@@ -26,9 +26,10 @@ public class CategoryService
     private final CategoryMapper categoryMapper;
     private final ProductRepository productRepository;
 
-    public Category create(CreateCategoryCommand command) throws CategoryNameExistsException
+    public Category create(CreateCategoryCommand command, boolean isEnabled)
+            throws CategoryNameExistsException
     {
-        if (categoryRepository.findByName(command.name()).isPresent()) {
+        if (categoryRepository.findByNameAndIsEnabled(command.name(), isEnabled).isPresent()) {
             throw new CategoryNameExistsException(command.name());
         }
         Category category = Category.create(command.name());
@@ -37,62 +38,81 @@ public class CategoryService
 
     }
 
-    public boolean categoryExists(UUID id)
+    public boolean categoryExists(UUID id, boolean isEnabled)
     {
-        return categoryRepository.findById(id).isPresent();
+        return categoryRepository.findByCategoryIdAndIsEnabled(id, isEnabled).isPresent();
     }
 
-    public CategoryWithProductsCountDto getCategoryWithProductCount(UUID categoryId)
+    public CategoryWithProductsCountDto getCategoryWithProductCount(UUID categoryId,
+            boolean isEnabled)
             throws CategoryIdNotFoundException
     {
-        Optional<Category> category = categoryRepository.findById(categoryId);
+        Optional<Category> category = categoryRepository
+                .findByCategoryIdAndIsEnabled(categoryId, isEnabled);
+
         if (category.isEmpty()) {
             throw new CategoryIdNotFoundException(categoryId);
         }
-        int productCount = productRepository.countByCategoryId(categoryId);
+        int productCount = productRepository.countByCategoryIdAndIsEnabledTrue(categoryId);
         return categoryMapper.categoryAndProductCountToCategoryWithProductsCountDto(
                 category.get(),
                 productCount);
     }
 
-    public Category getCategory(UUID categoryId)
+    public Category getCategory(UUID categoryId, boolean isEnabled)
             throws CategoryIdNotFoundException
     {
-        Optional<Category> category = categoryRepository.findById(categoryId);
+        Optional<Category> category = categoryRepository.findByCategoryIdAndIsEnabled(categoryId,
+                isEnabled);
         if (category.isEmpty()) {
             throw new CategoryIdNotFoundException(categoryId);
         }
         return category.get();
     }
 
-    public void deleteCategory(UUID categoryId) throws CategoryIdNotFoundException
+    //    public void deleteCategory(UUID categoryId) throws CategoryIdNotFoundException
+    //    {
+    //        Optional<Category> category = categoryRepository.findById(categoryId);
+    //        if (category.isEmpty()) {
+    //            throw new CategoryIdNotFoundException(categoryId);
+    //        }
+    //        categoryRepository.deleteById(categoryId);
+    //    }
+    public void deactivateCategory(UUID categoryId)
+            throws CategoryIdNotFoundException
     {
-        Optional<Category> category = categoryRepository.findById(categoryId);
-        if (category.isEmpty()) {
+        Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
+        if (optionalCategory.isEmpty()) {
             throw new CategoryIdNotFoundException(categoryId);
         }
-        categoryRepository.deleteById(categoryId);
+        Category category = optionalCategory.get();
+        category.setEnabled(false);
+        categoryRepository.save(category);
+
     }
 
-    public Category updateCategory(UpdateCategoryCommand command)
+    public Category updateCategory(UpdateCategoryCommand command, boolean isEnabled)
             throws CategoryIdNotFoundException, CategoryNameExistsException
     {
-        Optional<Category> optionalCategory = categoryRepository.findById(command.categoryId());
+        Optional<Category> optionalCategory = categoryRepository
+                .findByCategoryIdAndIsEnabled(command.categoryId(), isEnabled);
+
         if (optionalCategory.isEmpty()) {
             throw new CategoryIdNotFoundException(command.categoryId());
         }
-        if (categoryRepository.findByName(command.name()).isPresent()) {
+        int countByName = categoryRepository.countByName(command.name());
+        Category category = optionalCategory.get();
+        if (countByName > 0 && !category.getName().equals(command.name())) {
             throw new CategoryNameExistsException(command.name());
         }
-        Category category = optionalCategory.get();
         categoryMapper.updateFromCommand(category, command);
         categoryRepository.save(category);
         return category;
     }
 
-    public List<Category> getAllCategories()
+    public List<Category> getAllCategories(boolean isEnabled)
     {
-        return categoryRepository.findAll();
+        return categoryRepository.findAllByIsEnabled(isEnabled);
     }
 
 }

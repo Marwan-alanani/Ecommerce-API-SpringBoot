@@ -38,10 +38,13 @@ public class SupplierService
         supplierRepository.save(supplier);
         return supplier;
     }
+
     public Supplier get(UUID supplierId)
             throws SupplierIdNotFoundException
     {
-        Optional<Supplier> optionalSupplier = supplierRepository.findById(supplierId);
+        Optional<Supplier> optionalSupplier = supplierRepository.findBySupplierIdAndIsEnabledTrue(
+                supplierId);
+
         if (optionalSupplier.isEmpty()) {
             throw new SupplierIdNotFoundException(supplierId);
         }
@@ -50,7 +53,7 @@ public class SupplierService
 
     public boolean supplierExists(UUID supplierId)
     {
-        if (supplierRepository.existsById(supplierId)) {
+        if (supplierRepository.existsBySupplierIdAndIsEnabledTrue(supplierId)) {
             return true;
         }
         return false;
@@ -86,13 +89,25 @@ public class SupplierService
         return supplier;
     }
 
-    public void delete(UUID supplierId)
+    //    public void delete(UUID supplierId)
+    //            throws SupplierIdNotFoundException
+    //    {
+    //        if (!supplierRepository.existsById(supplierId)) {
+    //            throw new SupplierIdNotFoundException(supplierId);
+    //        }
+    //        supplierRepository.deleteById(supplierId);
+    //
+    //    }
+    public void deactivate(UUID supplierId)
             throws SupplierIdNotFoundException
     {
-        if (!supplierRepository.existsById(supplierId)) {
+        Optional<Supplier> optionalSupplier = supplierRepository.findBySupplierIdAndIsEnabledTrue(
+                supplierId);
+        if (optionalSupplier.isEmpty()) {
             throw new SupplierIdNotFoundException(supplierId);
         }
-        supplierRepository.deleteById(supplierId);
-
+        Supplier supplier = optionalSupplier.get();
+        supplier.setEnabled(false);
+        supplierRepository.save(supplier);
     }
 }

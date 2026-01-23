@@ -44,6 +44,7 @@ public final class Product
 
     @Column(nullable = false)
     private double maxPurchasePrice;
+    private boolean isEnabled;
 
     public static Product create(
             String name,
@@ -63,7 +64,8 @@ public final class Product
                 categoryId,
                 currentDate,
                 currentDate,
-                0
+                0,
+                true
         );
     }
 

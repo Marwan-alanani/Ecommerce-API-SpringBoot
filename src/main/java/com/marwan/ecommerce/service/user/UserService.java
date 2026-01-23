@@ -28,6 +28,7 @@ public class UserService
         if (userRepository.findByEmail(command.email()).isPresent()) {
             throw new EmailExistsException(command.email());
         }
+
         User user = User.create(
                 command.firstName(),
                 command.lastName(),

@@ -46,7 +46,7 @@ public class PurchaseController
 
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<PurchaseDto>> getAll()
     {
         List<Purchase> purchaseList = purchaseService.getAll();
@@ -65,6 +65,7 @@ public class PurchaseController
 
     }
 
+
     public ResponseEntity<List<PurchaseDto>> getAllBySupplierId(@RequestParam UUID supplierId)
     {
         List<Purchase> purchaseList = purchaseService.getAllBySupplierId(supplierId);
@@ -72,6 +73,7 @@ public class PurchaseController
                 .purchaseListToPurchaseDtoList(purchaseList);
         return ResponseEntity.ok(purchaseDtoList);
     }
+
 
     public ResponseEntity<List<PurchaseDto>> getAllByProductAndSupplierId(
             @RequestParam UUID supplierId,

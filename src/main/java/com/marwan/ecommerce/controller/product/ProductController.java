@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -61,10 +62,10 @@ public class ProductController
     }
 
     @PostMapping("/delete/{productId}")
-    public ResponseEntity<?> deleteProduct(@PathVariable UUID productId)
+    public ResponseEntity<?> deactivateProduct(@PathVariable UUID productId)
             throws ProductIdNotFoundException
     {
-        productService.deleteProduct(productId);
+        productService.deactivateProduct(productId);
         return ResponseEntity.ok().build();
     }
 

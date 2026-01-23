@@ -32,6 +32,7 @@ public final class Supplier
 
     @Column(nullable = false)
     private Date updatedDateTime;
+    private boolean isEnabled;
 
     public static Supplier create(String name, String email)
     {
@@ -41,7 +42,8 @@ public final class Supplier
                 name,
                 email,
                 currentDate,
-                currentDate
+                currentDate,
+                true
         );
     }
 

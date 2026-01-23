@@ -25,7 +25,8 @@ CREATE TABLE IF NOT EXISTS category
     category_id       uuid PRIMARY KEY,
     name              varchar(100) NOT NULL UNIQUE,
     created_date_time timestamp    NOT NULL,
-    updated_date_time timestamp    NOT NULL
+    updated_date_time timestamp    NOT NULL,
+    is_enabled        boolean      NOT NULL
 );
 
 -- =============================================
@@ -43,6 +44,7 @@ CREATE TABLE IF NOT EXISTS product
     created_date_time  timestamp        NOT NULL,
     updated_date_time  timestamp        NOT NULL,
     max_purchase_price double precision NOT NULL,
+    is_enabled         boolean          NOT NULL,
 
 
     CONSTRAINT fk_product_category
@@ -57,7 +59,8 @@ CREATE TABLE IF NOT EXISTS supplier
     name              varchar(100) NOT NULL,
     email             varchar(255) NOT NULL UNIQUE,
     created_date_time timestamp    NOT NULL,
-    updated_date_time timestamp    NOT NULL
+    updated_date_time timestamp    NOT NULL,
+    is_enabled        boolean      NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS purchase
@@ -68,6 +71,7 @@ CREATE TABLE IF NOT EXISTS purchase
     quantity          integer          NOT NULL,
     supplier_id       uuid             NULL,
     created_date_time timestamp        NOT NULL,
+
     CONSTRAINT fk_purchase_product
         FOREIGN KEY (product_id)
             REFERENCES product (product_id)

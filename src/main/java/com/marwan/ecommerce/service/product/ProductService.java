@@ -28,7 +28,8 @@ public class ProductService
     public Product createProduct(CreateProductCommand command)
             throws CategoryIdNotFoundException
     {
-        if (command.categoryId() != null && !categoryService.categoryExists(command.categoryId())) {
+        if (command.categoryId() != null && !categoryService.categoryExists(command.categoryId()
+                , true)) {
             throw new CategoryIdNotFoundException(command.categoryId());
         }
 
@@ -46,7 +47,7 @@ public class ProductService
     public ProductDetailsDto getProductWithCategoryNameById(UUID id)
             throws ProductIdNotFoundException
     {
-        Optional<Product> optionalProduct = productRepository.findById(id);
+        Optional<Product> optionalProduct = productRepository.findByProductIdAndIsEnabledTrue(id);
         if (optionalProduct.isEmpty()) {
             throw new ProductIdNotFoundException(id);
         }
@@ -54,7 +55,9 @@ public class ProductService
         if (product.getCategoryId() == null) {
             return productMapper.productToProductDetailsDto(product, null);
         }
-        String categoryName = categoryService.getCategory(product.getCategoryId()).getName();
+        String categoryName = categoryService
+                .getCategory(product.getCategoryId(), true)
+                .getName();
         return productMapper.productToProductDetailsDto(product, categoryName);
 
     }
@@ -62,7 +65,7 @@ public class ProductService
     public Product getProduct(UUID productId)
             throws ProductIdNotFoundException
     {
-        Optional<Product> optionalProduct = productRepository.findById(productId);
+        Optional<Product> optionalProduct = productRepository.findByProductIdAndIsEnabledTrue(productId);
         if (optionalProduct.isEmpty()) {
             throw new ProductIdNotFoundException(productId);
         }
@@ -71,7 +74,7 @@ public class ProductService
 
     public boolean productExists(UUID id)
     {
-        if (productRepository.existsById(id)) {
+        if (productRepository.existsByProductIdAndIsEnabledTrue(id)) {
             return true;
         }
         return false;
@@ -80,8 +83,8 @@ public class ProductService
     public List<ProductDetailsDto> getProductsByCategoryId(UUID categoryId)
             throws CategoryIdNotFoundException
     {
-        Category category = categoryService.getCategory(categoryId);
-        List<Product> productList = productRepository.findByCategoryId(categoryId);
+        Category category = categoryService.getCategory(categoryId, true);
+        List<Product> productList = productRepository.findByCategoryIdAndIsEnabledTrue(categoryId);
         List<ProductDetailsDto> productDetailsDtos = new ArrayList<>();
         productList.forEach(product -> {
             productDetailsDtos.add(
@@ -96,18 +99,21 @@ public class ProductService
 
     public List<Product> getAllProducts()
     {
-        return productRepository.findAll();
+        return productRepository.findAllByIsEnabledTrue();
     }
 
     public Product updateProduct(UpdateProductCommand command)
             throws ProductIdNotFoundException, CategoryIdNotFoundException
     {
-        Optional<Product> optionalProduct = productRepository.findById(command.productId());
+        Optional<Product> optionalProduct = productRepository
+                .findByProductIdAndIsEnabledTrue(command.productId());
+
         if (optionalProduct.isEmpty()) {
             throw new ProductIdNotFoundException(command.productId());
         }
         Product product = optionalProduct.get();
-        if (command.categoryId() != null && !categoryService.categoryExists(command.categoryId())) {
+        if (command.categoryId() != null &&
+                !categoryService.categoryExists(command.categoryId(), true)) {
             throw new CategoryIdNotFoundException(command.categoryId());
         }
         productMapper.updateFromCommand(product, command);
@@ -115,12 +121,23 @@ public class ProductService
         return product;
     }
 
-    public void deleteProduct(UUID id)
+    //    public void deleteProduct(UUID id)
+    //            throws ProductIdNotFoundException
+    //    {
+    //        if (!productRepository.existsById(id)) {
+    //            throw new ProductIdNotFoundException(id);
+    //        }
+    //        productRepository.deleteById(id);
+    //    }
+    public void deactivateProduct(UUID productId)
             throws ProductIdNotFoundException
     {
-        if (!productRepository.existsById(id)) {
-            throw new ProductIdNotFoundException(id);
+        Optional<Product> optionalProduct = productRepository.findByProductIdAndIsEnabledTrue(productId);
+        if (optionalProduct.isEmpty()) {
+            throw new ProductIdNotFoundException(productId);
         }
-        productRepository.deleteById(id);
+        Product product = optionalProduct.get();
+        product.setEnabled(false);
+        productRepository.save(product);
     }
 }

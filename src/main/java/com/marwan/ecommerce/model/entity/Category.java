@@ -25,6 +25,7 @@ public final class Category
 
     @Column(nullable = false)
     private Date updatedDateTime;
+    private boolean isEnabled;
 
     //    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     //    @Setter(AccessLevel.NONE)
@@ -37,6 +38,7 @@ public final class Category
                 UUID.randomUUID(),
                 name,
                 currentDate,
-                currentDate);
+                currentDate,
+                true);
     }
 }

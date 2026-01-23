@@ -74,10 +74,10 @@ public class SupplierController
 
 
     @PostMapping("/delete/{supplierId}")
-    public ResponseEntity<?> delete(@PathVariable UUID supplierId)
+    public ResponseEntity<?> deactivate(@PathVariable UUID supplierId)
             throws SupplierIdNotFoundException
     {
-        supplierService.delete(supplierId);
+        supplierService.deactivate(supplierId);
         return ResponseEntity.ok().build();
     }
 }
