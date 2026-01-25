@@ -11,6 +11,7 @@ import com.marwan.ecommerce.model.entity.Category;
 import com.marwan.ecommerce.service.category.CategoryService;
 import com.marwan.ecommerce.service.category.command.CreateCategoryCommand;
 import com.marwan.ecommerce.service.category.command.UpdateCategoryCommand;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,8 @@ public class CategoryController
     private final CategoryMapper categoryMapper;
 
     @PostMapping("/create")
-    public ResponseEntity<CategoryResponseDto> create(@RequestBody CreateCategoryRequest request)
+    public ResponseEntity<CategoryResponseDto> create(
+            @Valid @RequestBody CreateCategoryRequest request)
             throws CategoryNameExistsException
     {
         CreateCategoryCommand command =
@@ -58,7 +60,7 @@ public class CategoryController
 
     @PostMapping("/update")
     public ResponseEntity<CategoryResponseDto> updateCategory(
-            @RequestBody UpdateCategoryRequest request)
+            @Valid @RequestBody UpdateCategoryRequest request)
             throws CategoryIdNotFoundException, CategoryNameExistsException
     {
         UpdateCategoryCommand command =

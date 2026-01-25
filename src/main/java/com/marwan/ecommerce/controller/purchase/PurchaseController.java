@@ -9,6 +9,7 @@ import com.marwan.ecommerce.mapper.PurchaseMapper;
 import com.marwan.ecommerce.model.entity.Purchase;
 import com.marwan.ecommerce.service.purchase.PurchaseService;
 import com.marwan.ecommerce.service.purchase.command.CreatePurchaseCommand;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class PurchaseController
     private final PurchaseMapper purchaseMapper;
 
     @PostMapping("/create")
-    public ResponseEntity<PurchaseDto> create(@RequestBody CreatePurchaseRequest request)
+    public ResponseEntity<PurchaseDto> create(@Valid @RequestBody CreatePurchaseRequest request)
             throws SupplierIdNotFoundException, ProductIdNotFoundException
     {
         CreatePurchaseCommand command =

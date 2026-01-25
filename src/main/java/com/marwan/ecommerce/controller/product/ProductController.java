@@ -11,6 +11,7 @@ import com.marwan.ecommerce.model.entity.Product;
 import com.marwan.ecommerce.service.product.ProductService;
 import com.marwan.ecommerce.service.product.command.CreateProductCommand;
 import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class ProductController
 
     @PostMapping("/create")
     public ResponseEntity<ProductResponseDto> createProduct(
-            @RequestBody CreateProductRequest request)
+            @Valid @RequestBody CreateProductRequest request)
             throws CategoryIdNotFoundException
     {
         CreateProductCommand command =
@@ -50,7 +51,7 @@ public class ProductController
 
     @PostMapping("/update")
     public ResponseEntity<ProductResponseDto> updateProduct(
-            @RequestBody UpdateProductRequest request)
+            @Valid @RequestBody UpdateProductRequest request)
             throws ProductIdNotFoundException, CategoryIdNotFoundException
     {
         UpdateProductCommand command =

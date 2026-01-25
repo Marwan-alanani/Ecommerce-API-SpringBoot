@@ -11,6 +11,7 @@ import com.marwan.ecommerce.model.entity.Supplier;
 import com.marwan.ecommerce.service.supplier.SupplierService;
 import com.marwan.ecommerce.service.supplier.command.CreateSupplierCommand;
 import com.marwan.ecommerce.service.supplier.command.UpdateSupplierCommand;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class SupplierController
     private final SupplierMapper supplierMapper;
 
     @PostMapping("/create")
-    public ResponseEntity<SupplierDto> create(@RequestBody CreateSupplierRequest request)
+    public ResponseEntity<SupplierDto> create(@Valid @RequestBody CreateSupplierRequest request)
             throws SupplierEmailExistsException, SupplierNameExistsException
     {
         CreateSupplierCommand command =
@@ -61,7 +62,7 @@ public class SupplierController
     }
 
     @PostMapping("/update")
-    public ResponseEntity<SupplierDto> update(@RequestBody UpdateSupplierRequest request)
+    public ResponseEntity<SupplierDto> update(@Valid @RequestBody UpdateSupplierRequest request)
             throws SupplierNameExistsException,
             SupplierEmailExistsException,
             SupplierIdNotFoundException
