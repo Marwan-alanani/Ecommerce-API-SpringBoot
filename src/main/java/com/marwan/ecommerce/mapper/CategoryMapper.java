@@ -1,4 +1,5 @@
 package com.marwan.ecommerce.mapper;
+
 import com.marwan.ecommerce.controller.category.request.CreateCategoryRequest;
 import com.marwan.ecommerce.controller.category.request.UpdateCategoryRequest;
 import com.marwan.ecommerce.dto.category.CategoryResponseDto;
@@ -6,9 +7,7 @@ import com.marwan.ecommerce.dto.category.CategoryWithProductsCountDto;
 import com.marwan.ecommerce.model.entity.Category;
 import com.marwan.ecommerce.service.category.command.CreateCategoryCommand;
 import com.marwan.ecommerce.service.category.command.UpdateCategoryCommand;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -35,6 +34,7 @@ public interface CategoryMapper
                 productCount);
     }
 
-    @Mapping(target = "updatedDateTime", expression = "java(new java.util.Date())")
+    @Mapping(target = "updatedDateTime", expression = "java(java.time.LocalDateTime.now())")
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromCommand(@MappingTarget Category category, UpdateCategoryCommand command);
 }
