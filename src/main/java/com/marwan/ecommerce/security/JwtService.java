@@ -41,11 +41,8 @@ public class JwtService
 
     public String generateToken(Authentication authentication)
     {
-        Map<String, Object> claims = new HashMap<>();
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         String userId = userDetails instanceof CustomUserDetails cu ? cu.getUserId().toString() : userDetails.getUsername();
-
-        claims.put("role", userDetails.getAuthorities().stream().findFirst().get().getAuthority());
         return Jwts.builder()
                 .header()
                 .type("JWT")
