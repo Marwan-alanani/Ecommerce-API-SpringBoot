@@ -67,6 +67,7 @@ public class PurchaseController
     }
 
 
+
     public ResponseEntity<List<PurchaseDto>> getAllBySupplierId(@RequestParam UUID supplierId)
     {
         List<Purchase> purchaseList = purchaseService.getAllBySupplierId(supplierId);

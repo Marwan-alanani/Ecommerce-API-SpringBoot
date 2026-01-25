@@ -50,7 +50,7 @@ public class CategoryController
         );
     }
 
-    @PostMapping("/delete/{categoryId}")
+    @DeleteMapping("/delete/{categoryId}")
     public ResponseEntity<?> deactivateCategory(@PathVariable UUID categoryId)
             throws CategoryIdNotFoundException
     {
@@ -58,7 +58,7 @@ public class CategoryController
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<CategoryResponseDto> updateCategory(
             @Valid @RequestBody UpdateCategoryRequest request)
             throws CategoryIdNotFoundException, CategoryNameExistsException

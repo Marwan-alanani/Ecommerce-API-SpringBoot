@@ -61,7 +61,7 @@ public class SupplierController
         return ResponseEntity.ok(supplierDtoList);
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<SupplierDto> update(@Valid @RequestBody UpdateSupplierRequest request)
             throws SupplierNameExistsException,
             SupplierEmailExistsException,
@@ -74,7 +74,7 @@ public class SupplierController
     }
 
 
-    @PostMapping("/delete/{supplierId}")
+    @DeleteMapping("/delete/{supplierId}")
     public ResponseEntity<?> deactivate(@PathVariable UUID supplierId)
             throws SupplierIdNotFoundException
     {

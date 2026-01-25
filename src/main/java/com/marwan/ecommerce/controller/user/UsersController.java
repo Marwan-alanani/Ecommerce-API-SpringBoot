@@ -37,12 +37,12 @@ public class UsersController
         );
     }
 
-    @PostMapping("/remove")
-    public ResponseEntity<?> remove(UUID id)
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<?> remove(@PathVariable UUID userId)
             throws UserIdNotFoundException
     {
 
-        userService.deactivate(id);
+        userService.deactivate(userId);
         return ResponseEntity.ok().build();
     }
 

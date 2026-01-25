@@ -49,7 +49,7 @@ public class ProductController
         return ResponseEntity.ok(productDetailsDto);
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<ProductResponseDto> updateProduct(
             @Valid @RequestBody UpdateProductRequest request)
             throws ProductIdNotFoundException, CategoryIdNotFoundException
@@ -62,7 +62,7 @@ public class ProductController
         return ResponseEntity.ok(productResponseDto);
     }
 
-    @PostMapping("/delete/{productId}")
+    @DeleteMapping("/delete/{productId}")
     public ResponseEntity<?> deactivateProduct(@PathVariable UUID productId)
             throws ProductIdNotFoundException
     {
