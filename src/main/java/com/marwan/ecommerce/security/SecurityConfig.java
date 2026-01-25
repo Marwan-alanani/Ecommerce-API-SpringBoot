@@ -1,10 +1,13 @@
 package com.marwan.ecommerce.security;
 
+import com.marwan.ecommerce.model.enums.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,8 +23,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig
 {
+    private final JwtFilter jwtFilter;
     private final UserDetailsService userDetailsService;
-    private final JwtService jwtService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
@@ -43,7 +46,7 @@ public class SecurityConfig
 
                         .requestMatchers(
                                 HttpMethod.POST,
-                                "/categories/**").hasRole("ADMIN")
+                                "/categories/**").hasRole(UserRole.ADMIN.name())
 
                         .requestMatchers(
                                 HttpMethod.GET,
@@ -52,15 +55,13 @@ public class SecurityConfig
 
                         .requestMatchers(
                                 HttpMethod.POST,
-                                "/products/**").hasRole("ADMIN")
+                                "/products/**").hasRole(UserRole.ADMIN.name())
 
-                        .requestMatchers("/suppliers").hasRole("ADMIN")
+                        .requestMatchers("/suppliers").hasRole(UserRole.ADMIN.name())
 
                         .anyRequest().authenticated()
                 )
-                //                .httpBasic(Customizer.withDefaults()) // optional for testing
-                .addFilterBefore(new JwtFilter(jwtService, userDetailsService),
-                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(
                         sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -74,6 +75,14 @@ public class SecurityConfig
     public PasswordEncoder passwordEncoder()
     {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider()
+    {
+        var provider = new DaoAuthenticationProvider(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
     }
 
     @Bean

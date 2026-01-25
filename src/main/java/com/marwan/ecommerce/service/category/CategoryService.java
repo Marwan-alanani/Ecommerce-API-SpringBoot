@@ -9,7 +9,9 @@ import com.marwan.ecommerce.repository.CategoryRepository;
 import com.marwan.ecommerce.repository.ProductRepository;
 import com.marwan.ecommerce.service.category.command.CreateCategoryCommand;
 import com.marwan.ecommerce.service.category.command.UpdateCategoryCommand;
+import com.marwan.ecommerce.service.category.event.CategoryDeactivatedEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class CategoryService
 {
     private final CategoryRepository categoryRepository;
+    private final ApplicationEventPublisher eventPublisher;
     private final CategoryMapper categoryMapper;
     private final ProductRepository productRepository;
 
@@ -53,7 +56,10 @@ public class CategoryService
         if (category.isEmpty()) {
             throw new CategoryIdNotFoundException(categoryId);
         }
-        int productCount = productRepository.countByCategoryIdAndIsEnabledTrue(categoryId);
+
+        int productCount = productRepository
+                .countByCategoryIdAndIsEnabled(categoryId, isEnabled);
+
         return categoryMapper.categoryAndProductCountToCategoryWithProductsCountDto(
                 category.get(),
                 productCount);
@@ -70,14 +76,6 @@ public class CategoryService
         return category.get();
     }
 
-    //    public void deleteCategory(UUID categoryId) throws CategoryIdNotFoundException
-    //    {
-    //        Optional<Category> category = categoryRepository.findById(categoryId);
-    //        if (category.isEmpty()) {
-    //            throw new CategoryIdNotFoundException(categoryId);
-    //        }
-    //        categoryRepository.deleteById(categoryId);
-    //    }
     public void deactivateCategory(UUID categoryId)
             throws CategoryIdNotFoundException
     {
@@ -88,6 +86,7 @@ public class CategoryService
         Category category = optionalCategory.get();
         category.setEnabled(false);
         categoryRepository.save(category);
+        eventPublisher.publishEvent(new CategoryDeactivatedEvent(categoryId));
 
     }
 

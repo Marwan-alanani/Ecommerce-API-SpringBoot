@@ -4,7 +4,9 @@ import java.util.UUID;
 
 public record PurchaseCreatedEvent(
         UUID productId,
-        double price
+        double price,
+        int quantity
+
 )
 {
 }

@@ -21,5 +21,5 @@ public interface ProductRepository extends JpaRepository<Product, UUID>
 
     List<Product> findAllByIsEnabled(boolean isEnabled);
 
-    int countByCategoryIdAndIsEnabledTrue(UUID categoryId);
+    int countByCategoryIdAndIsEnabled(UUID categoryId, boolean isEnabled);
 }

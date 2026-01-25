@@ -31,10 +31,10 @@ public class PurchaseService
     public Purchase create(CreatePurchaseCommand command)
             throws ProductIdNotFoundException, SupplierIdNotFoundException
     {
-        if (!productService.productExists(command.productId())) {
+        if (!productService.productExists(command.productId(), true)) {
             throw new ProductIdNotFoundException(command.productId());
         }
-        if (!supplierService.supplierExists(command.supplierId())) {
+        if (!supplierService.supplierExists(command.supplierId(), true)) {
             throw new SupplierIdNotFoundException(command.supplierId());
         }
         Purchase purchase = Purchase.create(
@@ -49,7 +49,8 @@ public class PurchaseService
         applicationEventPublisher.publishEvent(
                 new PurchaseCreatedEvent(
                         purchase.getProductId(),
-                        purchase.getPrice()
+                        purchase.getPrice(),
+                        purchase.getQuantity()
                 ));
         return purchase;
     }

@@ -6,6 +6,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.UUID;
 
@@ -43,8 +45,12 @@ public final class Product
     private Date updatedDateTime;
 
     @Column(nullable = false)
-    private double maxPurchasePrice;
     private boolean isEnabled;
+
+    @Column(nullable = false)
+    private BigDecimal totalPurchasePrice;
+    @Column(nullable = false)
+    private long totalPurchaseQuantity;
 
     public static Product create(
             String name,
@@ -64,8 +70,9 @@ public final class Product
                 categoryId,
                 currentDate,
                 currentDate,
-                0,
-                true
+                true,
+                BigDecimal.ZERO,
+                0
         );
     }
 

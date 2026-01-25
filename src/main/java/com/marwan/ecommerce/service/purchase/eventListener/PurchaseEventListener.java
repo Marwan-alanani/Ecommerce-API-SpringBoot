@@ -7,7 +7,8 @@ import com.marwan.ecommerce.service.purchase.event.PurchaseCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionalEventListener;
+
+import java.math.BigDecimal;
 
 @Component
 @RequiredArgsConstructor
@@ -19,14 +20,25 @@ public class PurchaseEventListener
     public void onPurchaseCreated(PurchaseCreatedEvent event)
             throws ProductIdNotFoundException
     {
-        Product product = productRepository.getReferenceById(event.productId());
-        if (product.getMaxPurchasePrice() < event.price()) {
-            if (product.getPrice() < event.price()) {
-                product.setPrice(event.price() * 1.2);
-            }
-            product.setMaxPurchasePrice(event.price());
-            productRepository.save(product);
-        }
+        Product product = productRepository.findById(event.productId())
+                .orElseThrow(() -> new ProductIdNotFoundException(event.productId()));
+
+        BigDecimal totalPrice = product.getTotalPurchasePrice()
+                .add(BigDecimal.valueOf(
+                        event.price() * Double.valueOf(event.quantity()))
+                );
+
+        long totalQuantity = product.getTotalPurchaseQuantity() + event.quantity();
+
+        product.setTotalPurchasePrice(totalPrice);
+        product.setTotalPurchaseQuantity(totalQuantity);
+
+        BigDecimal averagePrice = totalPrice.divide(
+                BigDecimal.valueOf(totalQuantity)
+        );
+
+        product.setPrice(averagePrice.doubleValue());
+        productRepository.save(product);
     }
 }
 

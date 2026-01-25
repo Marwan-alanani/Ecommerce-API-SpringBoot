@@ -8,10 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "baskets")
@@ -22,11 +19,21 @@ public class Basket
     @Id
     private UUID basketId;
     @Column(nullable = false)
+
     private UUID userId;
+
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private BasketStatus status;
+
+    @CreatedDate
     private Date createdDateTime;
+
+    @LastModifiedDate
     private Date updatedDateTime;
+
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "basket", orphanRemoval = true)
     private List<BasketItem> basketItems;
 
 
@@ -36,9 +43,39 @@ public class Basket
         return new ArrayList<>(basketItems);
     }
 
-    public void addBasketItem(BasketItem basketItem)
+    public void addOrMergeBasketItem(BasketItem basketItem)
+            throws Exception
     {
-        basketItems.add(basketItem);
+        if (basketItem == null)
+            throw new Exception();
+
+
+        Optional<BasketItem> optionalBasketItem = basketItems.stream()
+                .filter(b -> b.getProductId().equals(basketItem.getProductId()))
+                .findFirst();
+        if (optionalBasketItem.isPresent()) {
+            BasketItem item = optionalBasketItem.get();
+            item.setQuantity(item.getQuantity() + basketItem.getQuantity());
+        } else {
+            basketItem.setBasket(this);
+            basketItems.add(basketItem);
+        }
+
+
+    }
+
+    public void remove(UUID basketItemId)
+            throws Exception
+    {
+        if (basketItemId == null)
+            throw new Exception();
+        BasketItem item = basketItems.stream()
+                .filter(b -> b.getBasketItemId().equals(basketItemId))
+                .findFirst()
+                .orElseThrow(() -> new Exception());
+
+        item.setBasket(null);
+        basketItems.remove(item);
     }
 
     public static Basket create(UUID userId)
