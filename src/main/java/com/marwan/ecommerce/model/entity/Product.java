@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ public final class Product
     private String description;
 
     @Column(nullable = false)
-    private double price;
+    private BigDecimal price;
     @Column(nullable = false)
     private String pictureUrl;
 
@@ -40,9 +41,9 @@ public final class Product
 
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
-    private Date createdDateTime;
+    private LocalDateTime createdDateTime;
     @Column(nullable = false)
-    private Date updatedDateTime;
+    private LocalDateTime updatedDateTime;
 
     @Column(nullable = false)
     private boolean isEnabled;
@@ -59,17 +60,17 @@ public final class Product
             String pictureUrl,
             UUID categoryId)
     {
-        Date currentDate = new Date();
+        LocalDateTime now = LocalDateTime.now();
         return new Product(
                 UUID.randomUUID(),
                 name,
                 description,
-                price,
+                BigDecimal.valueOf(price),
                 pictureUrl,
                 0,
                 categoryId,
-                currentDate,
-                currentDate,
+                now,
+                now,
                 true,
                 BigDecimal.ZERO,
                 0

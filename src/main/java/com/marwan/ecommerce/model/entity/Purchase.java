@@ -3,6 +3,7 @@ package com.marwan.ecommerce.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public final class Purchase
     @Column(nullable = false)
 
     @Setter(AccessLevel.NONE)
-    private Date createdDateTime;
+    private LocalDateTime createdDateTime;
 
     public static Purchase create(
             UUID productId,
@@ -42,7 +43,7 @@ public final class Purchase
                 price,
                 quantity,
                 supplierId,
-                new Date()
+                LocalDateTime.now()
         );
 
     }

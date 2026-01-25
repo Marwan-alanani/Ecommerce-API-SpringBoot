@@ -29,16 +29,15 @@ public class CategoryService
     private final CategoryMapper categoryMapper;
     private final ProductRepository productRepository;
 
-    public Category create(CreateCategoryCommand command, boolean isEnabled)
+    public Category create(CreateCategoryCommand command)
             throws CategoryNameExistsException
     {
-        if (categoryRepository.findByNameAndIsEnabled(command.name(), isEnabled).isPresent()) {
+        if (categoryRepository.findByName(command.name()).isPresent()) {
             throw new CategoryNameExistsException(command.name());
         }
         Category category = Category.create(command.name());
         categoryRepository.save(category);
         return category;
-
     }
 
     public boolean categoryExists(UUID id, boolean isEnabled)

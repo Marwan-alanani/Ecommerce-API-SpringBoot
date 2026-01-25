@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -28,21 +29,21 @@ public final class Supplier
 
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
-    private Date createdDateTime;
+    private LocalDateTime createdDateTime;
 
     @Column(nullable = false)
-    private Date updatedDateTime;
+    private LocalDateTime updatedDateTime;
     private boolean isEnabled;
 
     public static Supplier create(String name, String email)
     {
-        Date currentDate = new Date();
+        LocalDateTime now = LocalDateTime.now();
         return new Supplier(
                 UUID.randomUUID(),
                 name,
                 email,
-                currentDate,
-                currentDate,
+                now,
+                now,
                 true
         );
     }

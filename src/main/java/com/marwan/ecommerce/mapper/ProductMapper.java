@@ -8,9 +8,7 @@ import com.marwan.ecommerce.model.entity.Product;
 import com.marwan.ecommerce.service.product.command.CreateProductCommand;
 import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
 import com.marwan.ecommerce.service.purchase.event.PurchaseCreatedEvent;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -32,6 +30,7 @@ public interface ProductMapper
     ProductDetailsDto productToProductDetailsDto(Product product, String categoryName);
 
     @Mapping(target = "updatedDateTime", expression = "java(new java.util.Date())")
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromCommand(
             @MappingTarget Product product,
             UpdateProductCommand command);

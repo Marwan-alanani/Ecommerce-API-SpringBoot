@@ -1,6 +1,7 @@
 package com.marwan.ecommerce.mapper;
-import com.marwan.ecommerce.controller.user.request.LoginRequest;
-import com.marwan.ecommerce.controller.user.request.RegisterRequest;
+
+import com.marwan.ecommerce.controller.auth.request.LoginRequest;
+import com.marwan.ecommerce.controller.auth.request.RegisterRequest;
 import com.marwan.ecommerce.dto.user.AuthenticationDto;
 import com.marwan.ecommerce.dto.user.UserDto;
 import com.marwan.ecommerce.model.entity.User;
@@ -22,14 +23,4 @@ public interface UserMapper
 
     List<UserDto> userListToUserDtoList(List<User> user);
 
-    default AuthenticationDto userDetailsToAuthenticationDto(
-            UserDetails userDetails,
-            String token)
-    {
-
-        return new AuthenticationDto(
-                userDetails.getUsername(),
-                userDetails.getAuthorities().stream().findFirst().get().getAuthority(),
-                token);
-    }
 }

@@ -3,6 +3,7 @@ package com.marwan.ecommerce.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -21,10 +22,10 @@ public final class Category
 
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
-    private Date createdDateTime;
+    private LocalDateTime createdDateTime;
 
     @Column(nullable = false)
-    private Date updatedDateTime;
+    private LocalDateTime updatedDateTime;
     private boolean isEnabled;
 
     //    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -33,12 +34,12 @@ public final class Category
 
     public static Category create(String name)
     {
-        Date currentDate = new Date();
+        LocalDateTime now = LocalDateTime.now();
         return new Category(
                 UUID.randomUUID(),
                 name,
-                currentDate,
-                currentDate,
+                now,
+                now,
                 true);
     }
 }

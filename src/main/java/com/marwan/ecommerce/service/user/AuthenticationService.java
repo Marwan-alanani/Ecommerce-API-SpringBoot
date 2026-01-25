@@ -1,48 +1,58 @@
 package com.marwan.ecommerce.service.user;
 
-import com.marwan.ecommerce.dto.user.AuthenticationDto;
-import com.marwan.ecommerce.mapper.UserMapper;
+import com.marwan.ecommerce.dto.user.AccessAndRefreshTokenDto;
+import com.marwan.ecommerce.exception.authentication.InvalidTokenException;
+import com.marwan.ecommerce.exception.user.UserIdNotFoundException;
+import com.marwan.ecommerce.model.entity.User;
+import com.marwan.ecommerce.security.CustomUserDetails;
 import com.marwan.ecommerce.security.JwtService;
 import com.marwan.ecommerce.service.user.query.LoginQuery;
 import com.marwan.ecommerce.service.user.command.RegisterCommand;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
 public class AuthenticationService
 {
-    private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtService jwtService;
 
-    public AuthenticationDto registerAndLogin(RegisterCommand command)
+    public AccessAndRefreshTokenDto login(LoginQuery query)
     {
-        userService.create(command);
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(command.email(), command.password())
-        );
-
-        String token = jwtService.generateToken(authentication);
-        return userMapper.userDetailsToAuthenticationDto(
-                (UserDetails) authentication.getPrincipal(),
-                token);
-    }
-
-    public AuthenticationDto login(LoginQuery query)
-    {
-        Authentication authentication = authenticationManager.authenticate(
+        Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(query.email(), query.password())
         );
-        String token = jwtService.generateToken(authentication);
-        return userMapper.userDetailsToAuthenticationDto(
-                (UserDetails) authentication.getPrincipal(),
-                token
-        );
+        CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
+
+        String accessToken = jwtService.generateAccessToken(customUserDetails);
+        String refreshToken = jwtService.generateRefreshToken(customUserDetails);
+        return new AccessAndRefreshTokenDto(accessToken, refreshToken);
+    }
+
+    public String renewAccessToken(String refreshToken)
+            throws InvalidTokenException, UserIdNotFoundException
+    {
+        if (refreshToken == null || !jwtService.isTokenValid(refreshToken)) {
+            throw new InvalidTokenException(refreshToken);
+        }
+        User user = userService.getUser(UUID.fromString(jwtService.extractUserId(refreshToken)));
+        CustomUserDetails customUserDetails = new CustomUserDetails(user);
+        return jwtService.generateAccessToken(customUserDetails);
+    }
+
+    public User getCurrentUser()
+    {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userService.getUser(userDetails.getUserId());
     }
 }

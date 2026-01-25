@@ -1,21 +1,19 @@
 package com.marwan.ecommerce.security;
 
+import com.marwan.ecommerce.model.entity.User;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.Authentication;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService
 {
-    private final SecretKey secretKey = Jwts.SIG.HS256.key().build();
+    private final JwtSettings jwtSettings;
 
     public boolean isTokenValid(String token)
     {
@@ -24,9 +22,9 @@ public class JwtService
 
         try {
             Jwts.parser()
-                    .verifyWith(secretKey)
-                    .requireIssuer("Ecommerce App")
-                    .requireAudience("localhost")
+                    .verifyWith(jwtSettings.getSecretKey())
+                    .requireIssuer(jwtSettings.getIssuer())
+                    .requireAudience(jwtSettings.getAudience())
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
@@ -39,10 +37,20 @@ public class JwtService
 
     }
 
-    public String generateToken(Authentication authentication)
+    public String generateAccessToken(CustomUserDetails userDetails)
     {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String userId = userDetails instanceof CustomUserDetails cu ? cu.getUserId().toString() : userDetails.getUsername();
+        return generateToken(userDetails, jwtSettings.getAccessTokenExpirationInSeconds());
+    }
+
+    public String generateRefreshToken(CustomUserDetails userDetails)
+    {
+        return generateToken(userDetails, jwtSettings.getRefreshTokenExpirationInSeconds());
+    }
+
+    private String generateToken(CustomUserDetails userDetails, int expirationInSeconds)
+    {
+        var role = userDetails.getAuthorities().stream().findFirst().get().getAuthority();
+
         return Jwts.builder()
                 .header()
                 .type("JWT")
@@ -50,16 +58,19 @@ public class JwtService
                 .id(UUID.randomUUID().toString())
                 .claim(
                         "role",
-                        userDetails.getAuthorities().stream().findFirst().get().getAuthority())
+                        role)
                 .claim(
                         "email",
                         userDetails.getUsername())
-                .subject(userId)
+                .subject(userDetails.getUserId().toString())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
-                .signWith(secretKey)
-                .issuer("Ecommerce App")
-                .audience().add("localhost").and()
+                .expiration(
+                        new Date(
+                                System.currentTimeMillis() + expirationInSeconds * 1000
+                        ))
+                .signWith(jwtSettings.getSecretKey())
+                .issuer(jwtSettings.getIssuer())
+                .audience().add(jwtSettings.getAudience()).and()
                 .compact();
     }
 
@@ -70,7 +81,7 @@ public class JwtService
 
     }
 
-    public String extractId(String token)
+    public String extractUserId(String token)
     {
         Claims claims = extractAllClaims(token);
         return claims.getId();
@@ -86,7 +97,7 @@ public class JwtService
     public Claims extractAllClaims(String token)
     {
         return Jwts.parser()
-                .verifyWith(secretKey)
+                .verifyWith(jwtSettings.getSecretKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

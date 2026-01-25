@@ -51,4 +51,11 @@ public class UserService
     {
         return userRepository.findAll();
     }
+
+    public User getUser(UUID id)
+            throws UserIdNotFoundException
+    {
+        return userRepository.findById(id).
+                orElseThrow(() -> new UserIdNotFoundException(id));
+    }
 }

@@ -6,8 +6,7 @@ public record UserDto(
         UUID userId,
         String firstName,
         String lastName,
-        String email,
-        boolean isEnabled
+        String email
 )
 {
 }

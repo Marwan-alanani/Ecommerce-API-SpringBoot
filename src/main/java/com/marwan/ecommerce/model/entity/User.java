@@ -6,12 +6,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
 @Entity
 @Table(name = "[user]")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Data
 public final class User
 {
@@ -34,32 +36,10 @@ public final class User
 
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
-    private Date createdDateTime;
+    private LocalDateTime createdDateTime;
 
     @Column(nullable = false)
-    private Date updatedDateTime;
-
-    private User(
-            UUID userId,
-            String firstName,
-            String lastName,
-            UserRole role,
-            String email,
-            String password,
-            boolean isEnabled,
-            Date createdDateTime,
-            Date updatedDateTime)
-    {
-        this.userId = userId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.role = role;
-        this.email = email;
-        this.password = password;
-        this.isEnabled = isEnabled;
-        this.createdDateTime = createdDateTime;
-        this.updatedDateTime = updatedDateTime;
-    }
+    private LocalDateTime updatedDateTime;
 
 
     public static User create(
@@ -69,15 +49,15 @@ public final class User
             String email,
             String password)
     {
-        Date currentDate = new Date();
+        LocalDateTime now = LocalDateTime.now();
         return new User(UUID.randomUUID(),
-                        firstName,
-                        lastName,
-                        role,
-                        email,
-                        password,
-                        true,
-                        currentDate,
-                        currentDate);
+                firstName,
+                lastName,
+                role,
+                email,
+                password,
+                true,
+                now,
+                now);
     }
 }

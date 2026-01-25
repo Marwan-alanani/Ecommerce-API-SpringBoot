@@ -35,7 +35,7 @@ public class CategoryController
     {
         CreateCategoryCommand command =
                 categoryMapper.createCategoryRequestToCreateCategoryCommand(request);
-        Category category = categoryService.create(command, true);
+        Category category = categoryService.create(command);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 categoryMapper.categoryToCategoryResponseDto(category)
         );
