@@ -49,7 +49,7 @@ public class PurchaseService
         applicationEventPublisher.publishEvent(
                 new PurchaseCreatedEvent(
                         purchase.getProductId(),
-                        purchase.getPrice(),
+                        purchase.getUnitPrice(),
                         purchase.getQuantity()
                 ));
         return purchase;

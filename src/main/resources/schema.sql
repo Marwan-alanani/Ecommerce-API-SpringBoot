@@ -35,17 +35,17 @@ CREATE TABLE IF NOT EXISTS category
 CREATE TABLE IF NOT EXISTS product
 (
     product_id              uuid PRIMARY KEY,
-    name                    varchar(100)     NOT NULL,
-    description             text             NULL,
-    price                   double precision NOT NULL,
-    picture_url             varchar(512)     NOT NULL,
-    balance                 integer          NOT NULL, -- you can add DEFAULT 0 if wanted
-    category_id             uuid             NULL,     -- nullable as requested
-    created_date_time       timestamp        NOT NULL,
-    updated_date_time       timestamp        NOT NULL,
-    is_enabled              boolean          NOT NULL,
-    total_purchase_price    DECIMAL(19, 4)   NOT NULL,
-    total_purchase_quantity BIGINT           NOT NULL,
+    name                    varchar(100)   NOT NULL,
+    description             text           NULL,
+    price                   DECIMAL(19, 4) NOT NULL,
+    picture_url             varchar(512)   NOT NULL,
+    balance                 integer        NOT NULL, -- you can add DEFAULT 0 if wanted
+    category_id             uuid           NULL,     -- nullable as requested
+    created_date_time       timestamp      NOT NULL,
+    updated_date_time       timestamp      NOT NULL,
+    is_enabled              boolean        NOT NULL,
+    total_purchase_price    DECIMAL(19, 4) NOT NULL,
+    total_purchase_quantity BIGINT         NOT NULL,
 
 
     CONSTRAINT fk_product_category FOREIGN KEY (category_id)
@@ -66,11 +66,11 @@ CREATE TABLE IF NOT EXISTS supplier
 CREATE TABLE IF NOT EXISTS purchase
 (
     purchase_id       uuid PRIMARY KEY,
-    product_id        uuid             NULL,
-    price             double precision NOT NULL,
-    quantity          integer          NOT NULL,
-    supplier_id       uuid             NULL,
-    created_date_time timestamp        NOT NULL,
+    product_id        uuid           NULL,
+    price             DECIMAL(19, 4) NOT NULL,
+    quantity          integer        NOT NULL,
+    supplier_id       uuid           NULL,
+    created_date_time timestamp      NOT NULL,
 
     CONSTRAINT fk_purchase_product
         FOREIGN KEY (product_id)
@@ -111,9 +111,9 @@ CREATE TABLE carts
 CREATE TABLE cart_items
 (
     cart_item_id UUID PRIMARY KEY,
-    cart_id      UUID           NOT NULL,
-    product_id   UUID           NOT NULL,
-    quantity     INTEGER        NOT NULL
+    cart_id      UUID    NOT NULL,
+    product_id   UUID    NOT NULL,
+    quantity     INTEGER NOT NULL
         CHECK (quantity > 0),
 
     -- Timestamps (even if not mapped in entity – very useful)

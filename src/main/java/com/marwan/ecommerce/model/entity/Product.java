@@ -1,9 +1,6 @@
 package com.marwan.ecommerce.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -36,8 +33,9 @@ public final class Product
     @Column(nullable = false)
     private int balance;
 
-    @Column(nullable = false)
-    private UUID categoryId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
@@ -58,7 +56,7 @@ public final class Product
             String description,
             double price,
             String pictureUrl,
-            UUID categoryId)
+            Category category)
     {
         LocalDateTime now = LocalDateTime.now();
         return new Product(
@@ -68,7 +66,7 @@ public final class Product
                 BigDecimal.valueOf(price),
                 pictureUrl,
                 0,
-                categoryId,
+                category,
                 now,
                 now,
                 true,

@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -28,9 +29,9 @@ public final class Category
     private LocalDateTime updatedDateTime;
     private boolean isEnabled;
 
-    //    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    //    @Setter(AccessLevel.NONE)
-    //    private List<Product> products;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE} , fetch = FetchType.LAZY)
+    @Setter(AccessLevel.NONE)
+    private List<Product> products;
 
     public static Category create(String name)
     {
@@ -40,6 +41,7 @@ public final class Category
                 name,
                 now,
                 now,
-                true);
+                true,
+                null);
     }
 }

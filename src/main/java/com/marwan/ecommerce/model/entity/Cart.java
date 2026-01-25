@@ -1,5 +1,6 @@
 package com.marwan.ecommerce.model.entity;
 
+import com.marwan.ecommerce.exception.product.ProductIdNotFoundException;
 import com.marwan.ecommerce.model.enums.BasketStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -45,12 +46,7 @@ public final class Cart
     }
 
     public void addOrMergeBasketItem(CartItem cartItem)
-            throws Exception
     {
-        if (cartItem == null)
-            throw new Exception();
-
-
         Optional<CartItem> optionalBasketItem = cartItems.stream()
                 .filter(b -> b.getProduct().getProductId().equals(
                         cartItem.getProduct().getProductId()))
@@ -63,17 +59,16 @@ public final class Cart
             cartItems.add(cartItem);
         }
 
-
     }
 
     public void remove(UUID productId)
-            throws Exception
+            throws ProductIdNotFoundException
     {
 
         CartItem item = cartItems.stream()
                 .filter(b -> b.getProduct().getProductId().equals(productId))
                 .findFirst()
-                .orElseThrow(() -> new Exception());
+                .orElseThrow(() -> new ProductIdNotFoundException(productId));
 
         item.setCart(null);
         cartItems.remove(item);

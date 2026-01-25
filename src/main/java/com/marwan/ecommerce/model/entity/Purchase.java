@@ -3,8 +3,8 @@ package com.marwan.ecommerce.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -20,7 +20,7 @@ public final class Purchase
     @Column(nullable = false)
     private UUID productId;
     @Column(nullable = false)
-    private double price;
+    private BigDecimal unitPrice;
     @Column(nullable = false)
     private int quantity;
     @Column(nullable = false)
@@ -40,7 +40,7 @@ public final class Purchase
         return new Purchase(
                 UUID.randomUUID(),
                 productId,
-                price,
+                BigDecimal.valueOf(price),
                 quantity,
                 supplierId,
                 LocalDateTime.now()

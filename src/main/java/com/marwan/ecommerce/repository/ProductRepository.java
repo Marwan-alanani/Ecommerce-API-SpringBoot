@@ -1,6 +1,7 @@
 package com.marwan.ecommerce.repository;
 
 import com.marwan.ecommerce.model.entity.Product;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,9 @@ import java.util.UUID;
 public interface ProductRepository extends JpaRepository<Product, UUID>
 {
     Optional<Product> findByProductIdAndIsEnabled(UUID productId, boolean isEnabled);
+
+    @EntityGraph(attributePaths = "category")
+    Optional<Product> findByProductIdAndIsEnabledWithCategory(UUID productId, boolean isEnabled);
 
     List<Product> findByCategoryId(UUID categoryId);
 

@@ -24,9 +24,7 @@ public class PurchaseEventListener
                 .orElseThrow(() -> new ProductIdNotFoundException(event.productId()));
 
         BigDecimal totalPrice = product.getTotalPurchasePrice()
-                .add(BigDecimal.valueOf(
-                        event.price() * Double.valueOf(event.quantity()))
-                );
+                .add(event.unitPrice().multiply(BigDecimal.valueOf(event.quantity())));
 
         long totalQuantity = product.getTotalPurchaseQuantity() + event.quantity();
 
@@ -37,7 +35,7 @@ public class PurchaseEventListener
                 BigDecimal.valueOf(totalQuantity)
         );
 
-        product.setPrice(averagePrice.doubleValue());
+        product.setPrice(averagePrice);
         productRepository.save(product);
     }
 }
