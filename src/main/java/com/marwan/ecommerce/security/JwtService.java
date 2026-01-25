@@ -28,7 +28,9 @@ public class JwtService
                     .requireIssuer("Ecommerce App")
                     .requireAudience("localhost")
                     .build()
-                    .parseSignedClaims(token);
+                    .parseSignedClaims(token)
+                    .getPayload();
+
             return true;
         } catch (JwtException e) {
             return false;
@@ -70,6 +72,7 @@ public class JwtService
         return (String) claims.get("email");
 
     }
+
     public String extractId(String token)
     {
         Claims claims = extractAllClaims(token);

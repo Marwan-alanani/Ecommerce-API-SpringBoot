@@ -11,6 +11,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -21,37 +23,50 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter
 {
-
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException
+            FilterChain filterChain) throws ServletException, IOException
     {
-        if (request.getHeader("Authorization") == null) {
+
+        // if already authenticated
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String header = request.getHeader("Authorization");
+        if (header == null) {
             // if no authorization header skip logic
             filterChain.doFilter(request, response);
             return;
         }
-        String token = request.getHeader("Authorization");
-        if (!token.startsWith("Bearer ")) {
-            throw new ServletException("Invalid token");
+        if (!header.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
-        token = token.substring(7);
+        String token = header.replace("Bearer ", "");
         if (!jwtService.isTokenValid(token)) {
-            throw new ServletException("Invalid token");
+            filterChain.doFilter(request, response);
+            return;
         }
-        UserDetails userDetails =
-                userDetailsService.loadUserByUsername(jwtService.extractEmail(token));
+        UserDetails userDetails = null;
+        try {
+            userDetails =
+                    userDetailsService.loadUserByUsername(jwtService.extractEmail(token));
+        } catch (UsernameNotFoundException e) {
+            filterChain.doFilter(request, response);
+        }
+        var auth = new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities());
 
-
+        auth.setDetails(new WebAuthenticationDetails(request));
         // set auth
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                ));
+        SecurityContextHolder.getContext().setAuthentication(auth);
         filterChain.doFilter(request, response);
+
 
     }
 }
