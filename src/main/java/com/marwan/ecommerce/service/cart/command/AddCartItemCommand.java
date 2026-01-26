@@ -7,13 +7,13 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class AddOrUpdateCartItemCommand
+public class AddCartItemCommand
 {
     private UUID userId;
     private UUID productId;
     private int quantity;
 
-    public AddOrUpdateCartItemCommand(UUID productId, UUID userId)
+    public AddCartItemCommand(UUID productId, UUID userId)
     {
         this.productId = productId;
         this.userId = userId;

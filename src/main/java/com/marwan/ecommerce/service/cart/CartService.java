@@ -9,8 +9,9 @@ import com.marwan.ecommerce.model.entity.Cart;
 import com.marwan.ecommerce.model.entity.CartItem;
 import com.marwan.ecommerce.model.entity.Product;
 import com.marwan.ecommerce.repository.CartRepository;
-import com.marwan.ecommerce.service.cart.command.AddOrUpdateCartItemCommand;
+import com.marwan.ecommerce.service.cart.command.AddCartItemCommand;
 import com.marwan.ecommerce.service.cart.command.RemoveCartItemCommand;
+import com.marwan.ecommerce.service.cart.command.UpdateCartItemCommand;
 import com.marwan.ecommerce.service.product.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -67,8 +68,33 @@ public class CartService
 
     }
 
+    public CartItem updateCartItem(UpdateCartItemCommand command)
+            throws NotEnoughProductException, ProductIdNotFoundException,
+            CartWithUserIdNotFoundException
+    {
 
-    public CartItem addOrUpdateCartItem(AddOrUpdateCartItemCommand command)
+        Product product = productService.getProduct(command.productId(), true);
+
+        Cart cart = getOrCreateCart(command.userId());
+        cart.remove(command.productId());
+        CartItem cartItem = CartItem.fromProduct(product);
+
+        if (product.getBalance() < command.quantity()) {
+            throw new NotEnoughProductException(
+                    product.getName(),
+                    product.getBalance(),
+                    command.quantity()
+            );
+        }
+
+        cartItem.setQuantity(command.quantity());
+        cart.addCartItem(cartItem);
+        cartRepository.save(cart);
+        return cartItem;
+    }
+
+
+    public CartItem addCartItem(AddCartItemCommand command)
             throws NotEnoughProductException, ProductIdNotFoundException,
             CartWithUserIdNotFoundException
     {

@@ -8,8 +8,9 @@ import com.marwan.ecommerce.model.entity.Cart;
 import com.marwan.ecommerce.model.entity.CartItem;
 import com.marwan.ecommerce.security.CustomUserDetails;
 import com.marwan.ecommerce.service.cart.CartService;
-import com.marwan.ecommerce.service.cart.command.AddOrUpdateCartItemCommand;
+import com.marwan.ecommerce.service.cart.command.AddCartItemCommand;
 import com.marwan.ecommerce.service.cart.command.RemoveCartItemCommand;
+import com.marwan.ecommerce.service.cart.command.UpdateCartItemCommand;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -44,12 +45,12 @@ public class CartController
 
 
     @PostMapping("/me/items")
-    public ResponseEntity<?> addOrUpdateCartItem(
+    public ResponseEntity<?> addCartItem(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody AddOrUpdateCartItemRequest request)
     {
-        CartItem item = cartService.addOrUpdateCartItem(
-                new AddOrUpdateCartItemCommand(
+        CartItem item = cartService.addCartItem(
+                new AddCartItemCommand(
                         userDetails.getUserId(),
                         request.productId(),
                         request.quantity())
@@ -58,6 +59,22 @@ public class CartController
         CartItemDto cartItemDto = cartMapper.cartItemEntitytoCartItemDto(item);
 
         return ResponseEntity.ok(cartItemDto);
+    }
+
+    @PutMapping("/me/items")
+    public ResponseEntity<?> updateCartItem(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody AddOrUpdateCartItemRequest request)
+
+    {
+        CartItem item = cartService.updateCartItem(
+                new UpdateCartItemCommand(
+                        request.productId(),
+                        userDetails.getUserId(),
+                        request.quantity())
+        );
+
+        return ResponseEntity.ok(cartMapper.cartItemEntitytoCartItemDto(item));
     }
 
     @DeleteMapping("/me/items/{productId}")
