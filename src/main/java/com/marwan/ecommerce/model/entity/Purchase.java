@@ -32,7 +32,7 @@ public final class Purchase
 
     public static Purchase create(
             UUID productId,
-            double price,
+            double unitPrice,
             int quantity,
             UUID supplierId
     )
@@ -40,7 +40,7 @@ public final class Purchase
         return new Purchase(
                 UUID.randomUUID(),
                 productId,
-                BigDecimal.valueOf(price),
+                BigDecimal.valueOf(unitPrice),
                 quantity,
                 supplierId,
                 LocalDateTime.now()

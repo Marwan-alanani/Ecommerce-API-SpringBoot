@@ -58,4 +58,9 @@ public class UserService
         return userRepository.findById(id).
                 orElseThrow(() -> new UserIdNotFoundException(id));
     }
+
+    public boolean userExists(UUID id)
+    {
+        return userRepository.existsByUserIdAndIsEnabled(id,true);
+    }
 }

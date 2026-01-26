@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public record CreatePurchaseCommand(
         UUID productId,
-        double price,
+        double unitPrice,
         int quantity,
         UUID supplierId
 )

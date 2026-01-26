@@ -6,7 +6,7 @@ import java.util.UUID;
 public record PurchaseDto(
         UUID purchaseId,
         UUID productId,
-        double price,
+        double unitPrice,
         int quantity,
         UUID supplierId,
 

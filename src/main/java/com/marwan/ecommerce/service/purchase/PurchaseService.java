@@ -28,7 +28,7 @@ public class PurchaseService
     private final SupplierService supplierService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public Purchase create(CreatePurchaseCommand command)
+    public Purchase createPurchase(CreatePurchaseCommand command)
             throws ProductIdNotFoundException, SupplierIdNotFoundException
     {
         if (!productService.productExists(command.productId(), true)) {
@@ -39,7 +39,7 @@ public class PurchaseService
         }
         Purchase purchase = Purchase.create(
                 command.productId(),
-                command.price(),
+                command.unitPrice(),
                 command.quantity(),
                 command.supplierId()
         );

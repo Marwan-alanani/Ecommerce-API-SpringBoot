@@ -18,9 +18,9 @@ public class CategoryDeactivatedEventListener
     @EventListener
     public void onCategoryDeactivatedEvent(CategoryDeactivatedEvent event)
     {
-        List<Product> productList = productRepository.findByCategoryId(event.categoryId());
+        List<Product> productList = productRepository.findByCategory_CategoryId(event.categoryId());
         productList.forEach(product -> {
-            product.setCategoryId(null);
+            product.setCategory(null);
         });
         productRepository.saveAll(productList);
     }

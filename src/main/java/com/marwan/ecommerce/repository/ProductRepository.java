@@ -15,15 +15,15 @@ public interface ProductRepository extends JpaRepository<Product, UUID>
     Optional<Product> findByProductIdAndIsEnabled(UUID productId, boolean isEnabled);
 
     @EntityGraph(attributePaths = "category")
-    Optional<Product> findByProductIdAndIsEnabledWithCategory(UUID productId, boolean isEnabled);
+    Optional<Product> findWithCategoryByProductIdAndIsEnabled(UUID productId, boolean isEnabled);
 
-    List<Product> findByCategoryId(UUID categoryId);
+    List<Product> findByCategory_CategoryId(UUID categoryId);
 
     boolean existsByProductIdAndIsEnabled(UUID productId, boolean isEnabled);
 
-    List<Product> findByCategoryIdAndIsEnabled(UUID categoryId, boolean isEnabled);
+    List<Product> findByCategory_CategoryIdAndIsEnabled(UUID categoryId, boolean isEnabled);
 
     List<Product> findAllByIsEnabled(boolean isEnabled);
 
-    int countByCategoryIdAndIsEnabled(UUID categoryId, boolean isEnabled);
+    int countByCategory_CategoryIdAndIsEnabled(UUID categoryId, boolean isEnabled);
 }

@@ -57,7 +57,7 @@ public class CategoryService
         }
 
         int productCount = productRepository
-                .countByCategoryIdAndIsEnabled(categoryId, isEnabled);
+                .countByCategory_CategoryIdAndIsEnabled(categoryId, isEnabled);
 
         return categoryMapper.categoryAndProductCountToCategoryWithProductsCountDto(
                 category.get(),

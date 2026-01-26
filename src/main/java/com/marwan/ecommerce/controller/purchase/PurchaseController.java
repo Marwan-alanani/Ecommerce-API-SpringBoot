@@ -6,6 +6,7 @@ import com.marwan.ecommerce.exception.product.ProductIdNotFoundException;
 import com.marwan.ecommerce.exception.purchase.PurchaseIdNotFoundException;
 import com.marwan.ecommerce.exception.supplier.SupplierIdNotFoundException;
 import com.marwan.ecommerce.mapper.PurchaseMapper;
+import com.marwan.ecommerce.model.entity.Product;
 import com.marwan.ecommerce.model.entity.Purchase;
 import com.marwan.ecommerce.service.purchase.PurchaseService;
 import com.marwan.ecommerce.service.purchase.command.CreatePurchaseCommand;
@@ -32,7 +33,7 @@ public class PurchaseController
     {
         CreatePurchaseCommand command =
                 purchaseMapper.createPurchaseRequestToCreatePurchaseCommand(request);
-        Purchase purchase = purchaseService.create(command);
+        Purchase purchase = purchaseService.createPurchase(command);
         PurchaseDto purchaseDto = purchaseMapper.purchaseToPurchaseDto(purchase);
         return ResponseEntity.status(HttpStatus.CREATED).body(purchaseDto);
     }
@@ -47,46 +48,23 @@ public class PurchaseController
 
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<PurchaseDto>> getAll()
-    {
-        List<Purchase> purchaseList = purchaseService.getAll();
-        List<PurchaseDto> purchaseDtoList = purchaseMapper
-                .purchaseListToPurchaseDtoList(purchaseList);
-        return ResponseEntity.ok(purchaseDtoList);
-    }
-
     @GetMapping
-    public ResponseEntity<List<PurchaseDto>> getAllByProductId(@RequestParam UUID productId)
-    {
-        List<Purchase> purchaseList = purchaseService.getAllByProductId(productId);
-        List<PurchaseDto> purchaseDtoList = purchaseMapper
-                .purchaseListToPurchaseDtoList(purchaseList);
-        return ResponseEntity.ok(purchaseDtoList);
-
-    }
-
-
-
-    public ResponseEntity<List<PurchaseDto>> getAllBySupplierId(@RequestParam UUID supplierId)
-    {
-        List<Purchase> purchaseList = purchaseService.getAllBySupplierId(supplierId);
-        List<PurchaseDto> purchaseDtoList = purchaseMapper
-                .purchaseListToPurchaseDtoList(purchaseList);
-        return ResponseEntity.ok(purchaseDtoList);
-    }
-
-
-    public ResponseEntity<List<PurchaseDto>> getAllByProductAndSupplierId(
-            @RequestParam UUID supplierId,
-            @RequestParam UUID productId
+    public ResponseEntity<List<PurchaseDto>> getAll(
+            @RequestParam(required = false) UUID productId,
+            @RequestParam(required = false) UUID supplierId
     )
     {
-        List<Purchase> purchaseList = purchaseService
-                .getAllBySupplierIdAndProductId(supplierId, productId);
-
-        List<PurchaseDto> purchaseDtoList = purchaseMapper
-                .purchaseListToPurchaseDtoList(purchaseList);
-        return ResponseEntity.ok(purchaseDtoList);
+        List<Purchase> purchaseList;
+        if (productId == null && supplierId == null) {
+            purchaseList = purchaseService.getAll();
+        } else if (productId != null && supplierId != null) {
+            purchaseList = purchaseService.getAllBySupplierIdAndProductId(supplierId, productId);
+        } else if (supplierId != null) {
+            purchaseList = purchaseService.getAllBySupplierId(supplierId);
+        } else {
+            purchaseList = purchaseService.getAllByProductId(productId);
+        }
+        return ResponseEntity.ok(purchaseMapper.purchaseListToPurchaseDtoList(purchaseList));
     }
+
 }

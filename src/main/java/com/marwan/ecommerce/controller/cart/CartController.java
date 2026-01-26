@@ -1,48 +1,92 @@
 package com.marwan.ecommerce.controller.cart;
 
+import com.marwan.ecommerce.controller.cart.request.AddOrUpdateCartItemRequest;
+import com.marwan.ecommerce.dto.cart.CartDto;
+import com.marwan.ecommerce.dto.cart.CartItemDto;
+import com.marwan.ecommerce.mapper.CartMapper;
+import com.marwan.ecommerce.model.entity.Cart;
+import com.marwan.ecommerce.model.entity.CartItem;
 import com.marwan.ecommerce.security.CustomUserDetails;
+import com.marwan.ecommerce.service.cart.CartService;
+import com.marwan.ecommerce.service.cart.command.AddOrUpdateCartItemCommand;
+import com.marwan.ecommerce.service.cart.command.RemoveCartItemCommand;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/carts")
 public class CartController
 {
-    @PostMapping("/create")
-    public ResponseEntity<?> createCart(@AuthenticationPrincipal CustomUserDetails userDetails)
-    {
-        throw new NotImplementedException();
-    }
+    private final CartService cartService;
+    private final CartMapper cartMapper;
 
-
-    @PostMapping("/cartItem")
-    public ResponseEntity<?> addCartItem(@AuthenticationPrincipal CustomUserDetails userDetails)
-    {
-        throw new NotImplementedException();
-    }
-
-    @PostMapping("/removeItem")
-    public ResponseEntity<?> removeCartItem(
-            @AuthenticationPrincipal CustomUserDetails userDetails)
-    {
-        throw new NotImplementedException();
-    }
-
-    @GetMapping("/basket")
+    @GetMapping("/me")
     public ResponseEntity<?> getCart(@AuthenticationPrincipal CustomUserDetails userDetails)
     {
-        throw new NotImplementedException();
+        Cart cart = cartService.getCartWithUserId(userDetails.getUserId());
+        CartDto cartDto = cartMapper.cartEntitytoCartDto(cart);
+        return ResponseEntity.ok(cartDto);
     }
 
-    @PostMapping("/remove/{basketId}")
-    public ResponseEntity<?> removeCart(@AuthenticationPrincipal CustomUserDetails userDetails,
-                    @PathVariable Long basketId)
+    @PostMapping
+    public ResponseEntity<?> createCart(@AuthenticationPrincipal CustomUserDetails userDetails)
     {
-        throw new NotImplementedException();
+        Cart cart = cartService.createCart(userDetails.getUserId());
+        CartDto cartDto = cartMapper.cartEntitytoCartDto(cart);
+        return ResponseEntity.ok(cartDto);
     }
+
+
+    @PostMapping("/me/items")
+    public ResponseEntity<?> addOrUpdateCartItem(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody AddOrUpdateCartItemRequest request)
+    {
+        CartItem item = cartService.addOrUpdateCartItem(
+                new AddOrUpdateCartItemCommand(
+                        userDetails.getUserId(),
+                        request.productId(),
+                        request.quantity())
+        );
+
+        CartItemDto cartItemDto = cartMapper.cartItemEntitytoCartItemDto(item);
+
+        return ResponseEntity.ok(cartItemDto);
+    }
+
+    @DeleteMapping("/me/items/{productId}")
+    public ResponseEntity<?> removeCartItem(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable UUID productId)
+    {
+        cartService.removeCartItem(new RemoveCartItemCommand(
+                userDetails.getUserId(),
+                productId
+        ));
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{cartId}")
+    public ResponseEntity<?> getCartById(@PathVariable UUID cartId)
+    {
+        Cart cart = cartService.getCart(cartId);
+        CartDto cartDto = cartMapper.cartEntitytoCartDto(cart);
+
+        return ResponseEntity.ok(cartDto);
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<?> clearCart(@AuthenticationPrincipal CustomUserDetails userDetails)
+    {
+        cartService.clearCart(userDetails.getUserId());
+        return ResponseEntity.ok().build();
+    }
+
 
 }

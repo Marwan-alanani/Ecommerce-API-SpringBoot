@@ -32,10 +32,10 @@ public class PurchaseEventListener
         product.setTotalPurchaseQuantity(totalQuantity);
 
         BigDecimal averagePrice = totalPrice.divide(
-                BigDecimal.valueOf(totalQuantity)
+                BigDecimal.valueOf(totalQuantity), 3, BigDecimal.ROUND_HALF_UP
         );
-
         product.setPrice(averagePrice);
+        product.setBalance(product.getBalance() + 1);
         productRepository.save(product);
     }
 }

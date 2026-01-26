@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS purchase
 (
     purchase_id       uuid PRIMARY KEY,
     product_id        uuid           NULL,
-    price             DECIMAL(19, 4) NOT NULL,
+    unit_price             DECIMAL(19, 4) NOT NULL,
     quantity          integer        NOT NULL,
     supplier_id       uuid           NULL,
     created_date_time timestamp      NOT NULL,
@@ -84,21 +84,18 @@ CREATE TABLE IF NOT EXISTS purchase
 
 );
 
--- -- Table: baskets
+-- -- Table: carts
 -- -- ------------------------------------------------------------------------
-CREATE TABLE carts
+CREATE TABLE IF NOT EXISTS  carts
 (
     cart_id           UUID PRIMARY KEY,
 
     user_id           UUID                     NOT NULL,
-
-    status            VARCHAR(50)              NOT NULL,
-
-    created_date_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_date_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_date_time TIMESTAMP WITH TIME ZONE NOT NULL ,
+    updated_date_time TIMESTAMP WITH TIME ZONE NOT NULL ,
 
     -- Optional: if you want to enforce foreign key to users table
-    CONSTRAINT fk_baskets_user
+    CONSTRAINT fk_carts_user
         FOREIGN KEY (user_id)
             REFERENCES "user" (user_id)
             ON DELETE RESTRICT
@@ -106,27 +103,26 @@ CREATE TABLE carts
 );
 --
 -- -- ------------------------------------------------------------------------
--- -- Table: basket_items
+-- -- Table: cart_items
 -- -- ------------------------------------------------------------------------
-CREATE TABLE cart_items
+CREATE TABLE IF NOT EXISTS cart_items
 (
     cart_item_id UUID PRIMARY KEY,
     cart_id      UUID    NOT NULL,
     product_id   UUID    NOT NULL,
-    quantity     INTEGER NOT NULL
-        CHECK (quantity > 0),
+    quantity     INTEGER NOT NULL,
 
     -- Timestamps (even if not mapped in entity – very useful)
-    created_at   TIMESTAMP WITH TIME ZONE,
-    updated_at   TIMESTAMP WITH TIME ZONE,
+    created_date_time   TIMESTAMP WITH TIME ZONE,
+    updated_date_time   TIMESTAMP WITH TIME ZONE,
 
-    CONSTRAINT fk_basket_items_basket
+    CONSTRAINT fk_cart_items_cart
         FOREIGN KEY (cart_id)
             REFERENCES carts (cart_id)
             ON DELETE CASCADE
             ON UPDATE CASCADE,
 
-    CONSTRAINT fk_basket_items_product
+    CONSTRAINT fk_cart_items_product
         FOREIGN KEY (product_id)
             REFERENCES product (product_id)
             ON DELETE RESTRICT

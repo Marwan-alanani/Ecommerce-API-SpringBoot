@@ -12,10 +12,11 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "basket_items")
+@Table(name = "cart_items")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Data
+@Getter
+@Setter
 public final class CartItem
 {
     @Id
@@ -23,7 +24,6 @@ public final class CartItem
     private UUID cartItemId;
 
 
-    @Column(nullable = false)
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
     private Product product;
@@ -32,7 +32,7 @@ public final class CartItem
     private int quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "basket_id")
+    @JoinColumn(name = "cart_id")
     private Cart cart;
 
     @CreatedDate

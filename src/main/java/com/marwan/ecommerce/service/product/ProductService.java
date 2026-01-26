@@ -48,7 +48,7 @@ public class ProductService
             throws ProductIdNotFoundException
     {
         Product product = productRepository
-                .findByProductIdAndIsEnabledWithCategory(id, isEnabled)
+                .findWithCategoryByProductIdAndIsEnabled(id, isEnabled)
                 .orElseThrow(() -> new ProductIdNotFoundException(id));
 
         if (product.getCategory() == null) {
@@ -75,22 +75,13 @@ public class ProductService
         return false;
     }
 
-    public List<ProductDetailsDto> getProductsByCategoryId(UUID categoryId, boolean isEnabled)
+    public List<Product> getProductsByCategoryId(UUID categoryId, boolean isEnabled)
             throws CategoryIdNotFoundException
     {
         Category category = categoryService.getCategory(categoryId, true);
         List<Product> productList = productRepository
-                .findByCategoryIdAndIsEnabled(categoryId, isEnabled);
-
-        List<ProductDetailsDto> productDetailsDtos = new ArrayList<>();
-        productList.forEach(product -> {
-            productDetailsDtos.add(
-                    productMapper.productToProductDetailsDto(
-                            product,
-                            category.getName())
-            );
-        });
-        return productDetailsDtos;
+                .findByCategory_CategoryIdAndIsEnabled(categoryId, isEnabled);
+        return productList;
 
     }
 

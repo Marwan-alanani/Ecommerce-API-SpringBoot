@@ -23,6 +23,7 @@ public interface ProductMapper
     CreateProductCommand createProductRequestToCreateProductCommand(
             CreateProductRequest request);
 
+    @Mapping(target = "categoryId", source = "category.categoryId")
     ProductResponseDto productToProductResponseDto(Product product);
 
     List<ProductResponseDto> productListToProductResponseDtoList(List<Product> productList);

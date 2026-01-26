@@ -29,7 +29,8 @@ public final class Category
     private LocalDateTime updatedDateTime;
     private boolean isEnabled;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE} , fetch = FetchType.LAZY)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY,
+            mappedBy = "category")
     @Setter(AccessLevel.NONE)
     private List<Product> products;
 

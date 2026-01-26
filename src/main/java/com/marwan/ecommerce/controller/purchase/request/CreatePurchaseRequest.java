@@ -9,9 +9,9 @@ public record CreatePurchaseRequest(
         @NotNull(message = "Product id is required")
         UUID productId,
 
-        @NotNull(message = "Purchase price is required")
-        @Positive(message = "Purchase price must be greater than zero")
-        double price,
+        @NotNull(message = "Purchase unit price is required")
+        @Positive(message = "Purchase unit price must be greater than zero")
+        double unitPrice,
 
         @NotNull(message = "Quantity is required")
         @Positive(message = "Quantity must be greater than zero")

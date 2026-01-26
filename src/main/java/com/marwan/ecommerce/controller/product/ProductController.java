@@ -13,9 +13,9 @@ import com.marwan.ecommerce.service.product.command.CreateProductCommand;
 import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,14 +30,18 @@ public class ProductController
 
     @PostMapping("/create")
     public ResponseEntity<ProductResponseDto> createProduct(
-            @Valid @RequestBody CreateProductRequest request)
+            @Valid @RequestBody CreateProductRequest request,
+            UriComponentsBuilder uriBuilder)
             throws CategoryIdNotFoundException
     {
         CreateProductCommand command =
                 productMapper.createProductRequestToCreateProductCommand(request);
         Product product = productService.createProduct(command);
         ProductResponseDto productResponseDto = productMapper.productToProductResponseDto(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body(productResponseDto);
+        var uri =
+                uriBuilder.path("/products/{productId}")
+                        .buildAndExpand(product.getProductId()).toUri();
+        return ResponseEntity.created(uri).body(productResponseDto);
     }
 
     @GetMapping("/{productId}")
@@ -71,23 +75,22 @@ public class ProductController
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getAllProducts()
+    public ResponseEntity<List<ProductResponseDto>> getAllProducts(
+            @RequestParam(required = false) UUID categoryId
+    )
+            throws CategoryIdNotFoundException
     {
-        List<Product> products = productService.getAllProducts(true);
+        List<Product> products;
+        if (categoryId == null) {
+            products = productService.getAllProducts(true);
+        }
+        else{
+            products = productService.getProductsByCategoryId(categoryId, true);
+        }
         List<ProductResponseDto> productResponseDtos =
                 productMapper.productListToProductResponseDtoList(products);
         return ResponseEntity.ok(productResponseDtos);
     }
 
-
-    @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<ProductDetailsDto>> getCategoryProducts(
-            @PathVariable UUID categoryId)
-            throws CategoryIdNotFoundException
-    {
-        List<ProductDetailsDto> productDetailsDtos =
-                productService.getProductsByCategoryId(categoryId, true);
-        return ResponseEntity.status(HttpStatus.OK).body(productDetailsDtos);
-    }
 
 }

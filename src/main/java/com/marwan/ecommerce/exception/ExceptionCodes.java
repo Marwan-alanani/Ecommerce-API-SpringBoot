@@ -13,4 +13,8 @@ public class ExceptionCodes
     public static final String SupplierIdNotFoundException = "supplier/supplierIdNotFound";
     public static final String PurchaseIdNotFoundException = "purchase/purchaseIdNotFound";
     public static final String InvalidTokenException = "auth/InvalidToken";
+    public static final String CartIdNotFoundException = "cart/cartIdNotFound";
+    public static final String CartWithUserIdNotFoundException = "cart/cartWithUserIdNotFound";
+    public static final String NotEnoughProductException = "product/notEnoughProduct";
+    public static final String CartAlreadyExistsForUserException = "cart/cartAlreadyExistsForUser";
 }
