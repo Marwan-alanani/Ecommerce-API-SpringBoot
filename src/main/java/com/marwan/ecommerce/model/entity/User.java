@@ -5,16 +5,18 @@ import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(name = "[user]")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Data
+@Getter
+@Setter
 public final class User
 {
     @Id
@@ -36,10 +38,12 @@ public final class User
 
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
-    private LocalDateTime createdDateTime;
+    @CreationTimestamp
+    private Instant createdDateTime;
 
     @Column(nullable = false)
-    private LocalDateTime updatedDateTime;
+    @UpdateTimestamp
+    private Instant updatedDateTime;
 
 
     public static User create(
@@ -49,7 +53,7 @@ public final class User
             String email,
             String password)
     {
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         return new User(UUID.randomUUID(),
                 firstName,
                 lastName,

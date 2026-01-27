@@ -53,10 +53,7 @@ public class SupplierService
 
     public boolean supplierExists(UUID supplierId, boolean isEnabled)
     {
-        if (supplierRepository.existsBySupplierIdAndIsEnabled(supplierId, isEnabled)) {
-            return true;
-        }
-        return false;
+        return supplierRepository.existsBySupplierIdAndIsEnabled(supplierId, isEnabled);
     }
 
     public List<Supplier> getAll()

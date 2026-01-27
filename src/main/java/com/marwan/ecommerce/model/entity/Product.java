@@ -1,17 +1,19 @@
 package com.marwan.ecommerce.model.entity;
 
+import com.marwan.ecommerce.exception.product.NotEnoughProductException;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(name = "product")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public final class Product
@@ -25,8 +27,9 @@ public final class Product
     // description is nullable
     private String description;
 
-    @Column(nullable = false)
-    private BigDecimal price;
+    @Column(nullable = false, name = "price")
+    private BigDecimal sellingPrice;
+
     @Column(nullable = false)
     private String pictureUrl;
 
@@ -37,11 +40,13 @@ public final class Product
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.NONE)
-    private LocalDateTime createdDateTime;
+    @CreationTimestamp
+    private Instant createdDateTime;
     @Column(nullable = false)
-    private LocalDateTime updatedDateTime;
+    @UpdateTimestamp
+    private Instant updatedDateTime;
 
     @Column(nullable = false)
     private boolean isEnabled;
@@ -51,6 +56,25 @@ public final class Product
     @Column(nullable = false)
     private long totalPurchaseQuantity;
 
+    public void decreaseBalance(int quantity)
+    {
+        if (quantity <= 0)
+            throw new IllegalArgumentException("Quantity must be greater than zero");
+
+        if (balance < quantity)
+            throw new NotEnoughProductException(name, balance, quantity);
+
+        balance -= quantity;
+    }
+
+    public void increaseBalance(int quantity)
+    {
+        if (quantity <= 0)
+            throw new IllegalArgumentException("Quantity must be greater than zero");
+
+        balance += quantity;
+    }
+
     public static Product create(
             String name,
             String description,
@@ -58,7 +82,7 @@ public final class Product
             String pictureUrl,
             Category category)
     {
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         return new Product(
                 UUID.randomUUID(),
                 name,

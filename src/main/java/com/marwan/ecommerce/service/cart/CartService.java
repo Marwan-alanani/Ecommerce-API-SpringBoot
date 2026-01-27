@@ -17,6 +17,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Service
@@ -89,6 +90,7 @@ public class CartService
 
         cartItem.setQuantity(command.quantity());
         cart.addCartItem(cartItem);
+        cart.setUpdatedDateTime(Instant.now());
         cartRepository.save(cart);
         return cartItem;
     }
@@ -122,6 +124,7 @@ public class CartService
         } else {
             cartItem.setQuantity(totalQuantity);
         }
+        cart.setUpdatedDateTime(Instant.now());
         cartRepository.save(cart);
         return cartItem;
     }
@@ -131,6 +134,7 @@ public class CartService
     {
         Cart cart = getCartWithUserId(command.userId());
         cart.remove(command.productId());
+        cart.setUpdatedDateTime(Instant.now());
         cartRepository.save(cart);
     }
 
@@ -140,6 +144,7 @@ public class CartService
     {
         Cart cart = getCartWithUserId(userId);
         cart.clear();
+        cart.setUpdatedDateTime(Instant.now());
         cartRepository.save(cart);
     }
 

@@ -2,14 +2,16 @@ package com.marwan.ecommerce.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "category")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,12 +23,14 @@ public final class Category
     @Column(unique = true, nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.NONE)
-    private LocalDateTime createdDateTime;
+    @CreationTimestamp
+    private Instant createdDateTime;
 
     @Column(nullable = false)
-    private LocalDateTime updatedDateTime;
+    @UpdateTimestamp
+    private Instant updatedDateTime;
     private boolean isEnabled;
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY,
@@ -36,7 +40,7 @@ public final class Category
 
     public static Category create(String name)
     {
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         return new Category(
                 UUID.randomUUID(),
                 name,

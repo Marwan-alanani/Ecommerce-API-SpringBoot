@@ -69,16 +69,12 @@ public class ProductService
 
     public boolean productExists(UUID id, boolean isEnabled)
     {
-        if (productRepository.existsByProductIdAndIsEnabled(id, isEnabled)) {
-            return true;
-        }
-        return false;
+        return productRepository.existsByProductIdAndIsEnabled(id, isEnabled);
     }
 
     public List<Product> getProductsByCategoryId(UUID categoryId, boolean isEnabled)
             throws CategoryIdNotFoundException
     {
-        Category category = categoryService.getCategory(categoryId, true);
         List<Product> productList = productRepository
                 .findByCategory_CategoryIdAndIsEnabled(categoryId, isEnabled);
         return productList;

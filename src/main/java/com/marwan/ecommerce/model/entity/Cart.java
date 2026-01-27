@@ -1,14 +1,12 @@
 package com.marwan.ecommerce.model.entity;
 
-import com.marwan.ecommerce.exception.product.ProductIdNotFoundException;
-import com.marwan.ecommerce.model.enums.BasketStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.*;
 
 @Entity
@@ -25,11 +23,11 @@ public final class Cart
     @Column(nullable = false)
     private UUID userId;
 
-    @CreatedDate
-    private LocalDateTime createdDateTime;
+    @CreationTimestamp
+    private Instant createdDateTime;
 
-    @LastModifiedDate
-    private LocalDateTime updatedDateTime;
+    @UpdateTimestamp
+    private Instant updatedDateTime;
 
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, mappedBy = "cart",
@@ -91,7 +89,7 @@ public final class Cart
 
     public static Cart create(UUID userId)
     {
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         return new Cart(
                 UUID.randomUUID(),
                 userId,
@@ -100,5 +98,4 @@ public final class Cart
                 new ArrayList<>()
         );
     }
-
 }

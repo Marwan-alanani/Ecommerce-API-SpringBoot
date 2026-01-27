@@ -2,13 +2,15 @@ package com.marwan.ecommerce.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "purchase")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,7 +30,8 @@ public final class Purchase
     @Column(nullable = false)
 
     @Setter(AccessLevel.NONE)
-    private LocalDateTime createdDateTime;
+    @CreationTimestamp
+    private Instant createdDateTime;
 
     public static Purchase create(
             UUID productId,
@@ -43,7 +46,7 @@ public final class Purchase
                 BigDecimal.valueOf(unitPrice),
                 quantity,
                 supplierId,
-                LocalDateTime.now()
+                Instant.now()
         );
 
     }

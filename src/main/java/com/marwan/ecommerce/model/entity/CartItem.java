@@ -2,13 +2,11 @@ package com.marwan.ecommerce.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -35,41 +33,41 @@ public final class CartItem
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
-    @CreatedDate
-    private LocalDateTime createdDateTime;
+    @CreationTimestamp
+    private Instant createdDateTime;
 
-    @LastModifiedDate
-    private LocalDateTime updatedDateTime;
+    @UpdateTimestamp
+    private Instant updatedDateTime;
 
     public BigDecimal getTotalPrice()
     {
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+        return product.getSellingPrice().multiply(BigDecimal.valueOf(quantity));
     }
 
     public static CartItem fromProduct(Product product)
     {
-        LocalDateTime createdDateTime = LocalDateTime.now();
+        Instant now = Instant.now();
 
         return new CartItem(
                 UUID.randomUUID(),
                 product,
                 1,
                 null,
-                createdDateTime,
-                createdDateTime);
+                now,
+                now);
 
     }
 
     public static CartItem fromProductWithQuantity(Product product, int quantity)
     {
-        LocalDateTime createdDateTime = LocalDateTime.now();
+        Instant now = Instant.now();
         return new CartItem(
                 UUID.randomUUID(),
                 product,
                 quantity,
                 null,
-                createdDateTime,
-                createdDateTime);
+                now,
+                now);
     }
 
 

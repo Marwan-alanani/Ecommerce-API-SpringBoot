@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 
 @Component
 @RequiredArgsConstructor
-public class PurchaseEventListener
+public class PurchaseCreatedEventListener
 {
     private final ProductRepository productRepository;
 
@@ -34,8 +34,8 @@ public class PurchaseEventListener
         BigDecimal averagePrice = totalPrice.divide(
                 BigDecimal.valueOf(totalQuantity), 3, BigDecimal.ROUND_HALF_UP
         );
-        product.setPrice(averagePrice);
-        product.setBalance(product.getBalance() + 1);
+        product.setSellingPrice(averagePrice);
+        product.increaseBalance(event.quantity());
         productRepository.save(product);
     }
 }

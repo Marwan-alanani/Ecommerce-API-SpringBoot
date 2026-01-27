@@ -5,14 +5,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(name = "supplier")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Supplier
@@ -29,15 +31,17 @@ public final class Supplier
 
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
-    private LocalDateTime createdDateTime;
+    @CreationTimestamp
+    private Instant createdDateTime;
 
     @Column(nullable = false)
-    private LocalDateTime updatedDateTime;
+    @UpdateTimestamp
+    private Instant updatedDateTime;
     private boolean isEnabled;
 
     public static Supplier create(String name, String email)
     {
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         return new Supplier(
                 UUID.randomUUID(),
                 name,
