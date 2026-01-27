@@ -5,12 +5,12 @@ import com.marwan.ecommerce.exception.abstractions.NotFoundException;
 
 import java.util.UUID;
 
-public class CartIdNotFoundException extends NotFoundException
+public class CartNotFoundException extends NotFoundException
 {
-    public CartIdNotFoundException(UUID cartId)
+    public CartNotFoundException(UUID cartId)
     {
         super(
-                ExceptionCodes.CartIdNotFoundException,
+                ExceptionCodes.CartNotFoundException,
                 "Cart with the given id: " + cartId.toString() + " not found!");
     }
 }

@@ -25,9 +25,10 @@ public final class Order
     private UUID userId;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
-    @Setter(AccessLevel.NONE)
+    @Setter(AccessLevel.PRIVATE)
     private List<OrderItem> orderItems;
 
+    @Setter(AccessLevel.PRIVATE)
     private BigDecimal totalPrice;
 
     private Instant createdDateTime;
@@ -41,24 +42,34 @@ public final class Order
         return new ArrayList<>(orderItems);
     }
 
+    public void addOrderItem(OrderItem orderItem)
+    {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
     public static Order fromCart(Cart cart)
     {
-        List<OrderItem> orderItems = new ArrayList<>();
-        cart.getCartItems().forEach(item -> {
-            orderItems.add(OrderItem.fromCartItem(item));
-        });
-        BigDecimal totalPrice = BigDecimal.ZERO;
-        for (OrderItem orderItem : orderItems)
-            totalPrice = totalPrice.add(orderItem.getTotalPrice());
 
-
-        return new Order(
+        // create empty order
+        Order order = new Order(
                 UUID.randomUUID(),
                 cart.getUserId(),
-                orderItems,
-                totalPrice,
+                new ArrayList<>(),
+                BigDecimal.ZERO,
                 Instant.now(),
                 OrderStatus.CREATED
         );
+
+        // populate order items and compute total price
+        cart.getCartItems().forEach(item -> {
+            order.addOrderItem(OrderItem.fromCartItem(item));
+        });
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for(OrderItem orderItem : order.getOrderItems()) {
+            totalPrice = totalPrice.add(orderItem.getTotalPrice());
+        }
+        order.setTotalPrice(totalPrice);
+        return order;
     }
 }

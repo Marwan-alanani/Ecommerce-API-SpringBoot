@@ -1,6 +1,6 @@
 package com.marwan.ecommerce.service.purchase.eventListener;
 
-import com.marwan.ecommerce.exception.product.ProductIdNotFoundException;
+import com.marwan.ecommerce.exception.product.ProductNotFoundException;
 import com.marwan.ecommerce.model.entity.Product;
 import com.marwan.ecommerce.repository.ProductRepository;
 import com.marwan.ecommerce.service.purchase.event.PurchaseCreatedEvent;
@@ -18,10 +18,10 @@ public class PurchaseCreatedEventListener
 
     @EventListener
     public void onPurchaseCreated(PurchaseCreatedEvent event)
-            throws ProductIdNotFoundException
+            throws ProductNotFoundException
     {
         Product product = productRepository.findById(event.productId())
-                .orElseThrow(() -> new ProductIdNotFoundException(event.productId()));
+                .orElseThrow(() -> new ProductNotFoundException(event.productId()));
 
         BigDecimal totalPrice = product.getTotalPurchasePrice()
                 .add(event.unitPrice().multiply(BigDecimal.valueOf(event.quantity())));

@@ -6,10 +6,10 @@ import com.marwan.ecommerce.dto.user.AccessAndRefreshTokenDto;
 import com.marwan.ecommerce.dto.user.AuthenticationDto;
 import com.marwan.ecommerce.dto.user.UserDto;
 import com.marwan.ecommerce.exception.authentication.InvalidTokenException;
-import com.marwan.ecommerce.exception.user.UserIdNotFoundException;
+import com.marwan.ecommerce.exception.user.UserNotFoundException;
 import com.marwan.ecommerce.mapper.UserMapper;
 import com.marwan.ecommerce.model.entity.User;
-import com.marwan.ecommerce.security.JwtSettings;
+import com.marwan.ecommerce.config.JwtConfig;
 import com.marwan.ecommerce.service.user.AuthenticationService;
 import com.marwan.ecommerce.service.user.UserService;
 import jakarta.servlet.http.Cookie;
@@ -29,7 +29,7 @@ public class AuthController
     private final AuthenticationService authenticationService;
     private final UserService userService;
     private final UserMapper userMapper;
-    private final JwtSettings jwtSettings;
+    private final JwtConfig jwtConfig;
 
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@Valid @RequestBody RegisterRequest request)
@@ -54,7 +54,7 @@ public class AuthController
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthenticationDto> refresh(@CookieValue String refreshToken)
-            throws InvalidTokenException, UserIdNotFoundException
+            throws InvalidTokenException, UserNotFoundException
     {
         String accessToken = authenticationService.renewAccessToken(refreshToken);
         return ResponseEntity.ok(new AuthenticationDto(accessToken));
@@ -65,7 +65,7 @@ public class AuthController
         var cookie = new Cookie("refresh_token", refreshToken);
         cookie.setPath("/auth/refresh");
         cookie.setHttpOnly(true);
-        cookie.setMaxAge(jwtSettings.getRefreshTokenExpirationInSeconds());
+        cookie.setMaxAge(jwtConfig.getRefreshTokenExpirationInSeconds());
         cookie.setSecure(true);
         response.addCookie(cookie);
     }

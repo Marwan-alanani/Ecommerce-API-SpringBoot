@@ -1,8 +1,8 @@
 package com.marwan.ecommerce.service.product;
 
 import com.marwan.ecommerce.dto.product.ProductDetailsDto;
-import com.marwan.ecommerce.exception.category.CategoryIdNotFoundException;
-import com.marwan.ecommerce.exception.product.ProductIdNotFoundException;
+import com.marwan.ecommerce.exception.category.CategoryNotFoundException;
+import com.marwan.ecommerce.exception.product.ProductNotFoundException;
 import com.marwan.ecommerce.mapper.ProductMapper;
 import com.marwan.ecommerce.model.entity.Category;
 import com.marwan.ecommerce.model.entity.Product;
@@ -26,7 +26,7 @@ public class ProductService
     private final CategoryService categoryService;
 
     public Product createProduct(CreateProductCommand command)
-            throws CategoryIdNotFoundException
+            throws CategoryNotFoundException
     {
         Category category = null;
         if (command.categoryId() != null) {
@@ -45,11 +45,11 @@ public class ProductService
     }
 
     public ProductDetailsDto getProductWithCategoryNameById(UUID id, boolean isEnabled)
-            throws ProductIdNotFoundException
+            throws ProductNotFoundException
     {
         Product product = productRepository
                 .findWithCategoryByProductIdAndIsEnabled(id, isEnabled)
-                .orElseThrow(() -> new ProductIdNotFoundException(id));
+                .orElseThrow(() -> new ProductNotFoundException(id));
 
         if (product.getCategory() == null) {
             return productMapper.productToProductDetailsDto(product, null);
@@ -59,11 +59,11 @@ public class ProductService
     }
 
     public Product getProduct(UUID productId, boolean isEnabled)
-            throws ProductIdNotFoundException
+            throws ProductNotFoundException
     {
         Product product = productRepository
                 .findByProductIdAndIsEnabled(productId, isEnabled)
-                .orElseThrow(() -> new ProductIdNotFoundException(productId));
+                .orElseThrow(() -> new ProductNotFoundException(productId));
         return product;
     }
 
@@ -73,7 +73,7 @@ public class ProductService
     }
 
     public List<Product> getProductsByCategoryId(UUID categoryId, boolean isEnabled)
-            throws CategoryIdNotFoundException
+            throws CategoryNotFoundException
     {
         List<Product> productList = productRepository
                 .findByCategory_CategoryIdAndIsEnabled(categoryId, isEnabled);
@@ -87,15 +87,15 @@ public class ProductService
     }
 
     public Product updateProduct(UpdateProductCommand command, boolean isEnabled)
-            throws ProductIdNotFoundException, CategoryIdNotFoundException
+            throws ProductNotFoundException, CategoryNotFoundException
     {
         Product product = productRepository
                 .findByProductIdAndIsEnabled(command.productId(), isEnabled)
-                .orElseThrow(() -> new ProductIdNotFoundException(command.productId()));
+                .orElseThrow(() -> new ProductNotFoundException(command.productId()));
 
         if (command.categoryId() != null &&
                 !categoryService.categoryExists(command.categoryId(), true)) {
-            throw new CategoryIdNotFoundException(command.categoryId());
+            throw new CategoryNotFoundException(command.categoryId());
         }
         productMapper.updateFromCommand(product, command);
         productRepository.save(product);
@@ -103,10 +103,10 @@ public class ProductService
     }
 
     public void deactivateProduct(UUID productId, boolean isEnabled)
-            throws ProductIdNotFoundException
+            throws ProductNotFoundException
     {
         Product product = productRepository.findByProductIdAndIsEnabled(productId, isEnabled)
-                .orElseThrow(() -> new ProductIdNotFoundException(productId));
+                .orElseThrow(() -> new ProductNotFoundException(productId));
 
         product.setEnabled(false);
         productRepository.save(product);

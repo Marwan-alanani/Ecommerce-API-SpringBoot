@@ -5,11 +5,11 @@ import com.marwan.ecommerce.exception.abstractions.NotFoundException;
 
 import java.util.UUID;
 
-public class SupplierIdNotFoundException extends NotFoundException
+public class SupplierNotFoundException extends NotFoundException
 {
-    public SupplierIdNotFoundException(UUID supplierId)
+    public SupplierNotFoundException(UUID supplierId)
     {
-        super(ExceptionCodes.SupplierIdNotFoundException,
+        super(ExceptionCodes.SupplierNotFoundException,
                 "Supplier with id: " + supplierId + " not found!");
     }
 }

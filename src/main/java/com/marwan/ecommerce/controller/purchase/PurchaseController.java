@@ -2,11 +2,10 @@ package com.marwan.ecommerce.controller.purchase;
 
 import com.marwan.ecommerce.controller.purchase.request.CreatePurchaseRequest;
 import com.marwan.ecommerce.dto.purchase.PurchaseDto;
-import com.marwan.ecommerce.exception.product.ProductIdNotFoundException;
-import com.marwan.ecommerce.exception.purchase.PurchaseIdNotFoundException;
-import com.marwan.ecommerce.exception.supplier.SupplierIdNotFoundException;
+import com.marwan.ecommerce.exception.product.ProductNotFoundException;
+import com.marwan.ecommerce.exception.purchase.PurchaseNotFoundException;
+import com.marwan.ecommerce.exception.supplier.SupplierNotFoundException;
 import com.marwan.ecommerce.mapper.PurchaseMapper;
-import com.marwan.ecommerce.model.entity.Product;
 import com.marwan.ecommerce.model.entity.Purchase;
 import com.marwan.ecommerce.service.purchase.PurchaseService;
 import com.marwan.ecommerce.service.purchase.command.CreatePurchaseCommand;
@@ -29,7 +28,7 @@ public class PurchaseController
 
     @PostMapping("/create")
     public ResponseEntity<PurchaseDto> create(@Valid @RequestBody CreatePurchaseRequest request)
-            throws SupplierIdNotFoundException, ProductIdNotFoundException
+            throws SupplierNotFoundException, ProductNotFoundException
     {
         CreatePurchaseCommand command =
                 purchaseMapper.createPurchaseRequestToCreatePurchaseCommand(request);
@@ -40,7 +39,7 @@ public class PurchaseController
 
     @GetMapping("/{purchaseId}")
     public ResponseEntity<PurchaseDto> get(@PathVariable UUID purchaseId)
-            throws PurchaseIdNotFoundException
+            throws PurchaseNotFoundException
     {
         Purchase purchase = purchaseService.getById(purchaseId);
         PurchaseDto purchaseDto = purchaseMapper.purchaseToPurchaseDto(purchase);

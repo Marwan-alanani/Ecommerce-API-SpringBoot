@@ -4,7 +4,7 @@ import com.marwan.ecommerce.model.enums.UserRole;
 import com.marwan.ecommerce.model.entity.User;
 import com.marwan.ecommerce.repository.UserRepository;
 import com.marwan.ecommerce.exception.user.EmailExistsException;
-import com.marwan.ecommerce.exception.user.UserIdNotFoundException;
+import com.marwan.ecommerce.exception.user.UserNotFoundException;
 import com.marwan.ecommerce.service.user.command.RegisterCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,10 +40,10 @@ public class UserService
         return user;
     }
 
-    public void deactivate(UUID id) throws UserIdNotFoundException
+    public void deactivate(UUID id) throws UserNotFoundException
     {
         User user = userRepository.findById(id).
-                orElseThrow(() -> new UserIdNotFoundException(id));
+                orElseThrow(() -> new UserNotFoundException(id));
         user.setEnabled(false);
     }
 
@@ -53,10 +53,10 @@ public class UserService
     }
 
     public User getUser(UUID id)
-            throws UserIdNotFoundException
+            throws UserNotFoundException
     {
         return userRepository.findById(id).
-                orElseThrow(() -> new UserIdNotFoundException(id));
+                orElseThrow(() -> new UserNotFoundException(id));
     }
 
     public boolean userExists(UUID id)

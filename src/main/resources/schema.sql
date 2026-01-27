@@ -144,7 +144,6 @@ Create TABLE IF NOT EXISTS order_items
     product_picture_url VARCHAR(512)   NOT NULL,
     unit_price          DECIMAL(19, 4) NOT NULL,
     quantity            INTEGER        NOT NULL,
-    created_date_time   timestamptz    NOT NULL,
     CONSTRAINT fk_order_items_orders
         FOREIGN KEY (order_id)
             REFERENCES orders (order_id)

@@ -1,7 +1,7 @@
 package com.marwan.ecommerce.service.category;
 
 import com.marwan.ecommerce.dto.category.CategoryWithProductsCountDto;
-import com.marwan.ecommerce.exception.category.CategoryIdNotFoundException;
+import com.marwan.ecommerce.exception.category.CategoryNotFoundException;
 import com.marwan.ecommerce.exception.category.CategoryNameExistsException;
 import com.marwan.ecommerce.mapper.CategoryMapper;
 import com.marwan.ecommerce.model.entity.Category;
@@ -47,13 +47,13 @@ public class CategoryService
 
     public CategoryWithProductsCountDto getCategoryWithProductCount(UUID categoryId,
             boolean isEnabled)
-            throws CategoryIdNotFoundException
+            throws CategoryNotFoundException
     {
         Optional<Category> category = categoryRepository
                 .findByCategoryIdAndIsEnabled(categoryId, isEnabled);
 
         if (category.isEmpty()) {
-            throw new CategoryIdNotFoundException(categoryId);
+            throw new CategoryNotFoundException(categoryId);
         }
 
         int productCount = productRepository
@@ -65,22 +65,22 @@ public class CategoryService
     }
 
     public Category getCategory(UUID categoryId, boolean isEnabled)
-            throws CategoryIdNotFoundException
+            throws CategoryNotFoundException
     {
         Optional<Category> category = categoryRepository.findByCategoryIdAndIsEnabled(categoryId,
                 isEnabled);
         if (category.isEmpty()) {
-            throw new CategoryIdNotFoundException(categoryId);
+            throw new CategoryNotFoundException(categoryId);
         }
         return category.get();
     }
 
     public void deactivateCategory(UUID categoryId)
-            throws CategoryIdNotFoundException
+            throws CategoryNotFoundException
     {
         Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
         if (optionalCategory.isEmpty()) {
-            throw new CategoryIdNotFoundException(categoryId);
+            throw new CategoryNotFoundException(categoryId);
         }
         Category category = optionalCategory.get();
         category.setEnabled(false);
@@ -90,13 +90,13 @@ public class CategoryService
     }
 
     public Category updateCategory(UpdateCategoryCommand command, boolean isEnabled)
-            throws CategoryIdNotFoundException, CategoryNameExistsException
+            throws CategoryNotFoundException, CategoryNameExistsException
     {
         Optional<Category> optionalCategory = categoryRepository
                 .findByCategoryIdAndIsEnabled(command.categoryId(), isEnabled);
 
         if (optionalCategory.isEmpty()) {
-            throw new CategoryIdNotFoundException(command.categoryId());
+            throw new CategoryNotFoundException(command.categoryId());
         }
         int countByName = categoryRepository.countByName(command.name());
         Category category = optionalCategory.get();

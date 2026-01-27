@@ -31,12 +31,6 @@ public final class OrderItem
     @Column(nullable = false)
     private int quantity;
 
-    @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.NONE)
-
-    @CreationTimestamp
-    private Instant createdDateTime;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
@@ -56,7 +50,6 @@ public final class OrderItem
                 cartItem.getProduct().getPictureUrl(),
                 cartItem.getProduct().getSellingPrice(),
                 cartItem.getQuantity(),
-                Instant.now(),
                 null
         );
     }

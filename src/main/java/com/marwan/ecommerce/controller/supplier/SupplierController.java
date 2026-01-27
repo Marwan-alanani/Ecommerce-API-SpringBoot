@@ -4,7 +4,7 @@ import com.marwan.ecommerce.controller.supplier.request.CreateSupplierRequest;
 import com.marwan.ecommerce.controller.supplier.request.UpdateSupplierRequest;
 import com.marwan.ecommerce.dto.supplier.SupplierDto;
 import com.marwan.ecommerce.exception.supplier.SupplierEmailExistsException;
-import com.marwan.ecommerce.exception.supplier.SupplierIdNotFoundException;
+import com.marwan.ecommerce.exception.supplier.SupplierNotFoundException;
 import com.marwan.ecommerce.exception.supplier.SupplierNameExistsException;
 import com.marwan.ecommerce.mapper.SupplierMapper;
 import com.marwan.ecommerce.model.entity.Supplier;
@@ -43,7 +43,7 @@ public class SupplierController
 
     @GetMapping("/{supplierId}")
     public ResponseEntity<SupplierDto> get(@PathVariable UUID supplierId)
-            throws SupplierIdNotFoundException
+            throws SupplierNotFoundException
     {
         Supplier supplier = supplierService.get(supplierId, true);
         return ResponseEntity.ok(
@@ -65,7 +65,7 @@ public class SupplierController
     public ResponseEntity<SupplierDto> update(@Valid @RequestBody UpdateSupplierRequest request)
             throws SupplierNameExistsException,
             SupplierEmailExistsException,
-            SupplierIdNotFoundException
+            SupplierNotFoundException
     {
         UpdateSupplierCommand command =
                 supplierMapper.updateSupplierRequestToUpdateSupplierCommand(request);
@@ -76,7 +76,7 @@ public class SupplierController
 
     @DeleteMapping("/delete/{supplierId}")
     public ResponseEntity<?> deactivate(@PathVariable UUID supplierId)
-            throws SupplierIdNotFoundException
+            throws SupplierNotFoundException
     {
         supplierService.deactivate(supplierId, true);
         return ResponseEntity.ok().build();

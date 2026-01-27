@@ -1,8 +1,8 @@
 package com.marwan.ecommerce.service.purchase;
 
-import com.marwan.ecommerce.exception.product.ProductIdNotFoundException;
-import com.marwan.ecommerce.exception.purchase.PurchaseIdNotFoundException;
-import com.marwan.ecommerce.exception.supplier.SupplierIdNotFoundException;
+import com.marwan.ecommerce.exception.product.ProductNotFoundException;
+import com.marwan.ecommerce.exception.purchase.PurchaseNotFoundException;
+import com.marwan.ecommerce.exception.supplier.SupplierNotFoundException;
 import com.marwan.ecommerce.model.entity.Purchase;
 import com.marwan.ecommerce.repository.PurchaseRepository;
 import com.marwan.ecommerce.service.product.ProductService;
@@ -29,13 +29,13 @@ public class PurchaseService
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public Purchase createPurchase(CreatePurchaseCommand command)
-            throws ProductIdNotFoundException, SupplierIdNotFoundException
+            throws ProductNotFoundException, SupplierNotFoundException
     {
         if (!productService.productExists(command.productId(), true)) {
-            throw new ProductIdNotFoundException(command.productId());
+            throw new ProductNotFoundException(command.productId());
         }
         if (!supplierService.supplierExists(command.supplierId(), true)) {
-            throw new SupplierIdNotFoundException(command.supplierId());
+            throw new SupplierNotFoundException(command.supplierId());
         }
         Purchase purchase = Purchase.create(
                 command.productId(),
@@ -56,11 +56,11 @@ public class PurchaseService
     }
 
     public Purchase getById(UUID purchaseId)
-            throws PurchaseIdNotFoundException
+            throws PurchaseNotFoundException
     {
         Optional<Purchase> purchase = purchaseRepository.findById(purchaseId);
         if (purchase.isEmpty()) {
-            throw new PurchaseIdNotFoundException(purchaseId);
+            throw new PurchaseNotFoundException(purchaseId);
         }
         return purchase.get();
     }

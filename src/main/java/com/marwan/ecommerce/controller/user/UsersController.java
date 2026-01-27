@@ -2,7 +2,7 @@ package com.marwan.ecommerce.controller.user;
 
 import com.marwan.ecommerce.controller.user.request.UpdateUserRequest;
 import com.marwan.ecommerce.dto.user.UserDto;
-import com.marwan.ecommerce.exception.user.UserIdNotFoundException;
+import com.marwan.ecommerce.exception.user.UserNotFoundException;
 import com.marwan.ecommerce.mapper.UserMapper;
 import com.marwan.ecommerce.model.entity.User;
 import com.marwan.ecommerce.service.user.UserService;
@@ -25,7 +25,7 @@ public class UsersController
 
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<?> remove(@PathVariable UUID userId)
-            throws UserIdNotFoundException
+            throws UserNotFoundException
     {
 
         userService.deactivate(userId);
@@ -34,7 +34,7 @@ public class UsersController
 
     @GetMapping("/{userId}")
     ResponseEntity<UserDto> getUser(@PathVariable UUID userId)
-            throws UserIdNotFoundException
+            throws UserNotFoundException
     {
         User user = userService.getUser(userId);
         return ResponseEntity.ok(userMapper.userToUserDto(user));

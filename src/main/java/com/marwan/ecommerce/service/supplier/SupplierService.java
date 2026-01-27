@@ -1,7 +1,7 @@
 package com.marwan.ecommerce.service.supplier;
 
 import com.marwan.ecommerce.exception.supplier.SupplierEmailExistsException;
-import com.marwan.ecommerce.exception.supplier.SupplierIdNotFoundException;
+import com.marwan.ecommerce.exception.supplier.SupplierNotFoundException;
 import com.marwan.ecommerce.exception.supplier.SupplierNameExistsException;
 import com.marwan.ecommerce.mapper.SupplierMapper;
 import com.marwan.ecommerce.model.entity.Supplier;
@@ -40,13 +40,13 @@ public class SupplierService
     }
 
     public Supplier get(UUID supplierId, boolean isEnabled)
-            throws SupplierIdNotFoundException
+            throws SupplierNotFoundException
     {
         Optional<Supplier> optionalSupplier = supplierRepository
                 .findBySupplierIdAndIsEnabled(supplierId, isEnabled);
 
         if (optionalSupplier.isEmpty()) {
-            throw new SupplierIdNotFoundException(supplierId);
+            throw new SupplierNotFoundException(supplierId);
         }
         return optionalSupplier.get();
     }
@@ -62,14 +62,14 @@ public class SupplierService
     }
 
     public Supplier update(UpdateSupplierCommand command, boolean isEnabled)
-            throws SupplierIdNotFoundException, SupplierNameExistsException,
+            throws SupplierNotFoundException, SupplierNameExistsException,
             SupplierEmailExistsException
     {
         Optional<Supplier> optionalSupplier = supplierRepository
                 .findBySupplierIdAndIsEnabled(command.supplierId(), isEnabled);
 
         if (optionalSupplier.isEmpty()) {
-            throw new SupplierIdNotFoundException(command.supplierId());
+            throw new SupplierNotFoundException(command.supplierId());
         }
         Supplier supplier = optionalSupplier.get();
 
@@ -89,13 +89,13 @@ public class SupplierService
     }
 
     public void deactivate(UUID supplierId, boolean isEnabled)
-            throws SupplierIdNotFoundException
+            throws SupplierNotFoundException
     {
         Optional<Supplier> optionalSupplier = supplierRepository
                 .findBySupplierIdAndIsEnabled(supplierId, isEnabled);
 
         if (optionalSupplier.isEmpty()) {
-            throw new SupplierIdNotFoundException(supplierId);
+            throw new SupplierNotFoundException(supplierId);
         }
         Supplier supplier = optionalSupplier.get();
         supplier.setEnabled(false);

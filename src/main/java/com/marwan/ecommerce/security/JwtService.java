@@ -1,9 +1,8 @@
 package com.marwan.ecommerce.security;
 
-import com.marwan.ecommerce.model.entity.User;
+import com.marwan.ecommerce.config.JwtConfig;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -13,7 +12,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class JwtService
 {
-    private final JwtSettings jwtSettings;
+    private final JwtConfig jwtConfig;
 
     public boolean isTokenValid(String token)
     {
@@ -22,9 +21,9 @@ public class JwtService
 
         try {
             Jwts.parser()
-                    .verifyWith(jwtSettings.getSecretKey())
-                    .requireIssuer(jwtSettings.getIssuer())
-                    .requireAudience(jwtSettings.getAudience())
+                    .verifyWith(jwtConfig.getSecretKey())
+                    .requireIssuer(jwtConfig.getIssuer())
+                    .requireAudience(jwtConfig.getAudience())
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
@@ -39,12 +38,12 @@ public class JwtService
 
     public String generateAccessToken(CustomUserDetails userDetails)
     {
-        return generateToken(userDetails, jwtSettings.getAccessTokenExpirationInSeconds());
+        return generateToken(userDetails, jwtConfig.getAccessTokenExpirationInSeconds());
     }
 
     public String generateRefreshToken(CustomUserDetails userDetails)
     {
-        return generateToken(userDetails, jwtSettings.getRefreshTokenExpirationInSeconds());
+        return generateToken(userDetails, jwtConfig.getRefreshTokenExpirationInSeconds());
     }
 
     private String generateToken(CustomUserDetails userDetails, int expirationInSeconds)
@@ -68,9 +67,9 @@ public class JwtService
                         new Date(
                                 System.currentTimeMillis() + expirationInSeconds * 1000
                         ))
-                .signWith(jwtSettings.getSecretKey())
-                .issuer(jwtSettings.getIssuer())
-                .audience().add(jwtSettings.getAudience()).and()
+                .signWith(jwtConfig.getSecretKey())
+                .issuer(jwtConfig.getIssuer())
+                .audience().add(jwtConfig.getAudience()).and()
                 .compact();
     }
 
@@ -97,7 +96,7 @@ public class JwtService
     public Claims extractAllClaims(String token)
     {
         return Jwts.parser()
-                .verifyWith(jwtSettings.getSecretKey())
+                .verifyWith(jwtConfig.getSecretKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

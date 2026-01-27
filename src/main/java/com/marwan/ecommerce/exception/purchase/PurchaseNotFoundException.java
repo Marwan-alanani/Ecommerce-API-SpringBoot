@@ -5,11 +5,11 @@ import com.marwan.ecommerce.exception.abstractions.NotFoundException;
 
 import java.util.UUID;
 
-public class PurchaseIdNotFoundException extends NotFoundException
+public class PurchaseNotFoundException extends NotFoundException
 {
-    public PurchaseIdNotFoundException(UUID purchaseId)
+    public PurchaseNotFoundException(UUID purchaseId)
     {
-        super(ExceptionCodes.PurchaseIdNotFoundException, "Purchase with id: " + purchaseId + " " +
+        super(ExceptionCodes.PurchaseNotFoundException, "Purchase with id: " + purchaseId + " " +
                 "not found!");
     }
 }

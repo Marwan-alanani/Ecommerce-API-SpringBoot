@@ -4,7 +4,7 @@ import com.marwan.ecommerce.controller.category.request.CreateCategoryRequest;
 import com.marwan.ecommerce.controller.category.request.UpdateCategoryRequest;
 import com.marwan.ecommerce.dto.category.CategoryResponseDto;
 import com.marwan.ecommerce.dto.category.CategoryWithProductsCountDto;
-import com.marwan.ecommerce.exception.category.CategoryIdNotFoundException;
+import com.marwan.ecommerce.exception.category.CategoryNotFoundException;
 import com.marwan.ecommerce.exception.category.CategoryNameExistsException;
 import com.marwan.ecommerce.mapper.CategoryMapper;
 import com.marwan.ecommerce.model.entity.Category;
@@ -43,7 +43,7 @@ public class CategoryController
 
     @GetMapping("/{categoryId}")
     public ResponseEntity<CategoryWithProductsCountDto> getCategory(@PathVariable UUID categoryId)
-            throws CategoryIdNotFoundException
+            throws CategoryNotFoundException
     {
         return ResponseEntity.status(HttpStatus.OK).body(
                 categoryService.getCategoryWithProductCount(categoryId, true)
@@ -52,7 +52,7 @@ public class CategoryController
 
     @DeleteMapping("/delete/{categoryId}")
     public ResponseEntity<?> deactivateCategory(@PathVariable UUID categoryId)
-            throws CategoryIdNotFoundException
+            throws CategoryNotFoundException
     {
         categoryService.deactivateCategory(categoryId);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -61,7 +61,7 @@ public class CategoryController
     @PutMapping("/update")
     public ResponseEntity<CategoryResponseDto> updateCategory(
             @Valid @RequestBody UpdateCategoryRequest request)
-            throws CategoryIdNotFoundException, CategoryNameExistsException
+            throws CategoryNotFoundException, CategoryNameExistsException
     {
         UpdateCategoryCommand command =
                 categoryMapper.updateCategoryRequestToUpdateCategoryCommand(request);

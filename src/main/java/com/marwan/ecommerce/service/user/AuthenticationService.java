@@ -2,13 +2,11 @@ package com.marwan.ecommerce.service.user;
 
 import com.marwan.ecommerce.dto.user.AccessAndRefreshTokenDto;
 import com.marwan.ecommerce.exception.authentication.InvalidTokenException;
-import com.marwan.ecommerce.exception.user.UserIdNotFoundException;
+import com.marwan.ecommerce.exception.user.UserNotFoundException;
 import com.marwan.ecommerce.model.entity.User;
 import com.marwan.ecommerce.security.CustomUserDetails;
 import com.marwan.ecommerce.security.JwtService;
 import com.marwan.ecommerce.service.user.query.LoginQuery;
-import com.marwan.ecommerce.service.user.command.RegisterCommand;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,7 +37,7 @@ public class AuthenticationService
     }
 
     public String renewAccessToken(String refreshToken)
-            throws InvalidTokenException, UserIdNotFoundException
+            throws InvalidTokenException, UserNotFoundException
     {
         if (refreshToken == null || !jwtService.isTokenValid(refreshToken)) {
             throw new InvalidTokenException(refreshToken);

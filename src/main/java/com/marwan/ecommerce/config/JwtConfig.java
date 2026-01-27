@@ -1,4 +1,4 @@
-package com.marwan.ecommerce.security;
+package com.marwan.ecommerce.config;
 
 
 import io.jsonwebtoken.security.Keys;
@@ -7,12 +7,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 
 @Configuration
 @ConfigurationProperties(prefix = "spring.jwt")
 @Data
-public class JwtSettings
+public class JwtConfig
 {
     private String issuer;
     private String audience;

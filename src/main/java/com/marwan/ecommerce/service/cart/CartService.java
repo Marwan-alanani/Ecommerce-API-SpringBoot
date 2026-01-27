@@ -1,10 +1,10 @@
 package com.marwan.ecommerce.service.cart;
 
 import com.marwan.ecommerce.exception.cart.CartAlreadyExistsForUserException;
-import com.marwan.ecommerce.exception.cart.CartIdNotFoundException;
+import com.marwan.ecommerce.exception.cart.CartNotFoundException;
 import com.marwan.ecommerce.exception.cart.CartWithUserIdNotFoundException;
 import com.marwan.ecommerce.exception.product.NotEnoughProductException;
-import com.marwan.ecommerce.exception.product.ProductIdNotFoundException;
+import com.marwan.ecommerce.exception.product.ProductNotFoundException;
 import com.marwan.ecommerce.model.entity.Cart;
 import com.marwan.ecommerce.model.entity.CartItem;
 import com.marwan.ecommerce.model.entity.Product;
@@ -55,10 +55,10 @@ public class CartService
     }
 
     public Cart getCart(UUID cartId)
-            throws CartIdNotFoundException
+            throws CartNotFoundException
     {
         return cartRepository.getCartWithItems(cartId)
-                .orElseThrow(() -> new CartIdNotFoundException(cartId));
+                .orElseThrow(() -> new CartNotFoundException(cartId));
     }
 
     public Cart getCartWithUserId(UUID userId)
@@ -70,7 +70,7 @@ public class CartService
     }
 
     public CartItem updateCartItem(UpdateCartItemCommand command)
-            throws NotEnoughProductException, ProductIdNotFoundException,
+            throws NotEnoughProductException, ProductNotFoundException,
             CartWithUserIdNotFoundException
     {
 
@@ -97,7 +97,7 @@ public class CartService
 
 
     public CartItem addCartItem(AddCartItemCommand command)
-            throws NotEnoughProductException, ProductIdNotFoundException,
+            throws NotEnoughProductException, ProductNotFoundException,
             CartWithUserIdNotFoundException
     {
 
