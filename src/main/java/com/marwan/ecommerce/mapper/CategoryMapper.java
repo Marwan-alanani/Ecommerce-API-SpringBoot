@@ -34,7 +34,7 @@ public interface CategoryMapper
                 productCount);
     }
 
-    @Mapping(target = "updatedDateTime", expression = "java(java.time.LocalDateTime.now())")
+    @Mapping(target = "updatedDateTime", expression = "java(java.time.Instant.now())")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromCommand(@MappingTarget Category category, UpdateCategoryCommand command);
 }

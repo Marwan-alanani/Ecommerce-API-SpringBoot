@@ -123,6 +123,19 @@ CREATE TABLE IF NOT EXISTS cart_items
             ON DELETE RESTRICT
 );
 
+Create TABLE IF NOT EXISTS orders
+(
+    order_id          UUID PRIMARY KEY,
+    user_id           UUID           NOT NULL,
+    total_price       DECIMAL(19, 4) NOT NULL,
+    created_date_time timestamptz    NOT NULL,
+    order_status      VARCHAR(50)    NOT NULL,
+    CONSTRAINT fk_orders_users
+        FOREIGN KEY (user_id)
+            REFERENCES "user" (user_id)
+            ON DELETE RESTRICT
+);
+
 Create TABLE IF NOT EXISTS order_items
 (
     order_item_id       UUID PRIMARY KEY,
@@ -139,15 +152,3 @@ Create TABLE IF NOT EXISTS order_items
             ON UPDATE CASCADE
 );
 
-Create TABLE IF NOT EXISTS orders
-(
-    order_id          UUID PRIMARY KEY,
-    user_id           UUID           NOT NULL,
-    total_price       DECIMAL(19, 4) NOT NULL,
-    created_date_time timestamptz    NOT NULL,
-    order_status      VARCHAR(50)    NOT NULL,
-    CONSTRAINT fk_orders_users
-        FOREIGN KEY (user_id)
-            REFERENCES "user" (user_id)
-            ON DELETE RESTRICT
-)

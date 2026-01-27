@@ -23,7 +23,7 @@ public interface SupplierMapper
     UpdateSupplierCommand updateSupplierRequestToUpdateSupplierCommand(
             UpdateSupplierRequest request);
 
-    @Mapping(target = "updatedDateTime", expression = "java(java.time.LocalDateTime.now())")
+    @Mapping(target = "updatedDateTime", expression = "java(java.time.Instant.now())")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromCommand(@MappingTarget Supplier supplier, UpdateSupplierCommand command);
 }

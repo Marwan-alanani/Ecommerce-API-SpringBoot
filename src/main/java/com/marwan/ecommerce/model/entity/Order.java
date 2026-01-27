@@ -16,7 +16,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Order
+public final class Order
 {
     @Id
     @Setter(AccessLevel.NONE)

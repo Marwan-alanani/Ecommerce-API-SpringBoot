@@ -30,7 +30,7 @@ public interface ProductMapper
 
     ProductDetailsDto productToProductDetailsDto(Product product, String categoryName);
 
-    @Mapping(target = "updatedDateTime", expression = "java(java.time.LocalDateTime.now())")
+    @Mapping(target = "updatedDateTime", expression = "java(java.time.Instant.now())")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromCommand(
             @MappingTarget Product product,
