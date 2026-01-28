@@ -54,6 +54,10 @@ public class CartService
         return cart;
     }
 
+    public void saveCart(Cart cart){
+        cartRepository.save(cart);
+    }
+
     public Cart getCart(UUID cartId)
             throws CartNotFoundException
     {

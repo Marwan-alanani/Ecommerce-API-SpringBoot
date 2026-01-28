@@ -1,5 +1,6 @@
 package com.marwan.ecommerce.model.entity;
 
+import com.marwan.ecommerce.model.enums.Currency;
 import com.marwan.ecommerce.model.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,6 +32,9 @@ public final class Order
     @Setter(AccessLevel.PRIVATE)
     private BigDecimal totalPrice;
 
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
+
     private Instant createdDateTime;
 
     // order status
@@ -57,6 +61,7 @@ public final class Order
                 cart.getUserId(),
                 new ArrayList<>(),
                 BigDecimal.ZERO,
+                Currency.USD,
                 Instant.now(),
                 OrderStatus.CREATED
         );
@@ -66,7 +71,7 @@ public final class Order
             order.addOrderItem(OrderItem.fromCartItem(item));
         });
         BigDecimal totalPrice = BigDecimal.ZERO;
-        for(OrderItem orderItem : order.getOrderItems()) {
+        for (OrderItem orderItem : order.getOrderItems()) {
             totalPrice = totalPrice.add(orderItem.getTotalPrice());
         }
         order.setTotalPrice(totalPrice);

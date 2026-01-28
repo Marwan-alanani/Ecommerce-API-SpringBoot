@@ -128,6 +128,7 @@ Create TABLE IF NOT EXISTS orders
     order_id          UUID PRIMARY KEY,
     user_id           UUID           NOT NULL,
     total_price       DECIMAL(19, 4) NOT NULL,
+    currency          VARCHAR(50)    NOT NULL,
     created_date_time timestamptz    NOT NULL,
     order_status      VARCHAR(50)    NOT NULL,
     CONSTRAINT fk_orders_users
@@ -151,3 +152,22 @@ Create TABLE IF NOT EXISTS order_items
             ON UPDATE CASCADE
 );
 
+
+CREATE TABLE IF NOT EXISTS payments
+(
+    payment_id        UUID PRIMARY KEY,
+    checkout_session_id VARCHAR(255),
+    provider          VARCHAR(255)   NOT NULL,
+    order_id          UUID,
+    amount            DECIMAL(19, 4) NOT NULL,
+    currency          VARCHAR(10)    NOT NULL,
+    status            VARCHAR(50)    NOT NULL,
+    created_date_time timestamptz    NOT NULL,
+    updated_date_time timestamptz    NOT NULL,
+    CONSTRAINT fk_payments_orders
+        FOREIGN KEY (order_id)
+            REFERENCES orders (order_id)
+            ON DELETE SET NULL
+            ON UPDATE CASCADE,
+    UNIQUE (payment_intent_id)
+);

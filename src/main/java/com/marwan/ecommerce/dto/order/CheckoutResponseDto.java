@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public record CheckoutResponseDto(
         UUID orderId,
-        String sessionUrl
+        String checkoutUrl
 )
 {
 }

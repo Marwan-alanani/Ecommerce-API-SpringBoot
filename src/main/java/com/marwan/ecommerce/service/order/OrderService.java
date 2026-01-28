@@ -27,4 +27,9 @@ public class OrderService
         return orderRepository.findByOrderIdWithOrderItems(orderId).orElseThrow(
                 () -> new OrderNotFoundException(orderId));
     }
+
+    public void saveOrder(Order order)
+    {
+        orderRepository.save(order);
+    }
 }

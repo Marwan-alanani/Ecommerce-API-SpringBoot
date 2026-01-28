@@ -1,7 +1,6 @@
 package com.marwan.ecommerce.model.enums;
 
-public enum UserRole
+public enum PaymentProvider
 {
-    ADMIN,
-    USER
+    STRIPE
 }

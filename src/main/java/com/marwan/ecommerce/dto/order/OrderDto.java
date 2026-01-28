@@ -1,7 +1,5 @@
 package com.marwan.ecommerce.dto.order;
 
-import com.marwan.ecommerce.controller.order.OrderItemDto;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;

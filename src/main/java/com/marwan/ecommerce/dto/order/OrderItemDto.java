@@ -1,4 +1,4 @@
-package com.marwan.ecommerce.controller.order;
+package com.marwan.ecommerce.dto.order;
 
 import java.math.BigDecimal;
 import java.util.UUID;

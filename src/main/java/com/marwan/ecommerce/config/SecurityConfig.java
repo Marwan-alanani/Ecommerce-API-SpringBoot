@@ -60,6 +60,7 @@ public class SecurityConfig
                                 "/products/**").hasRole(UserRole.ADMIN.name())
 
                         .requestMatchers("/suppliers").hasRole(UserRole.ADMIN.name())
+                        .requestMatchers("/checkout/webhook").permitAll()
 
                         .anyRequest().authenticated()
                 )
