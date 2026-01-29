@@ -31,7 +31,7 @@ public final class Payment
     @Enumerated(EnumType.STRING)
     private PaymentProvider provider;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "order_id")
     @Setter(AccessLevel.NONE)
     private Order order;

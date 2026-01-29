@@ -19,6 +19,7 @@ public class ExceptionCodes
     public static final String CartAlreadyExistsForUserException = "cart/cartAlreadyExistsForUser";
     public static final String CartEmptyException = "cart/cartEmpty";
     public static final String OrderNotFoundException = "order/orderNotFound";
-    public static final String PaymentException = "order/paymentException";
+    public static final String PaymentException = "payment/invalidPayment";
+    public static final String PaymentNotFoundException = "payment/paymentNotFound";
 }
 

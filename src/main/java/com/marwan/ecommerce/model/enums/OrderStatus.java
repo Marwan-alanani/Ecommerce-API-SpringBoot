@@ -4,5 +4,6 @@ public enum OrderStatus
 {
     CREATED, // order created
     PAYMENT_PENDING, // payment initiated
-    PAID // payment successful
+    PAID, // payment successful
+    PAYMENT_CANCELLED
 }

@@ -17,7 +17,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @Service
@@ -54,7 +53,8 @@ public class CartService
         return cart;
     }
 
-    public void saveCart(Cart cart){
+    public void saveCart(Cart cart)
+    {
         cartRepository.save(cart);
     }
 
@@ -79,22 +79,11 @@ public class CartService
     {
 
         Product product = productService.getProduct(command.productId(), true);
-
         Cart cart = getOrCreateCart(command.userId());
         cart.remove(command.productId());
         CartItem cartItem = CartItem.fromProduct(product);
-
-        if (product.getBalance() < command.quantity()) {
-            throw new NotEnoughProductException(
-                    product.getName(),
-                    product.getBalance(),
-                    command.quantity()
-            );
-        }
-
         cartItem.setQuantity(command.quantity());
         cart.addCartItem(cartItem);
-        cart.setUpdatedDateTime(Instant.now());
         cartRepository.save(cart);
         return cartItem;
     }
@@ -113,22 +102,13 @@ public class CartService
         int totalQuantity = (cartItem == null) ? command.getQuantity() :
                 cartItem.getQuantity() + command.getQuantity();
 
-        if (product.getBalance() < totalQuantity) {
-            throw new NotEnoughProductException(
-                    product.getName(),
-                    product.getBalance(),
-                    totalQuantity
-            );
-        }
 
         if (cartItem == null) {
-            cartItem = CartItem.fromProduct(product);
-            cartItem.setQuantity(totalQuantity);
+            cartItem = CartItem.fromProductWithQuantity(product, totalQuantity);
             cart.addCartItem(cartItem);
         } else {
             cartItem.setQuantity(totalQuantity);
         }
-        cart.setUpdatedDateTime(Instant.now());
         cartRepository.save(cart);
         return cartItem;
     }
@@ -138,7 +118,6 @@ public class CartService
     {
         Cart cart = getCartWithUserId(command.userId());
         cart.remove(command.productId());
-        cart.setUpdatedDateTime(Instant.now());
         cartRepository.save(cart);
     }
 
@@ -148,7 +127,6 @@ public class CartService
     {
         Cart cart = getCartWithUserId(userId);
         cart.clear();
-        cart.setUpdatedDateTime(Instant.now());
         cartRepository.save(cart);
     }
 

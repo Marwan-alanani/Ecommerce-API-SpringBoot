@@ -21,6 +21,9 @@ public final class OrderItem
     private UUID orderItemId;
 
     @Column(nullable = false)
+    private UUID productId;
+
+    @Column(nullable = false)
     private String productName;
     @Column(nullable = false)
     private String productPictureUrl;
@@ -46,6 +49,7 @@ public final class OrderItem
     {
         return new OrderItem(
                 UUID.randomUUID(),
+                cartItem.getProduct().getProductId(),
                 cartItem.getProduct().getName(),
                 cartItem.getProduct().getPictureUrl(),
                 cartItem.getProduct().getSellingPrice(),

@@ -51,6 +51,9 @@ public final class Order
         orderItems.add(orderItem);
         orderItem.setOrder(this);
     }
+    public void markPaid(){
+        this.orderStatus = OrderStatus.PAID;
+    }
 
     public static Order fromCart(Cart cart)
     {

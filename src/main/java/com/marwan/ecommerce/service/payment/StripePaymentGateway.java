@@ -1,7 +1,7 @@
 package com.marwan.ecommerce.service.payment;
 
 import com.marwan.ecommerce.dto.order.CheckoutSessionDto;
-import com.marwan.ecommerce.exception.order.PaymentException;
+import com.marwan.ecommerce.exception.payment.PaymentException;
 import com.marwan.ecommerce.model.enums.PaymentProvider;
 import com.marwan.ecommerce.service.order.command.CreateCheckoutSessionCommand;
 import com.marwan.ecommerce.service.order.command.LineItemDto;
@@ -22,24 +22,27 @@ public class StripePaymentGateway implements PaymentGateway
         try {
 
             // Create a checkout session
-            var builder = SessionCreateParams.builder()
+            var sessionCreateParams = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
                     .setSuccessUrl("https://localhost:4242/success")
                     .setCancelUrl("https://localhost:4242/cancel")
-                    .putMetadata("orderId", command.orderId().toString())
-                    .putMetadata("paymentId", command.paymentId().toString());
+                    .setPaymentIntentData(
+                            SessionCreateParams.PaymentIntentData.builder()
+                                    .putMetadata("paymentId", command.paymentId().toString())
+                                    .build()
+                    );
 
 
             command.items().forEach(item -> {
                 var lineItem = createLineItem(item, command.currency());
-                builder.addLineItem(lineItem);
+                sessionCreateParams.addLineItem(lineItem);
             });
 
-            Session session = Session.create(builder.build());
-
+            Session session = Session.create(sessionCreateParams.build());
             return new CheckoutSessionDto(
                     session.getUrl(),
-                    PaymentProvider.STRIPE);
+                    PaymentProvider.STRIPE,
+                    session.getId());
         } catch (StripeException e) {
             throw new PaymentException();
         }
@@ -54,11 +57,12 @@ public class StripePaymentGateway implements PaymentGateway
                 .build();
     }
 
-    private SessionCreateParams.LineItem.PriceData createPriceData(LineItemDto item, String currency)
+    private SessionCreateParams.LineItem.PriceData createPriceData(LineItemDto item,
+            String currency)
     {
 
         return SessionCreateParams.LineItem.PriceData.builder()
-                .setCurrency(currency)
+                .setCurrency(currency.toLowerCase())
                 .setUnitAmountDecimal(item.unitPrice().multiply(BigDecimal.valueOf(100)))
                 .setProductData(createProductData(item))
                 .build();

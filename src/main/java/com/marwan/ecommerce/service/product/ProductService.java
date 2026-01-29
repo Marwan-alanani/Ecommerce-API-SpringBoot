@@ -111,4 +111,9 @@ public class ProductService
         product.setEnabled(false);
         productRepository.save(product);
     }
+
+    public void saveProduct(Product product)
+    {
+        productRepository.save(product);
+    }
 }
