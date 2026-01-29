@@ -39,6 +39,7 @@ public final class Order
 
     // order status
     @Enumerated(EnumType.STRING)
+    @Setter(AccessLevel.NONE)
     private OrderStatus orderStatus;
 
     public List<OrderItem> getOrderItems()
@@ -51,8 +52,19 @@ public final class Order
         orderItems.add(orderItem);
         orderItem.setOrder(this);
     }
-    public void markPaid(){
+
+    public void markPaid()
+    {
         this.orderStatus = OrderStatus.PAID;
+    }
+
+    public void markPaymentFailed()
+    {
+        this.orderStatus = OrderStatus.PAYMENT_FAILED;
+    }
+
+    public void markPaymentPending(){
+        this.orderStatus = OrderStatus.PAYMENT_PENDING;
     }
 
     public static Order fromCart(Cart cart)

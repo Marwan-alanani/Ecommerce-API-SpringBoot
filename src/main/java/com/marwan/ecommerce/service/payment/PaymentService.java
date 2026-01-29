@@ -27,6 +27,7 @@ public class PaymentService
         Payment payment = paymentRepository.findById(paymentId).orElseThrow(
                 () -> new PaymentNotFoundException(paymentId));
         if (payment.getStatus() == PaymentStatus.SUCCEEDED) {
+            // for idempotency
             return;
         }
 
@@ -39,5 +40,29 @@ public class PaymentService
                 new OrderPaidEvent(payment.getOrder().getOrderId())
         );
 
+    }
+
+    public Payment getPayment(UUID paymentId)
+    {
+        return paymentRepository.findById(paymentId).orElseThrow(
+                () -> new PaymentNotFoundException(paymentId));
+    }
+
+    @Transactional
+    public void save(Payment payment)
+    {
+        paymentRepository.save(payment);
+    }
+
+    @Transactional
+    public void handleFailure(UUID paymentId)
+    {
+        Payment payment = getPayment(paymentId);
+        if (payment.getStatus() == PaymentStatus.FAILED) {
+            return;
+        }
+        payment.markFailed();
+        payment.getOrder().markPaymentFailed();
+        paymentRepository.save(payment);
     }
 }

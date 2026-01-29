@@ -76,4 +76,9 @@ public final class Payment
         this.status = PaymentStatus.SUCCEEDED;
     }
 
+    public void markFailed()
+    {
+        this.status = PaymentStatus.FAILED;
+    }
+
 }

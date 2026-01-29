@@ -22,13 +22,18 @@ public class OrderService
         return orderRepository.findAllWithOrderItems();
     }
 
-    public Order getOrderById(UUID orderId)
+    public Order getOrderWithOrderItems(UUID orderId)
     {
         return orderRepository.findByOrderIdWithOrderItems(orderId).orElseThrow(
                 () -> new OrderNotFoundException(orderId));
     }
 
-    public void saveOrder(Order order)
+    public Order getOrder(UUID orderId){
+        return orderRepository.findById(orderId).orElseThrow(
+                () -> new OrderNotFoundException(orderId));
+    }
+
+    public void save(Order order)
     {
         orderRepository.save(order);
     }

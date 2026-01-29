@@ -10,7 +10,8 @@ import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Locale;
 
 @Service
 public class StripePaymentGateway implements PaymentGateway
@@ -22,7 +23,7 @@ public class StripePaymentGateway implements PaymentGateway
         try {
 
             // Create a checkout session
-            var sessionCreateParams = SessionCreateParams.builder()
+            var paramsBuilder = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
                     .setSuccessUrl("https://localhost:4242/success")
                     .setCancelUrl("https://localhost:4242/cancel")
@@ -35,10 +36,10 @@ public class StripePaymentGateway implements PaymentGateway
 
             command.items().forEach(item -> {
                 var lineItem = createLineItem(item, command.currency());
-                sessionCreateParams.addLineItem(lineItem);
+                paramsBuilder.addLineItem(lineItem);
             });
 
-            Session session = Session.create(sessionCreateParams.build());
+            Session session = Session.create(paramsBuilder.build());
             return new CheckoutSessionDto(
                     session.getUrl(),
                     PaymentProvider.STRIPE,
@@ -60,10 +61,13 @@ public class StripePaymentGateway implements PaymentGateway
     private SessionCreateParams.LineItem.PriceData createPriceData(LineItemDto item,
             String currency)
     {
+        var unitPrice = item.unitPrice()
+                .movePointRight(2)
+                .setScale(0, RoundingMode.HALF_UP);
 
         return SessionCreateParams.LineItem.PriceData.builder()
-                .setCurrency(currency.toLowerCase())
-                .setUnitAmountDecimal(item.unitPrice().multiply(BigDecimal.valueOf(100)))
+                .setCurrency(currency.toLowerCase(Locale.ROOT))
+                .setUnitAmountDecimal(unitPrice)
                 .setProductData(createProductData(item))
                 .build();
     }

@@ -1,16 +1,16 @@
 package com.marwan.ecommerce.service.payment;
 
-import com.marwan.ecommerce.model.entity.Cart;
-import com.marwan.ecommerce.model.entity.Order;
-import com.marwan.ecommerce.model.entity.Payment;
+import com.marwan.ecommerce.model.enums.Currency;
 import com.marwan.ecommerce.service.order.command.LineItemDto;
 
 import java.util.List;
+import java.util.UUID;
 
 public record CheckoutInit(
-        Order order,
-        Payment payment,
-        Cart cart,
+        UUID orderId,
+        UUID paymentId,
+        UUID cartId,
+        Currency currency,
         List<LineItemDto> lineItemDtoList
 )
 {

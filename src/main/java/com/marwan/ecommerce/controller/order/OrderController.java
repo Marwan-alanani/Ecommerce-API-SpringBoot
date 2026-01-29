@@ -3,11 +3,9 @@ package com.marwan.ecommerce.controller.order;
 import com.marwan.ecommerce.dto.order.OrderDto;
 import com.marwan.ecommerce.mapper.OrderMapper;
 import com.marwan.ecommerce.model.entity.Order;
-import com.marwan.ecommerce.security.CustomUserDetails;
 import com.marwan.ecommerce.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +24,7 @@ public class OrderController
     private final OrderMapper orderMapper;
 
     @GetMapping
-    public ResponseEntity<?> findAll(@AuthenticationPrincipal CustomUserDetails userDetails)
+    public ResponseEntity<?> findAll()
     {
         List<Order> orders = orderService.getAll();
         List<OrderDto> orderDtos = new ArrayList<>();
@@ -39,7 +37,7 @@ public class OrderController
     @GetMapping("/{orderId}")
     public ResponseEntity<?> getOrder(@PathVariable UUID orderId)
     {
-        Order order = orderService.getOrderById(orderId);
+        Order order = orderService.getOrderWithOrderItems(orderId);
         OrderDto orderDto = orderMapper.orderEntityToOrderDto(order);
         return ResponseEntity.ok(orderDto);
     }

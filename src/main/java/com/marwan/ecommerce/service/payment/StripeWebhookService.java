@@ -39,9 +39,12 @@ public class StripeWebhookService implements PaymentWebhookService
 
                 case "payment_intent.payment_failed" -> {
                     var paymentIntent = PaymentIntent.GSON.fromJson(json, PaymentIntent.class);
-                    System.out.println("--------------------------------------------------");
-                    System.out.println(paymentIntent.getMetadata().get("paymentId"));
-                    System.out.println("--------------------------------------------------");
+                    var paymentIdStr = paymentIntent.getMetadata().get("paymentId");
+                    if (paymentIdStr == null || paymentIdStr.isEmpty()) {
+                        // maybe log the event id
+                        return;
+                    }
+                    paymentService.handleFailure(UUID.fromString(paymentIdStr));
                 }
             }
         } catch (SignatureVerificationException e) {

@@ -21,22 +21,22 @@ public class CheckoutService
         var checkoutInit = checkoutServiceTx.initiateCheckout(userId);
 
         var createSessionCommand = new CreateCheckoutSessionCommand(
-                checkoutInit.payment().getPaymentId(),
-                checkoutInit.order().getCurrency().toString(),
+                checkoutInit.paymentId(),
+                checkoutInit.currency().toString(),
                 checkoutInit.lineItemDtoList()
         );
 
         CheckoutSessionDto sessionDto = paymentGateway.createCheckoutSession(createSessionCommand);
 
         checkoutServiceTx.finalizeCheckout(
-                checkoutInit.payment(),
+                checkoutInit.paymentId(),
                 sessionDto.paymentProvider(),
-                checkoutInit.cart(),
-                checkoutInit.order(),
+                checkoutInit.cartId(),
+                checkoutInit.orderId(),
                 sessionDto.sessionId());
 
         return new CheckoutResponseDto(
-                checkoutInit.order().getOrderId(),
+                checkoutInit.orderId(),
                 sessionDto.checkoutUrl(),
                 sessionDto.sessionId()
         );
