@@ -1,4 +1,4 @@
-package com.marwan.ecommerce.service.purchase.event;
+package com.marwan.ecommerce.service.purchase.event.purchaseCreated;
 
 import java.math.BigDecimal;
 import java.util.UUID;

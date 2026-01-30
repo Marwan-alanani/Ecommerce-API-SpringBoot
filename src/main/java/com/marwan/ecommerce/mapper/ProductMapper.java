@@ -7,7 +7,6 @@ import com.marwan.ecommerce.dto.product.ProductResponseDto;
 import com.marwan.ecommerce.model.entity.Product;
 import com.marwan.ecommerce.service.product.command.CreateProductCommand;
 import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
-import com.marwan.ecommerce.service.purchase.event.PurchaseCreatedEvent;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -24,6 +23,7 @@ public interface ProductMapper
             CreateProductRequest request);
 
     @Mapping(target = "categoryId", source = "category.categoryId")
+    @Mapping(target = "price", source = "sellingPrice")
     ProductResponseDto productToProductResponseDto(Product product);
 
     List<ProductResponseDto> productListToProductResponseDtoList(List<Product> productList);

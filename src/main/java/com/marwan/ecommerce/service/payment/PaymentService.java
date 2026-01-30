@@ -4,7 +4,7 @@ import com.marwan.ecommerce.exception.payment.PaymentNotFoundException;
 import com.marwan.ecommerce.model.entity.Payment;
 import com.marwan.ecommerce.model.enums.PaymentStatus;
 import com.marwan.ecommerce.repository.PaymentRepository;
-import com.marwan.ecommerce.service.order.event.OrderPaid.OrderPaidEvent;
+import com.marwan.ecommerce.service.order.event.orderPaid.OrderPaidEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;

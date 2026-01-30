@@ -7,7 +7,7 @@ import com.marwan.ecommerce.model.entity.Purchase;
 import com.marwan.ecommerce.repository.PurchaseRepository;
 import com.marwan.ecommerce.service.product.ProductService;
 import com.marwan.ecommerce.service.purchase.command.CreatePurchaseCommand;
-import com.marwan.ecommerce.service.purchase.event.PurchaseCreatedEvent;
+import com.marwan.ecommerce.service.purchase.event.purchaseCreated.PurchaseCreatedEvent;
 import com.marwan.ecommerce.service.supplier.SupplierService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

@@ -6,12 +6,18 @@ import com.marwan.ecommerce.exception.product.ProductNotFoundException;
 import com.marwan.ecommerce.mapper.ProductMapper;
 import com.marwan.ecommerce.model.entity.Category;
 import com.marwan.ecommerce.model.entity.Product;
+import com.marwan.ecommerce.model.enums.SortDirection;
+import com.marwan.ecommerce.model.enums.sorting.ProductSortingOptions;
 import com.marwan.ecommerce.repository.ProductRepository;
 import com.marwan.ecommerce.service.category.CategoryService;
 import com.marwan.ecommerce.service.product.command.CreateProductCommand;
 import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -61,10 +67,9 @@ public class ProductService
     public Product getProduct(UUID productId, boolean isEnabled)
             throws ProductNotFoundException
     {
-        Product product = productRepository
+        return productRepository
                 .findByProductIdAndIsEnabled(productId, isEnabled)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
-        return product;
     }
 
     public boolean productExists(UUID id, boolean isEnabled)
@@ -72,18 +77,31 @@ public class ProductService
         return productRepository.existsByProductIdAndIsEnabled(id, isEnabled);
     }
 
-    public List<Product> getProductsByCategoryId(UUID categoryId, boolean isEnabled)
+    public Page<Product> getProductsByCategoryId(
+            int pageSize,
+            int pageNo,
+            ProductSortingOptions sortBy,
+            SortDirection sortDir,
+            UUID categoryId,
+            boolean isEnabled)
             throws CategoryNotFoundException
     {
-        List<Product> productList = productRepository
-                .findByCategory_CategoryIdAndIsEnabled(categoryId, isEnabled);
-        return productList;
+
+        var pageable = constructPageable(pageNo, pageSize, sortBy, sortDir);
+        return productRepository
+                .findByCategory_CategoryIdAndIsEnabled(pageable, categoryId, isEnabled);
 
     }
 
-    public List<Product> getAllProducts(boolean isEnabled)
+    public Page<Product> getAllProducts(
+            int pageSize,
+            int pageNo,
+            ProductSortingOptions sortBy,
+            SortDirection sortDir,
+            boolean isEnabled)
     {
-        return productRepository.findAllByIsEnabled(isEnabled);
+        var pageable = constructPageable(pageSize, pageNo, sortBy, sortDir);
+        return productRepository.findAllByIsEnabled(pageable, isEnabled);
     }
 
     public Product updateProduct(UpdateProductCommand command, boolean isEnabled)
@@ -115,5 +133,24 @@ public class ProductService
     public void saveProduct(Product product)
     {
         productRepository.save(product);
+    }
+
+    private Pageable constructPageable(
+            int pageSize,
+            int pageNo,
+            ProductSortingOptions sortBy,
+            SortDirection dir
+    )
+    {
+        Sort sort;
+        sort = Sort.by(Objects.requireNonNullElse(sortBy,
+                ProductSortingOptions.createdAt).getPropertyName());
+
+        if (dir == SortDirection.ASC) {
+            sort = sort.ascending();
+        } else {
+            sort = sort.descending();
+        }
+        return PageRequest.of(pageNo - 1, pageSize, sort);
     }
 }

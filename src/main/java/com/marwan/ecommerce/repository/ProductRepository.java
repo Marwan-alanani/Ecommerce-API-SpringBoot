@@ -1,6 +1,8 @@
 package com.marwan.ecommerce.repository;
 
 import com.marwan.ecommerce.model.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -17,13 +19,16 @@ public interface ProductRepository extends JpaRepository<Product, UUID>
     @EntityGraph(attributePaths = "category")
     Optional<Product> findWithCategoryByProductIdAndIsEnabled(UUID productId, boolean isEnabled);
 
+    Page<Product> findByCategory_CategoryId(Pageable pageable, UUID categoryId);
+
     List<Product> findByCategory_CategoryId(UUID categoryId);
 
     boolean existsByProductIdAndIsEnabled(UUID productId, boolean isEnabled);
 
-    List<Product> findByCategory_CategoryIdAndIsEnabled(UUID categoryId, boolean isEnabled);
+    Page<Product> findByCategory_CategoryIdAndIsEnabled(Pageable pageable, UUID categoryId,
+            boolean isEnabled);
 
-    List<Product> findAllByIsEnabled(boolean isEnabled);
+    Page<Product> findAllByIsEnabled(Pageable pageable, boolean isEnabled);
 
     int countByCategory_CategoryIdAndIsEnabled(UUID categoryId, boolean isEnabled);
 }

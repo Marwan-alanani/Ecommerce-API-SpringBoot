@@ -1,6 +1,8 @@
 package com.marwan.ecommerce.controller.product;
 
+import com.marwan.ecommerce.controller.common.request.PagingOptions;
 import com.marwan.ecommerce.controller.product.request.CreateProductRequest;
+import com.marwan.ecommerce.controller.product.request.ProductPagingOptions;
 import com.marwan.ecommerce.controller.product.request.UpdateProductRequest;
 import com.marwan.ecommerce.dto.product.ProductDetailsDto;
 import com.marwan.ecommerce.dto.product.ProductResponseDto;
@@ -8,17 +10,20 @@ import com.marwan.ecommerce.exception.category.CategoryNotFoundException;
 import com.marwan.ecommerce.exception.product.ProductNotFoundException;
 import com.marwan.ecommerce.mapper.ProductMapper;
 import com.marwan.ecommerce.model.entity.Product;
+import com.marwan.ecommerce.model.enums.sorting.ProductSortingOptions;
 import com.marwan.ecommerce.service.product.ProductService;
 import com.marwan.ecommerce.service.product.command.CreateProductCommand;
 import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.UUID;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -76,19 +81,30 @@ public class ProductController
 
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> getAllProducts(
+            @ModelAttribute @Valid ProductPagingOptions pagingOptions,
             @RequestParam(required = false) UUID categoryId
     )
             throws CategoryNotFoundException
     {
-        List<Product> products;
+        Page<Product> products;
         if (categoryId == null) {
-            products = productService.getAllProducts(true);
+            products = productService.getAllProducts(pagingOptions.getPageSize(),
+                    pagingOptions.getPageNo(),
+                    pagingOptions.getSortBy(),
+                    pagingOptions.getSortDir(),
+                    true);
+        } else {
+            products = productService.getProductsByCategoryId(
+                    pagingOptions.getPageSize(),
+                    pagingOptions.getPageNo(),
+                    pagingOptions.getSortBy(),
+                    pagingOptions.getSortDir(),
+                    categoryId,
+                    true);
         }
-        else{
-            products = productService.getProductsByCategoryId(categoryId, true);
-        }
+
         List<ProductResponseDto> productResponseDtos =
-                productMapper.productListToProductResponseDtoList(products);
+                productMapper.productListToProductResponseDtoList(products.getContent());
         return ResponseEntity.ok(productResponseDtos);
     }
 

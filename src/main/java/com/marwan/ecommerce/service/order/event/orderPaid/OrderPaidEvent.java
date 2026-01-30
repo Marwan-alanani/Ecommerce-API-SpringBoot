@@ -1,4 +1,4 @@
-package com.marwan.ecommerce.service.order.event.OrderPaid;
+package com.marwan.ecommerce.service.order.event.orderPaid;
 
 import java.util.UUID;
 

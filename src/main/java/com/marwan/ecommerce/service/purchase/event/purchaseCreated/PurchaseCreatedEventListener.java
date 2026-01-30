@@ -1,14 +1,16 @@
-package com.marwan.ecommerce.service.purchase.eventListener;
+package com.marwan.ecommerce.service.purchase.event.purchaseCreated;
 
 import com.marwan.ecommerce.exception.product.ProductNotFoundException;
 import com.marwan.ecommerce.model.entity.Product;
 import com.marwan.ecommerce.repository.ProductRepository;
-import com.marwan.ecommerce.service.purchase.event.PurchaseCreatedEvent;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Component
 @RequiredArgsConstructor
@@ -16,7 +18,8 @@ public class PurchaseCreatedEventListener
 {
     private final ProductRepository productRepository;
 
-    @EventListener
+    @TransactionalEventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void onPurchaseCreated(PurchaseCreatedEvent event)
             throws ProductNotFoundException
     {
@@ -32,7 +35,7 @@ public class PurchaseCreatedEventListener
         product.setTotalPurchaseQuantity(totalQuantity);
 
         BigDecimal averagePrice = totalPrice.divide(
-                BigDecimal.valueOf(totalQuantity), 3, BigDecimal.ROUND_HALF_UP
+                BigDecimal.valueOf(totalQuantity), 3, RoundingMode.HALF_UP
         );
         product.setSellingPrice(averagePrice);
         product.increaseBalance(event.quantity());
