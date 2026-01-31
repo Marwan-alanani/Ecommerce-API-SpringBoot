@@ -1,10 +1,12 @@
 package com.marwan.ecommerce.service.purchase;
 
+import com.marwan.ecommerce.dto.purchase.PurchasePagingOptions;
 import com.marwan.ecommerce.exception.product.ProductNotFoundException;
 import com.marwan.ecommerce.exception.purchase.PurchaseNotFoundException;
 import com.marwan.ecommerce.exception.supplier.SupplierNotFoundException;
 import com.marwan.ecommerce.model.entity.Purchase;
 import com.marwan.ecommerce.repository.PurchaseRepository;
+import com.marwan.ecommerce.service.common.BaseService;
 import com.marwan.ecommerce.service.product.ProductService;
 import com.marwan.ecommerce.service.purchase.command.CreatePurchaseCommand;
 import com.marwan.ecommerce.service.purchase.event.purchaseCreated.PurchaseCreatedEvent;
@@ -12,16 +14,16 @@ import com.marwan.ecommerce.service.supplier.SupplierService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class PurchaseService
+public class PurchaseService extends BaseService
 {
     private final PurchaseRepository purchaseRepository;
     private final ProductService productService;
@@ -65,24 +67,33 @@ public class PurchaseService
         return purchase.get();
     }
 
-    public List<Purchase> getAll()
+    public Page<Purchase> getAll(PurchasePagingOptions pagingOptions)
     {
-        return purchaseRepository.findAll();
+        var pageable = constructPageable(pagingOptions);
+        return purchaseRepository.findAll(pageable);
     }
 
-    public List<Purchase> getAllByProductId(UUID productId)
+    public Page<Purchase> getAllByProductId(
+            PurchasePagingOptions pagingOptions
+            , UUID productId)
     {
-        return purchaseRepository.findByProductId(productId);
+        var pageable = constructPageable(pagingOptions);
+        return purchaseRepository.findByProductId(pageable, productId);
     }
 
-    public List<Purchase> getAllBySupplierId(UUID supplierId)
+    public Page<Purchase> getAllBySupplierId(PurchasePagingOptions pagingOptions, UUID supplierId)
     {
-        return purchaseRepository.findBySupplierId(supplierId);
+        var pageable = constructPageable(pagingOptions);
+        return purchaseRepository.findBySupplierId(pageable, supplierId);
     }
 
-    public List<Purchase> getAllBySupplierIdAndProductId(UUID supplierId, UUID productId)
+    public Page<Purchase> getAllBySupplierIdAndProductId(PurchasePagingOptions pagingOptions,
+            UUID supplierId,
+            UUID productId)
     {
-        return purchaseRepository.findBySupplierIdAndProductId(supplierId, productId);
+
+        var pageable = constructPageable(pagingOptions);
+        return purchaseRepository.findBySupplierIdAndProductId(pageable, supplierId, productId);
     }
 
 

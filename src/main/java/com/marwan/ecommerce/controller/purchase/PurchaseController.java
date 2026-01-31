@@ -1,7 +1,10 @@
 package com.marwan.ecommerce.controller.purchase;
 
+import com.marwan.ecommerce.controller.common.converter.BaseController;
 import com.marwan.ecommerce.controller.purchase.request.CreatePurchaseRequest;
+import com.marwan.ecommerce.dto.common.PageDto;
 import com.marwan.ecommerce.dto.purchase.PurchaseDto;
+import com.marwan.ecommerce.dto.purchase.PurchasePagingOptions;
 import com.marwan.ecommerce.exception.product.ProductNotFoundException;
 import com.marwan.ecommerce.exception.purchase.PurchaseNotFoundException;
 import com.marwan.ecommerce.exception.supplier.SupplierNotFoundException;
@@ -11,6 +14,7 @@ import com.marwan.ecommerce.service.purchase.PurchaseService;
 import com.marwan.ecommerce.service.purchase.command.CreatePurchaseCommand;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +22,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@RestController
 @RequestMapping("/purchases")
 @RequiredArgsConstructor
-public class PurchaseController
+@RestController
+public class PurchaseController extends BaseController
 {
     private final PurchaseService purchaseService;
     private final PurchaseMapper purchaseMapper;
@@ -48,22 +52,34 @@ public class PurchaseController
     }
 
     @GetMapping
-    public ResponseEntity<List<PurchaseDto>> getAll(
+    public ResponseEntity<PageDto<PurchaseDto>> getAll(
+            @Valid PurchasePagingOptions pagingOptions,
             @RequestParam(required = false) UUID productId,
             @RequestParam(required = false) UUID supplierId
     )
     {
-        List<Purchase> purchaseList;
+        Page<Purchase> purchasePage;
         if (productId == null && supplierId == null) {
-            purchaseList = purchaseService.getAll();
+            purchasePage = purchaseService.getAll(pagingOptions);
         } else if (productId != null && supplierId != null) {
-            purchaseList = purchaseService.getAllBySupplierIdAndProductId(supplierId, productId);
+            purchasePage = purchaseService.getAllBySupplierIdAndProductId(
+                    pagingOptions,
+                    supplierId,
+                    productId);
         } else if (supplierId != null) {
-            purchaseList = purchaseService.getAllBySupplierId(supplierId);
+            purchasePage = purchaseService.getAllBySupplierId(
+                    pagingOptions,
+                    supplierId);
         } else {
-            purchaseList = purchaseService.getAllByProductId(productId);
+            purchasePage = purchaseService.getAllByProductId(
+                    pagingOptions,
+                    productId);
         }
-        return ResponseEntity.ok(purchaseMapper.purchaseListToPurchaseDtoList(purchaseList));
+
+        List<PurchaseDto> purchaseDtos = purchaseMapper
+                .purchaseListToPurchaseDtoList(purchasePage.getContent());
+
+        return ResponseEntity.ok(toPageDto(purchasePage, purchaseDtos));
     }
 
 }

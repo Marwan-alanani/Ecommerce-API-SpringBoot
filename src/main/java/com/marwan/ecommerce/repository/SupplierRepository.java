@@ -1,6 +1,8 @@
 package com.marwan.ecommerce.repository;
 
 import com.marwan.ecommerce.model.entity.Supplier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +12,9 @@ import java.util.UUID;
 @Repository
 public interface SupplierRepository extends JpaRepository<Supplier, UUID>
 {
+    @Override
+    Page<Supplier> findAll(Pageable pageable);
+
     Optional<Supplier> findBySupplierIdAndIsEnabled(UUID id, boolean isEnabled);
 
     boolean existsByName(String name);

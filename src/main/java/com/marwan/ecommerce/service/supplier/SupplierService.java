@@ -1,29 +1,31 @@
 package com.marwan.ecommerce.service.supplier;
 
+import com.marwan.ecommerce.dto.supplier.SupplierPagingOptions;
 import com.marwan.ecommerce.exception.supplier.SupplierEmailExistsException;
 import com.marwan.ecommerce.exception.supplier.SupplierNotFoundException;
 import com.marwan.ecommerce.exception.supplier.SupplierNameExistsException;
 import com.marwan.ecommerce.mapper.SupplierMapper;
 import com.marwan.ecommerce.model.entity.Supplier;
 import com.marwan.ecommerce.repository.SupplierRepository;
+import com.marwan.ecommerce.service.common.BaseService;
 import com.marwan.ecommerce.service.supplier.command.CreateSupplierCommand;
 import com.marwan.ecommerce.service.supplier.command.UpdateSupplierCommand;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
-public class SupplierService
+public class SupplierService extends BaseService
 {
     private final SupplierRepository supplierRepository;
     private final SupplierMapper supplierMapper;
 
+    @Transactional
     public Supplier createSupplier(CreateSupplierCommand command)
             throws SupplierEmailExistsException, SupplierNameExistsException
     {
@@ -56,11 +58,13 @@ public class SupplierService
         return supplierRepository.existsBySupplierIdAndIsEnabled(supplierId, isEnabled);
     }
 
-    public List<Supplier> getAll()
+    public Page<Supplier> getAll(SupplierPagingOptions pagingOptions)
     {
-        return supplierRepository.findAll();
+        var pageable = constructPageable(pagingOptions);
+        return supplierRepository.findAll(pageable);
     }
 
+    @Transactional
     public Supplier update(UpdateSupplierCommand command, boolean isEnabled)
             throws SupplierNotFoundException, SupplierNameExistsException,
             SupplierEmailExistsException
@@ -88,6 +92,7 @@ public class SupplierService
         return supplier;
     }
 
+    @Transactional
     public void deactivate(UUID supplierId, boolean isEnabled)
             throws SupplierNotFoundException
     {

@@ -1,27 +1,29 @@
 package com.marwan.ecommerce.service.user;
 
+import com.marwan.ecommerce.dto.user.UserPagingOptions;
 import com.marwan.ecommerce.model.enums.UserRole;
 import com.marwan.ecommerce.model.entity.User;
 import com.marwan.ecommerce.repository.UserRepository;
 import com.marwan.ecommerce.exception.user.EmailExistsException;
 import com.marwan.ecommerce.exception.user.UserNotFoundException;
+import com.marwan.ecommerce.service.common.BaseService;
 import com.marwan.ecommerce.service.user.command.RegisterCommand;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
-public class UserService
+public class UserService extends BaseService
 {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public User create(RegisterCommand command)
             throws EmailExistsException
     {
@@ -40,6 +42,7 @@ public class UserService
         return user;
     }
 
+    @Transactional
     public void deactivate(UUID id) throws UserNotFoundException
     {
         User user = userRepository.findById(id).
@@ -47,9 +50,10 @@ public class UserService
         user.setEnabled(false);
     }
 
-    public List<User> getAll()
+    public Page<User> getAll(UserPagingOptions pagingOptions)
     {
-        return userRepository.findAll();
+        var pageable = constructPageable(pagingOptions);
+        return userRepository.findAll(pageable);
     }
 
     public User getUser(UUID id)
@@ -61,6 +65,6 @@ public class UserService
 
     public boolean userExists(UUID id)
     {
-        return userRepository.existsByUserIdAndIsEnabled(id,true);
+        return userRepository.existsByUserIdAndIsEnabled(id, true);
     }
 }

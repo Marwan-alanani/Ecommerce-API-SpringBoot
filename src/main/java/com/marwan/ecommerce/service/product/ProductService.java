@@ -1,36 +1,34 @@
 package com.marwan.ecommerce.service.product;
 
 import com.marwan.ecommerce.dto.product.ProductDetailsDto;
+import com.marwan.ecommerce.dto.product.ProductPagingOptions;
 import com.marwan.ecommerce.exception.category.CategoryNotFoundException;
 import com.marwan.ecommerce.exception.product.ProductNotFoundException;
 import com.marwan.ecommerce.mapper.ProductMapper;
 import com.marwan.ecommerce.model.entity.Category;
 import com.marwan.ecommerce.model.entity.Product;
-import com.marwan.ecommerce.model.enums.SortDirection;
-import com.marwan.ecommerce.model.enums.sorting.ProductSortingOptions;
 import com.marwan.ecommerce.repository.ProductRepository;
 import com.marwan.ecommerce.service.category.CategoryService;
+import com.marwan.ecommerce.service.common.BaseService;
 import com.marwan.ecommerce.service.product.command.CreateProductCommand;
 import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
-public class ProductService
+public class ProductService extends BaseService
 {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final CategoryService categoryService;
 
+
+    @Transactional
     public Product createProduct(CreateProductCommand command)
             throws CategoryNotFoundException
     {
@@ -78,32 +76,27 @@ public class ProductService
     }
 
     public Page<Product> getProductsByCategoryId(
-            int pageSize,
-            int pageNo,
-            ProductSortingOptions sortBy,
-            SortDirection sortDir,
+            ProductPagingOptions pagingOptions,
             UUID categoryId,
             boolean isEnabled)
             throws CategoryNotFoundException
     {
 
-        var pageable = constructPageable(pageNo, pageSize, sortBy, sortDir);
+        var pageable = constructPageable(pagingOptions);
         return productRepository
                 .findByCategory_CategoryIdAndIsEnabled(pageable, categoryId, isEnabled);
 
     }
 
     public Page<Product> getAllProducts(
-            int pageSize,
-            int pageNo,
-            ProductSortingOptions sortBy,
-            SortDirection sortDir,
+            ProductPagingOptions pagingOptions,
             boolean isEnabled)
     {
-        var pageable = constructPageable(pageSize, pageNo, sortBy, sortDir);
+        var pageable = constructPageable(pagingOptions);
         return productRepository.findAllByIsEnabled(pageable, isEnabled);
     }
 
+    @Transactional
     public Product updateProduct(UpdateProductCommand command, boolean isEnabled)
             throws ProductNotFoundException, CategoryNotFoundException
     {
@@ -120,6 +113,7 @@ public class ProductService
         return product;
     }
 
+    @Transactional
     public void deactivateProduct(UUID productId, boolean isEnabled)
             throws ProductNotFoundException
     {
@@ -130,27 +124,10 @@ public class ProductService
         productRepository.save(product);
     }
 
+    @Transactional
     public void saveProduct(Product product)
     {
         productRepository.save(product);
     }
 
-    private Pageable constructPageable(
-            int pageSize,
-            int pageNo,
-            ProductSortingOptions sortBy,
-            SortDirection dir
-    )
-    {
-        Sort sort;
-        sort = Sort.by(Objects.requireNonNullElse(sortBy,
-                ProductSortingOptions.createdAt).getPropertyName());
-
-        if (dir == SortDirection.ASC) {
-            sort = sort.ascending();
-        } else {
-            sort = sort.descending();
-        }
-        return PageRequest.of(pageNo - 1, pageSize, sort);
-    }
 }

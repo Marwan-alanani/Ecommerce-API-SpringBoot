@@ -1,18 +1,22 @@
 package com.marwan.ecommerce.repository;
 
 import com.marwan.ecommerce.model.entity.Purchase;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Repository
 public interface PurchaseRepository extends JpaRepository<Purchase, UUID>
 {
-    List<Purchase> findByProductId(UUID productId);
+    @Override
+    Page<Purchase> findAll(Pageable pageable);
 
-    List<Purchase> findBySupplierId(UUID supplierId);
+    Page<Purchase> findByProductId(Pageable pageable, UUID productId);
 
-    List<Purchase> findBySupplierIdAndProductId(UUID supplierId, UUID productId);
+    Page<Purchase> findBySupplierId(Pageable pageable, UUID supplierId);
+
+    Page<Purchase> findBySupplierIdAndProductId(Pageable pageable, UUID supplierId, UUID productId);
 }

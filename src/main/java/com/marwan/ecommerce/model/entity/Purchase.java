@@ -46,9 +46,14 @@ public final class Purchase
                 BigDecimal.valueOf(unitPrice),
                 quantity,
                 supplierId,
-                Instant.now()
+                null
         );
 
+    }
+
+    public BigDecimal getTotalCost()
+    {
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
     }
 
 }

@@ -36,16 +36,16 @@ public final class Category
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY,
             mappedBy = "category")
     @Setter(AccessLevel.NONE)
+    // can I sort by products.Length?
     private List<Product> products;
 
     public static Category create(String name)
     {
-        Instant now = Instant.now();
         return new Category(
                 UUID.randomUUID(),
                 name,
-                now,
-                now,
+                null,
+                null,
                 true,
                 null);
     }

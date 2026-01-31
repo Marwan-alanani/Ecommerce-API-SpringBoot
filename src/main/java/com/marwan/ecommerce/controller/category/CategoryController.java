@@ -2,8 +2,11 @@ package com.marwan.ecommerce.controller.category;
 
 import com.marwan.ecommerce.controller.category.request.CreateCategoryRequest;
 import com.marwan.ecommerce.controller.category.request.UpdateCategoryRequest;
+import com.marwan.ecommerce.controller.common.converter.BaseController;
+import com.marwan.ecommerce.dto.category.CategoryPagingOptions;
 import com.marwan.ecommerce.dto.category.CategoryResponseDto;
 import com.marwan.ecommerce.dto.category.CategoryWithProductsCountDto;
+import com.marwan.ecommerce.dto.common.PageDto;
 import com.marwan.ecommerce.exception.category.CategoryNotFoundException;
 import com.marwan.ecommerce.exception.category.CategoryNameExistsException;
 import com.marwan.ecommerce.mapper.CategoryMapper;
@@ -13,6 +16,7 @@ import com.marwan.ecommerce.service.category.command.CreateCategoryCommand;
 import com.marwan.ecommerce.service.category.command.UpdateCategoryCommand;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +27,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/categories")
 @RequiredArgsConstructor
-public class CategoryController
+public class CategoryController extends BaseController
 {
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
@@ -73,13 +77,17 @@ public class CategoryController
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryResponseDto>> getAllCategories()
+    public ResponseEntity<PageDto<CategoryResponseDto>> getAllCategories(
+            @Valid CategoryPagingOptions pagingOptions
+    )
     {
-        List<Category> categories = categoryService.getAllCategories(true);
+        Page<Category> categoryPage = categoryService.getAllCategories(pagingOptions, true);
         List<CategoryResponseDto> categoryResponseDtoList =
-                categoryMapper.categoryListToCategoryResponseDtoList(categories);
+                categoryMapper.categoryListToCategoryResponseDtoList(categoryPage.getContent());
 
-        return ResponseEntity.status(HttpStatus.OK).body(categoryResponseDtoList);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(toPageDto(categoryPage, categoryResponseDtoList));
     }
 
 }

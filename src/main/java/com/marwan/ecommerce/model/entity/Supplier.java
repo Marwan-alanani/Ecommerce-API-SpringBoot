@@ -41,13 +41,12 @@ public final class Supplier
 
     public static Supplier create(String name, String email)
     {
-        Instant now = Instant.now();
         return new Supplier(
                 UUID.randomUUID(),
                 name,
                 email,
-                now,
-                now,
+                null,
+                null,
                 true
         );
     }

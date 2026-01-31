@@ -1,5 +1,6 @@
 package com.marwan.ecommerce.service.category;
 
+import com.marwan.ecommerce.dto.category.CategoryPagingOptions;
 import com.marwan.ecommerce.dto.category.CategoryWithProductsCountDto;
 import com.marwan.ecommerce.exception.category.CategoryNotFoundException;
 import com.marwan.ecommerce.exception.category.CategoryNameExistsException;
@@ -10,25 +11,26 @@ import com.marwan.ecommerce.repository.ProductRepository;
 import com.marwan.ecommerce.service.category.command.CreateCategoryCommand;
 import com.marwan.ecommerce.service.category.command.UpdateCategoryCommand;
 import com.marwan.ecommerce.service.category.event.CategoryDeactivatedEvent;
+import com.marwan.ecommerce.service.common.BaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
-public class CategoryService
+public class CategoryService extends BaseService
 {
     private final CategoryRepository categoryRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final CategoryMapper categoryMapper;
     private final ProductRepository productRepository;
 
+    @Transactional
     public Category create(CreateCategoryCommand command)
             throws CategoryNameExistsException
     {
@@ -45,7 +47,8 @@ public class CategoryService
         return categoryRepository.findByCategoryIdAndIsEnabled(id, isEnabled).isPresent();
     }
 
-    public CategoryWithProductsCountDto getCategoryWithProductCount(UUID categoryId,
+    public CategoryWithProductsCountDto getCategoryWithProductCount(
+            UUID categoryId,
             boolean isEnabled)
             throws CategoryNotFoundException
     {
@@ -89,6 +92,7 @@ public class CategoryService
 
     }
 
+    @Transactional
     public Category updateCategory(UpdateCategoryCommand command, boolean isEnabled)
             throws CategoryNotFoundException, CategoryNameExistsException
     {
@@ -108,9 +112,12 @@ public class CategoryService
         return category;
     }
 
-    public List<Category> getAllCategories(boolean isEnabled)
+    public Page<Category> getAllCategories(
+            CategoryPagingOptions pagingOptions,
+            boolean isEnabled)
     {
-        return categoryRepository.findAllByIsEnabled(isEnabled);
+        var pageable = constructPageable(pagingOptions);
+        return categoryRepository.findAllByIsEnabled(pageable, isEnabled);
     }
 
 }
