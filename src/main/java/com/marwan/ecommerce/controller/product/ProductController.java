@@ -33,7 +33,7 @@ public class ProductController extends BaseController
     private final ProductService productService;
     private final ProductMapper productMapper;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<ProductResponseDto> createProduct(
             @Valid @RequestBody CreateProductRequest request,
             UriComponentsBuilder uriBuilder)
@@ -58,7 +58,7 @@ public class ProductController extends BaseController
         return ResponseEntity.ok(productDetailsDto);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<ProductResponseDto> updateProduct(
             @Valid @RequestBody UpdateProductRequest request)
             throws ProductNotFoundException, CategoryNotFoundException
@@ -71,7 +71,7 @@ public class ProductController extends BaseController
         return ResponseEntity.ok(productResponseDto);
     }
 
-    @DeleteMapping("/delete/{productId}")
+    @DeleteMapping("/{productId}")
     public ResponseEntity<?> deactivateProduct(@PathVariable UUID productId)
             throws ProductNotFoundException
     {

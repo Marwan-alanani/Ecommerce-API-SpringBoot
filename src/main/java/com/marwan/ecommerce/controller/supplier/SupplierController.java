@@ -32,7 +32,7 @@ public class SupplierController extends BaseController
     private final SupplierService supplierService;
     private final SupplierMapper supplierMapper;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<SupplierDto> create(@Valid @RequestBody CreateSupplierRequest request)
             throws SupplierEmailExistsException, SupplierNameExistsException
     {
@@ -67,7 +67,7 @@ public class SupplierController extends BaseController
         return ResponseEntity.ok(toPageDto(supplierPage, supplierDtoList));
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<SupplierDto> update(@Valid @RequestBody UpdateSupplierRequest request)
             throws SupplierNameExistsException,
             SupplierEmailExistsException,
@@ -80,7 +80,7 @@ public class SupplierController extends BaseController
     }
 
 
-    @DeleteMapping("/delete/{supplierId}")
+    @DeleteMapping("/{supplierId}")
     public ResponseEntity<?> deactivate(@PathVariable UUID supplierId)
             throws SupplierNotFoundException
     {

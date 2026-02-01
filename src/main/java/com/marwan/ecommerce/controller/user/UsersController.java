@@ -8,12 +8,14 @@ import com.marwan.ecommerce.dto.user.UserPagingOptions;
 import com.marwan.ecommerce.exception.user.UserNotFoundException;
 import com.marwan.ecommerce.mapper.UserMapper;
 import com.marwan.ecommerce.model.entity.User;
+import com.marwan.ecommerce.security.CustomUserDetails;
 import com.marwan.ecommerce.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +29,7 @@ public class UsersController extends BaseController
     private final UserService userService;
     private final UserMapper userMapper;
 
-    @DeleteMapping("/delete/{userId}")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<?> remove(@PathVariable UUID userId)
             throws UserNotFoundException
     {
@@ -41,6 +43,14 @@ public class UsersController extends BaseController
             throws UserNotFoundException
     {
         User user = userService.getUser(userId);
+        return ResponseEntity.ok(userMapper.userToUserDto(user));
+    }
+
+    @GetMapping("/me")
+    ResponseEntity<UserDto> getCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails)
+    {
+
+        User user = userService.getUser(userDetails.getUserId());
         return ResponseEntity.ok(userMapper.userToUserDto(user));
     }
 

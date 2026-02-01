@@ -37,6 +37,7 @@ public class SecurityConfig
                                 "/auth/**",
                                 "/login"
                         ).permitAll()
+
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/categories",
@@ -56,6 +57,7 @@ public class SecurityConfig
                                 "/products/**").hasRole(UserRole.ADMIN.name())
 
                         .requestMatchers("/suppliers").hasRole(UserRole.ADMIN.name())
+                        .requestMatchers("/purchase/**").hasRole(UserRole.ADMIN.name())
                         .requestMatchers("/webhook/**").permitAll()
 
                         .anyRequest().authenticated()
@@ -64,8 +66,11 @@ public class SecurityConfig
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(
                         sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                );       // optional for
-        // POST testing in Swagger
+                )
+                .exceptionHandling(e -> {
+                    e.authenticationEntryPoint((req, resp, ex) -> resp.sendError(401));
+                    e.accessDeniedHandler((req, resp, ex) -> resp.sendError(403));
+                });
 
         return http.build();
     }

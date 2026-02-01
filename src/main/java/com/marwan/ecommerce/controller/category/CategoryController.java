@@ -32,7 +32,7 @@ public class CategoryController extends BaseController
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<CategoryResponseDto> create(
             @Valid @RequestBody CreateCategoryRequest request)
             throws CategoryNameExistsException
@@ -54,7 +54,7 @@ public class CategoryController extends BaseController
         );
     }
 
-    @DeleteMapping("/delete/{categoryId}")
+    @DeleteMapping("/{categoryId}")
     public ResponseEntity<?> deactivateCategory(@PathVariable UUID categoryId)
             throws CategoryNotFoundException
     {
@@ -62,7 +62,7 @@ public class CategoryController extends BaseController
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<CategoryResponseDto> updateCategory(
             @Valid @RequestBody UpdateCategoryRequest request)
             throws CategoryNotFoundException, CategoryNameExistsException

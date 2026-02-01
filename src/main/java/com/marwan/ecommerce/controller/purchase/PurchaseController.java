@@ -30,7 +30,7 @@ public class PurchaseController extends BaseController
     private final PurchaseService purchaseService;
     private final PurchaseMapper purchaseMapper;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<PurchaseDto> create(@Valid @RequestBody CreatePurchaseRequest request)
             throws SupplierNotFoundException, ProductNotFoundException
     {

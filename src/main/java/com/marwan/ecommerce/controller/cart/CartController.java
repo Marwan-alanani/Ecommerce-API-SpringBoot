@@ -35,7 +35,7 @@ public class CartController
         return ResponseEntity.ok(cartDto);
     }
 
-    @PostMapping
+    @PostMapping("/me") // /carts/me
     public ResponseEntity<?> createCart(@AuthenticationPrincipal CustomUserDetails userDetails)
     {
         Cart cart = cartService.createCart(userDetails.getUserId());
@@ -44,7 +44,7 @@ public class CartController
     }
 
 
-    @PostMapping("/me/items")
+    @PostMapping("/me/items") // /carts/me/items
     public ResponseEntity<?> addCartItem(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody AddOrUpdateCartItemRequest request)

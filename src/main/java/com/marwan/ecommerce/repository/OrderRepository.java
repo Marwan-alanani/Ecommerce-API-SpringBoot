@@ -18,6 +18,8 @@ public interface OrderRepository extends JpaRepository<Order, UUID>
     @Override
     Page<Order> findAll(Pageable pageable);
 
+    Optional<Order> findByUserIdAndOrderId(UUID userId, UUID orderId);
+
     @EntityGraph(attributePaths = "orderItems")
     @Query("SELECT o FROM Order o")
     Page<Order> findAllWithOrderItems(Pageable pageable);
@@ -27,7 +29,16 @@ public interface OrderRepository extends JpaRepository<Order, UUID>
     @Query("SELECT o FROM Order o WHERE o.orderId=:orderId")
     Optional<Order> findByOrderIdWithOrderItems(@Param("orderId") UUID orderId);
 
+
+    @EntityGraph(attributePaths = "orderItems")
+    @Query("SELECT o FROM Order o WHERE o.userId=:userId AND o.orderId=:orderId")
+    Optional<Order> findByUserIdAndOrderIdWithOrderItems(
+            @Param("userId") UUID userId,
+            @Param("orderId") UUID orderId
+    );
+
+
     @EntityGraph(attributePaths = "orderItems")
     @Query("SELECT o FROM Order o WHERE o.userId=:userId")
-    Page<Order> findByUserIdWithOrderItems(Pageable pageable, @Param("userId") UUID orderId);
+    Page<Order> findAllByUserIdWithOrderItems(Pageable pageable, @Param("userId") UUID userId);
 }
