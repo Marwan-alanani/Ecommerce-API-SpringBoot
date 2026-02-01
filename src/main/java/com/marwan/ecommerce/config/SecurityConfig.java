@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig
 {
@@ -37,26 +39,21 @@ public class SecurityConfig
                                 "/auth/**",
                                 "/login"
                         ).permitAll()
-
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/categories",
                                 "/categories/**").permitAll()
 
                         .requestMatchers(
-                                HttpMethod.POST,
-                                "/categories/**").hasRole(UserRole.ADMIN.name())
-
-                        .requestMatchers(
                                 HttpMethod.GET,
                                 "/products",
                                 "/products/**").permitAll()
 
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/products/**").hasRole(UserRole.ADMIN.name())
+                        .requestMatchers("/suppliers/**").hasAnyRole(
+                                UserRole.ADMIN.name(),
+                                UserRole.SUPPLIER.name()
+                        )
 
-                        .requestMatchers("/suppliers").hasRole(UserRole.ADMIN.name())
                         .requestMatchers("/purchase/**").hasRole(UserRole.ADMIN.name())
                         .requestMatchers("/webhook/**").permitAll()
 

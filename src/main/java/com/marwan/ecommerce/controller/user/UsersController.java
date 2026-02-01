@@ -15,11 +15,13 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -30,14 +32,16 @@ public class UsersController extends BaseController
     private final UserMapper userMapper;
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<?> remove(@PathVariable UUID userId)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> remove(@PathVariable UUID userId)
             throws UserNotFoundException
     {
 
         userService.deactivate(userId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{userId}")
     ResponseEntity<UserDto> getUser(@PathVariable UUID userId)
             throws UserNotFoundException
@@ -54,8 +58,17 @@ public class UsersController extends BaseController
         return ResponseEntity.ok(userMapper.userToUserDto(user));
     }
 
-    @PutMapping
-    ResponseEntity<?> updateUser(@Valid @RequestBody UpdateUserRequest request)
+    @DeleteMapping
+    ResponseEntity<?> deleteCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails)
+    {
+        userService.deactivate(userDetails.getUserId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/me")
+    ResponseEntity<?> updateUser(
+            @Valid @RequestBody UpdateUserRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails)
     {
         // I should have implemented this sooner
         throw new NotImplementedException();
@@ -63,6 +76,7 @@ public class UsersController extends BaseController
 
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageDto<UserDto>> getAllUsers(
             @Valid UserPagingOptions pagingOptions
     )

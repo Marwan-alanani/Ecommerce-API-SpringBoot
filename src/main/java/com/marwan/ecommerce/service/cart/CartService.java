@@ -130,4 +130,13 @@ public class CartService
         cartRepository.save(cart);
     }
 
+    public void removeUserCart(UUID userId)
+    {
+        cartRepository.deleteByUserId(userId);
+    }
+
+    public void removeCart(UUID cartId)
+    {
+        cartRepository.deleteById(cartId);
+    }
 }

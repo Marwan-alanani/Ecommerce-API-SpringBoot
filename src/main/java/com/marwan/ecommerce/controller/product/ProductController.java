@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -33,6 +34,7 @@ public class ProductController extends BaseController
     private final ProductService productService;
     private final ProductMapper productMapper;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ProductResponseDto> createProduct(
             @Valid @RequestBody CreateProductRequest request,
@@ -58,6 +60,7 @@ public class ProductController extends BaseController
         return ResponseEntity.ok(productDetailsDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping
     public ResponseEntity<ProductResponseDto> updateProduct(
             @Valid @RequestBody UpdateProductRequest request)
@@ -71,8 +74,9 @@ public class ProductController extends BaseController
         return ResponseEntity.ok(productResponseDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{productId}")
-    public ResponseEntity<?> deactivateProduct(@PathVariable UUID productId)
+    public ResponseEntity<Void> deactivateProduct(@PathVariable UUID productId)
             throws ProductNotFoundException
     {
         productService.deactivateProduct(productId, true);
@@ -102,6 +106,4 @@ public class ProductController extends BaseController
 
         return ResponseEntity.ok(toPageDto(productPage, productResponseDtos));
     }
-
-
 }

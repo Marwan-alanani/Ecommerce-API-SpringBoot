@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class CategoryController extends BaseController
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<CategoryResponseDto> create(
             @Valid @RequestBody CreateCategoryRequest request)
@@ -54,15 +56,17 @@ public class CategoryController extends BaseController
         );
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<?> deactivateCategory(@PathVariable UUID categoryId)
+    public ResponseEntity<Void> deactivateCategory(@PathVariable UUID categoryId)
             throws CategoryNotFoundException
     {
         categoryService.deactivateCategory(categoryId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping
     public ResponseEntity<CategoryResponseDto> updateCategory(
             @Valid @RequestBody UpdateCategoryRequest request)
             throws CategoryNotFoundException, CategoryNameExistsException
@@ -89,5 +93,4 @@ public class CategoryController extends BaseController
                 .status(HttpStatus.OK)
                 .body(toPageDto(categoryPage, categoryResponseDtoList));
     }
-
 }

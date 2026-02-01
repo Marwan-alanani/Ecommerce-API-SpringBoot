@@ -21,25 +21,28 @@ public class OrderService extends BaseService
     private final OrderRepository orderRepository;
 
 
-    public Page<Order> getAll(OrderPagingOptions pagingOptions, CustomUserDetails userDetails)
+    public Page<Order> getUserOrders(OrderPagingOptions pagingOptions, UUID userId)
     {
         var pageable = constructPageable(pagingOptions);
-        if (userDetails.getRole() == UserRole.ADMIN) {
-            return orderRepository.findAllWithOrderItems(pageable);
-        }
-        return orderRepository.findAllByUserIdWithOrderItems(pageable, userDetails.getUserId());
+        return orderRepository.findAllByUserIdWithOrderItems(pageable, userId);
+    }
+
+    public Page<Order> getAll(OrderPagingOptions pagingOptions)
+    {
+        var pageable = constructPageable(pagingOptions);
+        return orderRepository.findAllWithOrderItems(pageable);
     }
 
 
-    public Order getOrderWithOrderItems(UUID orderId, CustomUserDetails userDetails)
+    public Order getOrderWithOrderItems(UUID orderId, UUID userId, boolean isAdmin)
     {
-        if (userDetails.getRole() == UserRole.ADMIN) {
+        if (isAdmin) {
             return orderRepository.findByOrderIdWithOrderItems(orderId).orElseThrow(
                     () -> new OrderNotFoundException(orderId));
         }
 
         return orderRepository.findByUserIdAndOrderIdWithOrderItems(
-                        userDetails.getUserId(),
+                        userId,
                         orderId)
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
     }

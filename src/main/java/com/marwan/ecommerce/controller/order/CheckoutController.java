@@ -17,7 +17,8 @@ public class CheckoutController
     private final CheckoutService checkoutService;
 
     @PostMapping
-    public ResponseEntity<?> checkout(@AuthenticationPrincipal CustomUserDetails userDetails)
+    public ResponseEntity<CheckoutResponseDto> checkout(
+            @AuthenticationPrincipal CustomUserDetails userDetails)
     {
         CheckoutResponseDto response = checkoutService.checkout(userDetails.getUserId());
         return ResponseEntity.ok(response);

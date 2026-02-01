@@ -1,5 +1,6 @@
 package com.marwan.ecommerce.service.cart.command;
 
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ public class AddCartItemCommand
 {
     private UUID userId;
     private UUID productId;
+    @Positive(message = "quantity must be greater than zero")
     private int quantity;
 
     public AddCartItemCommand(UUID productId, UUID userId)

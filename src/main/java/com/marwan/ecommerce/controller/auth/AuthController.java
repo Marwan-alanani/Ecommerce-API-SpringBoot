@@ -69,5 +69,4 @@ public class AuthController
         cookie.setSecure(true);
         response.addCookie(cookie);
     }
-
 }
