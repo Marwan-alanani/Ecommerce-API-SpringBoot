@@ -1,12 +1,15 @@
 package com.marwan.ecommerce.service.payment;
 
+import com.marwan.ecommerce.dto.payment.PaymentPagingOptions;
 import com.marwan.ecommerce.exception.payment.PaymentNotFoundException;
 import com.marwan.ecommerce.model.entity.Payment;
 import com.marwan.ecommerce.model.enums.PaymentStatus;
 import com.marwan.ecommerce.repository.PaymentRepository;
+import com.marwan.ecommerce.service.common.BaseService;
 import com.marwan.ecommerce.service.order.event.orderPaid.OrderPaidEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +17,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class PaymentService
+public class PaymentService extends BaseService
 {
 
 
@@ -44,8 +47,27 @@ public class PaymentService
 
     public Payment getPayment(UUID paymentId)
     {
-        return paymentRepository.findById(paymentId).orElseThrow(
-                () -> new PaymentNotFoundException(paymentId));
+        return paymentRepository.findByPaymentId(paymentId)
+                .orElseThrow(() -> new PaymentNotFoundException(paymentId));
+    }
+
+    public Payment getUserPayment(UUID paymentId, UUID userId)
+    {
+        return paymentRepository.findByPaymentIdAndUserId(paymentId, userId)
+                .orElseThrow(() -> new PaymentNotFoundException(paymentId));
+    }
+
+    public Page<Payment> getPayments(PaymentPagingOptions pagingOptions)
+    {
+        var pageable = constructPageable(pagingOptions);
+        return paymentRepository.findAll(pageable);
+    }
+
+    public Page<Payment> getUserPayments(PaymentPagingOptions pagingOptions, UUID userId)
+    {
+
+        var pageable = constructPageable(pagingOptions);
+        return paymentRepository.findAllByUserId(pageable, userId);
     }
 
     @Transactional

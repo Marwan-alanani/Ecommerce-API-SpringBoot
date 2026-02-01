@@ -18,11 +18,9 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-@Setter
 public final class Payment
 {
     @Id
-    @Setter(AccessLevel.NONE)
     private UUID paymentId;
 
     @Column(unique = true)
@@ -33,7 +31,6 @@ public final class Payment
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "order_id")
-    @Setter(AccessLevel.NONE)
     private Order order;
 
     @Column(nullable = false, precision = 19, scale = 4)
@@ -80,5 +77,4 @@ public final class Payment
     {
         this.status = PaymentStatus.FAILED;
     }
-
 }
