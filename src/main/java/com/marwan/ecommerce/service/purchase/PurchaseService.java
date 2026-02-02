@@ -6,7 +6,6 @@ import com.marwan.ecommerce.exception.purchase.PurchaseNotFoundException;
 import com.marwan.ecommerce.exception.supplier.SupplierNotFoundException;
 import com.marwan.ecommerce.model.entity.Purchase;
 import com.marwan.ecommerce.repository.PurchaseRepository;
-import com.marwan.ecommerce.service.common.BaseService;
 import com.marwan.ecommerce.service.product.ProductService;
 import com.marwan.ecommerce.service.purchase.command.CreatePurchaseCommand;
 import com.marwan.ecommerce.service.purchase.event.purchaseCreated.PurchaseCreatedEvent;
@@ -20,10 +19,12 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.marwan.ecommerce.service.common.BaseService.constructPageable;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class PurchaseService extends BaseService
+public class PurchaseService
 {
     private final PurchaseRepository purchaseRepository;
     private final ProductService productService;

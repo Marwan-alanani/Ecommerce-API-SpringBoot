@@ -10,7 +10,7 @@ import org.springframework.data.domain.Sort;
 public abstract class BaseService
 {
 
-    protected Pageable constructPageable(
+    public static Pageable constructPageable(
             PagingOptions<? extends SortingOptions> pagingOptions
     )
     {

@@ -4,7 +4,6 @@ import com.marwan.ecommerce.dto.order.OrderPagingOptions;
 import com.marwan.ecommerce.exception.order.OrderNotFoundException;
 import com.marwan.ecommerce.model.entity.Order;
 import com.marwan.ecommerce.repository.OrderRepository;
-import com.marwan.ecommerce.service.common.BaseService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,9 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+import static com.marwan.ecommerce.service.common.BaseService.constructPageable;
+
 @Service
 @RequiredArgsConstructor
-public class OrderService extends BaseService
+public class OrderService
 {
     private final OrderRepository orderRepository;
 

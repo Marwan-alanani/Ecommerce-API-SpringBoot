@@ -7,7 +7,6 @@ import com.marwan.ecommerce.exception.supplier.SupplierNameExistsException;
 import com.marwan.ecommerce.mapper.SupplierMapper;
 import com.marwan.ecommerce.model.entity.Supplier;
 import com.marwan.ecommerce.repository.SupplierRepository;
-import com.marwan.ecommerce.service.common.BaseService;
 import com.marwan.ecommerce.service.supplier.command.CreateSupplierCommand;
 import com.marwan.ecommerce.service.supplier.command.UpdateSupplierCommand;
 import jakarta.transaction.Transactional;
@@ -18,9 +17,11 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.marwan.ecommerce.service.common.BaseService.constructPageable;
+
 @Service
 @RequiredArgsConstructor
-public class SupplierService extends BaseService
+public class SupplierService
 {
     private final SupplierRepository supplierRepository;
     private final SupplierMapper supplierMapper;

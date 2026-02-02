@@ -6,7 +6,6 @@ import com.marwan.ecommerce.model.entity.User;
 import com.marwan.ecommerce.repository.UserRepository;
 import com.marwan.ecommerce.exception.user.EmailExistsException;
 import com.marwan.ecommerce.exception.user.UserNotFoundException;
-import com.marwan.ecommerce.service.common.BaseService;
 import com.marwan.ecommerce.service.user.command.RegisterCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,9 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.marwan.ecommerce.service.common.BaseService.constructPageable;
+
 @Service
 @RequiredArgsConstructor
-public class UserService extends BaseService
+public class UserService
 {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;

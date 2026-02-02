@@ -10,7 +10,6 @@ import com.marwan.ecommerce.repository.CategoryRepository;
 import com.marwan.ecommerce.repository.ProductRepository;
 import com.marwan.ecommerce.service.category.command.CreateCategoryCommand;
 import com.marwan.ecommerce.service.category.command.UpdateCategoryCommand;
-import com.marwan.ecommerce.service.common.BaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -18,9 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.marwan.ecommerce.service.common.BaseService.constructPageable;
+
 @RequiredArgsConstructor
 @Service
-public class CategoryService extends BaseService
+public class CategoryService
 {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;

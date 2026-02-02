@@ -5,7 +5,6 @@ import com.marwan.ecommerce.exception.payment.PaymentNotFoundException;
 import com.marwan.ecommerce.model.entity.Payment;
 import com.marwan.ecommerce.model.enums.PaymentStatus;
 import com.marwan.ecommerce.repository.PaymentRepository;
-import com.marwan.ecommerce.service.common.BaseService;
 import com.marwan.ecommerce.service.order.event.orderPaid.OrderPaidEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -15,9 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.marwan.ecommerce.service.common.BaseService.constructPageable;
+
 @Service
 @RequiredArgsConstructor
-public class PaymentService extends BaseService
+public class PaymentService
 {
     private final PaymentRepository paymentRepository;
     private final ApplicationEventPublisher applicationEventPublisher;

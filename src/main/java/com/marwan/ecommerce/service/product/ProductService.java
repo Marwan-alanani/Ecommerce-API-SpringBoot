@@ -9,7 +9,6 @@ import com.marwan.ecommerce.model.entity.Category;
 import com.marwan.ecommerce.model.entity.Product;
 import com.marwan.ecommerce.repository.ProductRepository;
 import com.marwan.ecommerce.service.category.CategoryService;
-import com.marwan.ecommerce.service.common.BaseService;
 import com.marwan.ecommerce.service.product.command.CreateProductCommand;
 import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
 import jakarta.transaction.Transactional;
@@ -19,9 +18,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static com.marwan.ecommerce.service.common.BaseService.constructPageable;
+
 @Service
 @RequiredArgsConstructor
-public class ProductService extends BaseService
+public class ProductService
 {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
