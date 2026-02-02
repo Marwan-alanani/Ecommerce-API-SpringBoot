@@ -16,10 +16,10 @@ public interface ProductMapper
 {
 
 
-    UpdateProductCommand updateProductRequestToUpdateProductCommand(
+    UpdateProductCommand updateProductRequestToCommand(
             UpdateProductRequest request);
 
-    CreateProductCommand createProductRequestToCreateProductCommand(
+    CreateProductCommand createProductRequestToCommand(
             CreateProductRequest request);
 
     @Mapping(target = "categoryId", source = "category.categoryId")
@@ -28,9 +28,11 @@ public interface ProductMapper
 
     List<ProductResponseDto> productListToProductResponseDtoList(List<Product> productList);
 
+    @Mapping(target = "price", source = "product.sellingPrice")
     ProductDetailsDto productToProductDetailsDto(Product product, String categoryName);
 
     @Mapping(target = "updatedDateTime", expression = "java(java.time.Instant.now())")
+    @Mapping(target = "sellingPrice", source = "price")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromCommand(
             @MappingTarget Product product,

@@ -1,6 +1,5 @@
 package com.marwan.ecommerce.controller.supplier;
 
-import com.marwan.ecommerce.controller.common.converter.BaseController;
 import com.marwan.ecommerce.controller.supplier.request.CreateSupplierRequest;
 import com.marwan.ecommerce.controller.supplier.request.UpdateSupplierRequest;
 import com.marwan.ecommerce.dto.common.PageDto;
@@ -24,10 +23,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import static com.marwan.ecommerce.controller.common.BaseController.toPageDto;
+
 @RestController
 @RequestMapping("/suppliers")
 @RequiredArgsConstructor
-public class SupplierController extends BaseController
+public class SupplierController
 {
     private final SupplierService supplierService;
     private final SupplierMapper supplierMapper;
@@ -49,7 +50,7 @@ public class SupplierController extends BaseController
     public ResponseEntity<SupplierDto> get(@PathVariable UUID supplierId)
             throws SupplierNotFoundException
     {
-        Supplier supplier = supplierService.get(supplierId, true);
+        Supplier supplier = supplierService.get(supplierId);
         return ResponseEntity.ok(
                 supplierMapper.supplierToSupplierDto(supplier)
         );
@@ -57,17 +58,18 @@ public class SupplierController extends BaseController
 
     @GetMapping
     public ResponseEntity<PageDto<SupplierDto>> getAll(
-            @Valid SupplierPagingOptions pagingOptions
+            @Valid SupplierPagingOptions pagingOptions,
+            @RequestParam(required = false) Boolean isEnabled
     )
     {
-        Page<Supplier> supplierPage = supplierService.getAll(pagingOptions);
+        Page<Supplier> supplierPage = supplierService.getAll(pagingOptions, isEnabled);
         List<SupplierDto> supplierDtoList =
                 supplierMapper.supplierListToSupplierDtoList(supplierPage.getContent());
 
         return ResponseEntity.ok(toPageDto(supplierPage, supplierDtoList));
     }
 
-    @PutMapping
+    @PatchMapping
     public ResponseEntity<SupplierDto> update(@Valid @RequestBody UpdateSupplierRequest request)
             throws SupplierNameExistsException,
             SupplierEmailExistsException,
@@ -75,7 +77,7 @@ public class SupplierController extends BaseController
     {
         UpdateSupplierCommand command =
                 supplierMapper.updateSupplierRequestToUpdateSupplierCommand(request);
-        Supplier supplier = supplierService.update(command, true);
+        Supplier supplier = supplierService.update(command);
         return ResponseEntity.ok(supplierMapper.supplierToSupplierDto(supplier));
     }
 
@@ -84,7 +86,7 @@ public class SupplierController extends BaseController
     public ResponseEntity<?> deactivate(@PathVariable UUID supplierId)
             throws SupplierNotFoundException
     {
-        supplierService.deactivate(supplierId, true);
+        supplierService.deactivate(supplierId);
         return ResponseEntity.ok().build();
     }
 }

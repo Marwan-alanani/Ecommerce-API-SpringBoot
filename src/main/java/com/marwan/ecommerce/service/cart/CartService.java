@@ -78,7 +78,7 @@ public class CartService
             CartWithUserIdNotFoundException
     {
 
-        Product product = productService.getProduct(command.productId(), true);
+        Product product = productService.getActiveProduct(command.productId());
         Cart cart = getOrCreateCart(command.userId());
         cart.remove(command.productId());
         CartItem cartItem = CartItem.fromProduct(product);
@@ -94,7 +94,7 @@ public class CartService
             CartWithUserIdNotFoundException
     {
 
-        Product product = productService.getProduct(command.getProductId(), true);
+        Product product = productService.getActiveProduct(command.getProductId());
 
         Cart cart = getOrCreateCart(command.getUserId());
         CartItem cartItem = cart.getCartItemByProductId(command.getProductId());

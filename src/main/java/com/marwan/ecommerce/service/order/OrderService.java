@@ -3,9 +3,7 @@ package com.marwan.ecommerce.service.order;
 import com.marwan.ecommerce.dto.order.OrderPagingOptions;
 import com.marwan.ecommerce.exception.order.OrderNotFoundException;
 import com.marwan.ecommerce.model.entity.Order;
-import com.marwan.ecommerce.model.enums.UserRole;
 import com.marwan.ecommerce.repository.OrderRepository;
-import com.marwan.ecommerce.security.CustomUserDetails;
 import com.marwan.ecommerce.service.common.BaseService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -47,16 +45,16 @@ public class OrderService extends BaseService
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
     }
 
-    public Order getOrder(UUID orderId, CustomUserDetails userDetails)
+    public Order getOrder(UUID orderId , boolean isAdmin , UUID userId)
     {
 
-        if (userDetails.getRole() == UserRole.ADMIN) {
+        if (isAdmin) {
             return orderRepository
                     .findById(orderId)
                     .orElseThrow(() -> new OrderNotFoundException(orderId));
         }
         return orderRepository
-                .findByUserIdAndOrderId(userDetails.getUserId(), orderId)
+                .findByUserIdAndOrderId(userId, orderId)
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
     }
 

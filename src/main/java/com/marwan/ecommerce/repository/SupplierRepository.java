@@ -15,7 +15,9 @@ public interface SupplierRepository extends JpaRepository<Supplier, UUID>
     @Override
     Page<Supplier> findAll(Pageable pageable);
 
-    Optional<Supplier> findBySupplierIdAndIsEnabled(UUID id, boolean isEnabled);
+    Page<Supplier> findAllByIsEnabled(Pageable pageable, boolean isEnabled);
+
+    Optional<Supplier> findBySupplierId(UUID id);
 
     boolean existsByName(String name);
 
@@ -28,5 +30,6 @@ public interface SupplierRepository extends JpaRepository<Supplier, UUID>
 
     int countByEmail(String email);
 
-    boolean existsBySupplierIdAndIsEnabled(UUID id, boolean isEnabled);
+    boolean existsBySupplierIdAndIsEnabled(UUID supplierId, boolean isEnabled);
+
 }

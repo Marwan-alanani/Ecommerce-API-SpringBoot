@@ -36,7 +36,7 @@ public class PurchaseService extends BaseService
         if (!productService.productExists(command.productId(), true)) {
             throw new ProductNotFoundException(command.productId());
         }
-        if (!supplierService.supplierExists(command.supplierId(), true)) {
+        if (!supplierService.supplierExistsAndEnabled(command.supplierId(), true)) {
             throw new SupplierNotFoundException(command.supplierId());
         }
         Purchase purchase = Purchase.create(

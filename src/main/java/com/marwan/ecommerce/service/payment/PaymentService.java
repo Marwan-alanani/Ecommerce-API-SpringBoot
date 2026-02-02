@@ -19,8 +19,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PaymentService extends BaseService
 {
-
-
     private final PaymentRepository paymentRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -53,7 +51,7 @@ public class PaymentService extends BaseService
 
     public Payment getUserPayment(UUID paymentId, UUID userId)
     {
-        return paymentRepository.findByPaymentIdAndUserId(paymentId, userId)
+        return paymentRepository.findByPaymentIdAndOrder_UserId(paymentId, userId)
                 .orElseThrow(() -> new PaymentNotFoundException(paymentId));
     }
 
@@ -67,7 +65,7 @@ public class PaymentService extends BaseService
     {
 
         var pageable = constructPageable(pagingOptions);
-        return paymentRepository.findAllByUserId(pageable, userId);
+        return paymentRepository.findAllByOrder_UserId(pageable, userId);
     }
 
     @Transactional

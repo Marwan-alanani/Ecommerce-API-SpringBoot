@@ -24,6 +24,7 @@ public final class Payment
     private UUID paymentId;
 
     @Column(unique = true)
+    @Setter
     private String checkoutSessionId;
 
     @Enumerated(EnumType.STRING)

@@ -5,7 +5,8 @@ import java.util.UUID;
 public record SupplierDto(
         UUID supplierId,
         String name,
-        String email
+        String email,
+        boolean isEnabled
 )
 {
 }

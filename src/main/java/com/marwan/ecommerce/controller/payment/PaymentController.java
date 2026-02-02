@@ -1,6 +1,5 @@
 package com.marwan.ecommerce.controller.payment;
 
-import com.marwan.ecommerce.controller.common.converter.BaseController;
 import com.marwan.ecommerce.dto.common.PageDto;
 import com.marwan.ecommerce.dto.payment.AdminPaymentDto;
 import com.marwan.ecommerce.dto.payment.PaymentPagingOptions;
@@ -24,10 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
+import static com.marwan.ecommerce.controller.common.BaseController.toPageDto;
+
 @RestController
 @RequestMapping("/payments")
 @RequiredArgsConstructor
-public class PaymentController extends BaseController
+public class PaymentController
 {
     private final PaymentService paymentService;
     private final PaymentMapper paymentMapper;
@@ -62,15 +63,21 @@ public class PaymentController extends BaseController
 
 
     @GetMapping("/{paymentId}")
-    ResponseEntity<?> getPayment(
+    @PreAuthorize("hasRole('ADMIN')")
+    ResponseEntity<?> getPayment(@PathVariable UUID paymentId)
+    {
+        Payment payment = paymentService.getPayment(paymentId);
+        return ResponseEntity.ok(paymentMapper.toAdminPaymentDto(payment));
+    }
+
+
+    @GetMapping("/me/{paymentId}")
+    ResponseEntity<?> getUserPayment(
             @PathVariable UUID paymentId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     )
     {
-        if (userDetails.getRole() == UserRole.ADMIN) {
-            Payment payment = paymentService.getPayment(paymentId);
-            return ResponseEntity.ok(paymentMapper.toAdminPaymentDto(payment));
-        }
+
         Payment payment = paymentService.getUserPayment(paymentId, userDetails.getUserId());
         return ResponseEntity.ok(paymentMapper.toUserPaymentDto(payment));
     }

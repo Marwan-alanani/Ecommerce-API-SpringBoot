@@ -10,15 +10,12 @@ import com.marwan.ecommerce.repository.CategoryRepository;
 import com.marwan.ecommerce.repository.ProductRepository;
 import com.marwan.ecommerce.service.category.command.CreateCategoryCommand;
 import com.marwan.ecommerce.service.category.command.UpdateCategoryCommand;
-import com.marwan.ecommerce.service.category.event.CategoryDeactivatedEvent;
 import com.marwan.ecommerce.service.common.BaseService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -26,7 +23,6 @@ import java.util.UUID;
 public class CategoryService extends BaseService
 {
     private final CategoryRepository categoryRepository;
-    private final ApplicationEventPublisher eventPublisher;
     private final CategoryMapper categoryMapper;
     private final ProductRepository productRepository;
 
@@ -42,69 +38,86 @@ public class CategoryService extends BaseService
         return category;
     }
 
-    public boolean categoryExists(UUID id, boolean isEnabled)
+    public boolean categoryActive(UUID id)
     {
-        return categoryRepository.findByCategoryIdAndIsEnabled(id, isEnabled).isPresent();
+        return categoryRepository.existsByCategoryIdAndIsEnabled(id, true);
     }
 
-    public CategoryWithProductsCountDto getCategoryWithProductCount(
-            UUID categoryId,
-            boolean isEnabled)
+    public boolean categoryExists(UUID id)
+    {
+        return categoryRepository.existsById(id);
+    }
+
+    // too complex, might refactor later
+    public CategoryWithProductsCountDto getActiveCategoryWithProductCount(
+            UUID categoryId)
             throws CategoryNotFoundException
     {
-        Optional<Category> category = categoryRepository
-                .findByCategoryIdAndIsEnabled(categoryId, isEnabled);
+        Category category = categoryRepository.findByCategoryIdAndIsEnabled(categoryId, true)
+                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
-        if (category.isEmpty()) {
-            throw new CategoryNotFoundException(categoryId);
-        }
 
         int productCount = productRepository
-                .countByCategory_CategoryIdAndIsEnabled(categoryId, isEnabled);
+                .countByCategory_CategoryIdAndIsEnabled(categoryId, true);
 
         return categoryMapper.categoryAndProductCountToCategoryWithProductsCountDto(
-                category.get(),
+                category,
                 productCount);
     }
 
-    public Category getCategory(UUID categoryId, boolean isEnabled)
+    public CategoryWithProductsCountDto getCategoryWithProductCount(
+            UUID categoryId)
             throws CategoryNotFoundException
     {
-        Optional<Category> category = categoryRepository.findByCategoryIdAndIsEnabled(categoryId,
-                isEnabled);
-        if (category.isEmpty()) {
-            throw new CategoryNotFoundException(categoryId);
-        }
-        return category.get();
+        Category category = categoryRepository.findByCategoryId(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+
+
+        int productCount = productRepository.countByCategory_CategoryId(categoryId);
+
+        return categoryMapper.categoryAndProductCountToCategoryWithProductsCountDto(
+                category,
+                productCount);
+    }
+
+    public Category getActiveCategory(UUID categoryId)
+            throws CategoryNotFoundException
+    {
+        return categoryRepository.findByCategoryIdAndIsEnabled(categoryId, true)
+                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+
+    }
+
+    public Category getCategory(UUID categoryId)
+            throws CategoryNotFoundException
+    {
+        return categoryRepository.findByCategoryId(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+
     }
 
     public void deactivateCategory(UUID categoryId)
             throws CategoryNotFoundException
     {
-        Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
-        if (optionalCategory.isEmpty()) {
-            throw new CategoryNotFoundException(categoryId);
-        }
-        Category category = optionalCategory.get();
-        category.setEnabled(false);
+        Category category = categoryRepository.findByCategoryId(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+        category.deactivate();
         categoryRepository.save(category);
-        eventPublisher.publishEvent(new CategoryDeactivatedEvent(categoryId));
-
     }
 
     @Transactional
-    public Category updateCategory(UpdateCategoryCommand command, boolean isEnabled)
+    public Category updateCategory(UpdateCategoryCommand command)
             throws CategoryNotFoundException, CategoryNameExistsException
     {
-        Optional<Category> optionalCategory = categoryRepository
-                .findByCategoryIdAndIsEnabled(command.categoryId(), isEnabled);
+        Category category = categoryRepository
+                .findByCategoryId(command.categoryId())
+                .orElseThrow(() -> new CategoryNotFoundException(command.categoryId()));
 
-        if (optionalCategory.isEmpty()) {
-            throw new CategoryNotFoundException(command.categoryId());
-        }
         int countByName = categoryRepository.countByName(command.name());
-        Category category = optionalCategory.get();
-        if (countByName > 0 && !category.getName().equals(command.name())) {
+        if (countByName > 1) {
+            throw new CategoryNameExistsException(command.name());
+        }
+        if (countByName == 1 && !category.getName().equals(command.name())) {
             throw new CategoryNameExistsException(command.name());
         }
         categoryMapper.updateFromCommand(category, command);
@@ -113,11 +126,16 @@ public class CategoryService extends BaseService
     }
 
     public Page<Category> getAllCategories(
-            CategoryPagingOptions pagingOptions,
-            boolean isEnabled)
+            CategoryPagingOptions pagingOptions)
     {
         var pageable = constructPageable(pagingOptions);
-        return categoryRepository.findAllByIsEnabled(pageable, isEnabled);
+        return categoryRepository.findAll(pageable);
+    }
+
+    public Page<Category> getActiveCategories(CategoryPagingOptions pagingOptions)
+    {
+        var pageable = constructPageable(pagingOptions);
+        return categoryRepository.findAllByIsEnabled(pageable, true);
     }
 
 }

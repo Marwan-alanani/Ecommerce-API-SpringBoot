@@ -11,10 +11,10 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "category")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
 public final class Category
 {
     @Id
@@ -48,5 +48,10 @@ public final class Category
                 null,
                 true,
                 null);
+    }
+
+    public void deactivate()
+    {
+        isEnabled = false;
     }
 }

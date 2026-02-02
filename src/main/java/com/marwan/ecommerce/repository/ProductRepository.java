@@ -19,16 +19,25 @@ public interface ProductRepository extends JpaRepository<Product, UUID>
     @EntityGraph(attributePaths = "category")
     Optional<Product> findWithCategoryByProductIdAndIsEnabled(UUID productId, boolean isEnabled);
 
+    @EntityGraph(attributePaths = "category")
+    Optional<Product> findWithCategoryByProductId(UUID productId);
+
     Page<Product> findByCategory_CategoryId(Pageable pageable, UUID categoryId);
 
     List<Product> findByCategory_CategoryId(UUID categoryId);
 
-    boolean existsByProductIdAndIsEnabled(UUID productId, boolean isEnabled);
-
-    Page<Product> findByCategory_CategoryIdAndIsEnabled(Pageable pageable, UUID categoryId,
+    Page<Product> findByCategory_CategoryIdAndIsEnabled(
+            Pageable pageable,
+            UUID categoryId,
             boolean isEnabled);
 
     Page<Product> findAllByIsEnabled(Pageable pageable, boolean isEnabled);
 
     int countByCategory_CategoryIdAndIsEnabled(UUID categoryId, boolean isEnabled);
+
+    int countByCategory_CategoryId(UUID categoryId);
+
+    boolean existsByProductIdAndIsEnabled(UUID productId, boolean isEnabled);
+
+    boolean existsByProductId(UUID productId);
 }

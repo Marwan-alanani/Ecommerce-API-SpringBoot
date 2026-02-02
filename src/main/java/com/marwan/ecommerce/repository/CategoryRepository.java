@@ -17,11 +17,15 @@ public interface CategoryRepository extends JpaRepository<Category, UUID>
 
     Optional<Category> findByCategoryIdAndIsEnabled(UUID categoryId, boolean isEnabled);
 
+    Optional<Category> findByCategoryId(UUID categoryId);
+
 
     Optional<Category> findByNameAndIsEnabled(String name, boolean isEnabled);
 
     int countByName(String name);
 
     Page<Category> findAllByIsEnabled(Pageable pageable, boolean isEnabled);
+
+    boolean existsByCategoryIdAndIsEnabled(UUID categoryId, boolean isEnabled);
 
 }

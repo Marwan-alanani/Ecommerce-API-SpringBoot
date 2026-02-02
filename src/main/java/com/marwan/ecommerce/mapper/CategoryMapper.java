@@ -18,10 +18,10 @@ public interface CategoryMapper
 
     List<CategoryResponseDto> categoryListToCategoryResponseDtoList(List<Category> categoryList);
 
-    CreateCategoryCommand createCategoryRequestToCreateCategoryCommand(
+    CreateCategoryCommand createCategoryRequestToCommand(
             CreateCategoryRequest request);
 
-    UpdateCategoryCommand updateCategoryRequestToUpdateCategoryCommand(
+    UpdateCategoryCommand updateCategoryRequestToCommand(
             UpdateCategoryRequest request);
 
     default CategoryWithProductsCountDto categoryAndProductCountToCategoryWithProductsCountDto(

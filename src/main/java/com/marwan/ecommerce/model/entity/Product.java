@@ -13,9 +13,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "product")
 @Getter
-@Setter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
 public final class Product
 {
     @Id
@@ -36,7 +36,7 @@ public final class Product
     @Column(nullable = false)
     private int balance;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id")
     private Category category;
 
@@ -97,6 +97,11 @@ public final class Product
                 BigDecimal.ZERO,
                 0
         );
+    }
+
+    public void deactivate()
+    {
+        isEnabled = false;
     }
 
 

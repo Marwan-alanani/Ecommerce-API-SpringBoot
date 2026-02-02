@@ -1,7 +1,6 @@
 package com.marwan.ecommerce.controller.product.request;
 
 import jakarta.validation.constraints.*;
-import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
 import java.util.UUID;
@@ -22,6 +21,7 @@ public record CreateProductRequest(
         @URL(message = "Picture URL must be a valid URL")
         String pictureUrl,
 
+        @NotNull(message = "Category id can't be null")
         UUID categoryId
 )
 {

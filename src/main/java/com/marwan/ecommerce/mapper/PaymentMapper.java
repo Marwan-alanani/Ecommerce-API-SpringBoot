@@ -12,6 +12,7 @@ public interface PaymentMapper
     @Mapping(target = "orderId", source = "order.orderId")
     UserPaymentDto toUserPaymentDto(Payment payment);
 
-    @Mapping(target = "orderId", source = "order.userId")
+    @Mapping(target = "orderId", source = "order.orderId")
+    @Mapping(target = "userId", source = "order.userId")
     AdminPaymentDto toAdminPaymentDto(Payment payment);
 }

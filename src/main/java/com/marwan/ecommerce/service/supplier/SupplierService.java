@@ -41,11 +41,11 @@ public class SupplierService extends BaseService
         return supplier;
     }
 
-    public Supplier get(UUID supplierId, boolean isEnabled)
+    public Supplier get(UUID supplierId)
             throws SupplierNotFoundException
     {
         Optional<Supplier> optionalSupplier = supplierRepository
-                .findBySupplierIdAndIsEnabled(supplierId, isEnabled);
+                .findBySupplierId(supplierId);
 
         if (optionalSupplier.isEmpty()) {
             throw new SupplierNotFoundException(supplierId);
@@ -53,28 +53,32 @@ public class SupplierService extends BaseService
         return optionalSupplier.get();
     }
 
-    public boolean supplierExists(UUID supplierId, boolean isEnabled)
+    public boolean supplierExistsAndEnabled(UUID supplierId, boolean isEnabled)
     {
         return supplierRepository.existsBySupplierIdAndIsEnabled(supplierId, isEnabled);
     }
 
-    public Page<Supplier> getAll(SupplierPagingOptions pagingOptions)
+    public Page<Supplier> getAll(SupplierPagingOptions pagingOptions, Boolean isEnabled)
     {
         var pageable = constructPageable(pagingOptions);
-        return supplierRepository.findAll(pageable);
+        if (isEnabled == null) {
+            return supplierRepository.findAll(pageable);
+        }
+        return supplierRepository.findAllByIsEnabled(pageable, isEnabled);
     }
 
     @Transactional
-    public Supplier update(UpdateSupplierCommand command, boolean isEnabled)
+    public Supplier update(UpdateSupplierCommand command)
             throws SupplierNotFoundException, SupplierNameExistsException,
             SupplierEmailExistsException
     {
         Optional<Supplier> optionalSupplier = supplierRepository
-                .findBySupplierIdAndIsEnabled(command.supplierId(), isEnabled);
+                .findBySupplierId(command.supplierId());
 
         if (optionalSupplier.isEmpty()) {
             throw new SupplierNotFoundException(command.supplierId());
         }
+
         Supplier supplier = optionalSupplier.get();
 
         int countMail = supplierRepository.countByEmail(command.email());
@@ -93,11 +97,11 @@ public class SupplierService extends BaseService
     }
 
     @Transactional
-    public void deactivate(UUID supplierId, boolean isEnabled)
+    public void deactivate(UUID supplierId)
             throws SupplierNotFoundException
     {
         Optional<Supplier> optionalSupplier = supplierRepository
-                .findBySupplierIdAndIsEnabled(supplierId, isEnabled);
+                .findBySupplierId(supplierId);
 
         if (optionalSupplier.isEmpty()) {
             throw new SupplierNotFoundException(supplierId);
