@@ -1,6 +1,5 @@
 package com.marwan.ecommerce.controller.order;
 
-import com.marwan.ecommerce.controller.common.converter.BaseController;
 import com.marwan.ecommerce.dto.common.PageDto;
 import com.marwan.ecommerce.dto.order.OrderDto;
 import com.marwan.ecommerce.dto.order.OrderPagingOptions;
@@ -23,10 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
+import static com.marwan.ecommerce.controller.common.BaseController.toPageDto;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/orders")
-public class OrderController extends BaseController
+public class OrderController
 {
     private final OrderService orderService;
     private final OrderMapper orderMapper;

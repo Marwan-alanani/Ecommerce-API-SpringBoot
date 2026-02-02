@@ -1,6 +1,5 @@
 package com.marwan.ecommerce.controller.purchase;
 
-import com.marwan.ecommerce.controller.common.converter.BaseController;
 import com.marwan.ecommerce.controller.purchase.request.CreatePurchaseRequest;
 import com.marwan.ecommerce.dto.common.PageDto;
 import com.marwan.ecommerce.dto.purchase.PurchaseDto;
@@ -22,10 +21,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import static com.marwan.ecommerce.controller.common.BaseController.toPageDto;
+
 @RequestMapping("/purchases")
 @RequiredArgsConstructor
 @RestController
-public class PurchaseController extends BaseController
+public class PurchaseController
 {
     private final PurchaseService purchaseService;
     private final PurchaseMapper purchaseMapper;

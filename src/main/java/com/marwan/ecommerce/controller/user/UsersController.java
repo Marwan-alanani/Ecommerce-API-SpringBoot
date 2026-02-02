@@ -1,6 +1,5 @@
 package com.marwan.ecommerce.controller.user;
 
-import com.marwan.ecommerce.controller.common.converter.BaseController;
 import com.marwan.ecommerce.controller.user.request.UpdateUserRequest;
 import com.marwan.ecommerce.dto.common.PageDto;
 import com.marwan.ecommerce.dto.user.UserDto;
@@ -22,11 +21,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import static com.marwan.ecommerce.controller.common.BaseController.toPageDto;
+
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-public class UsersController extends BaseController
+public class UsersController
 {
     private final UserService userService;
     private final UserMapper userMapper;
