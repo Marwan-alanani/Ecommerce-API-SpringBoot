@@ -2,8 +2,6 @@ package com.marwan.ecommerce.model.entity;
 
 import com.marwan.ecommerce.model.enums.UserRole;
 import jakarta.persistence.*;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -63,5 +61,8 @@ public final class User
                 true,
                 now,
                 now);
+    }
+    public void deactivate(){
+        isEnabled = false;
     }
 }

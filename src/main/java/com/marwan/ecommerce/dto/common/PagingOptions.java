@@ -16,8 +16,8 @@ public class PagingOptions<T extends Enum<T> & SortingOptions>
     private Integer pageSize;
     @Min(1)
     private Integer pageNo;
-    private T sortBy;
-    private SortDirection sortDir;
+    private final T sortBy;
+    private final SortDirection sortDir;
 
     public PagingOptions(
             Integer pageSize,

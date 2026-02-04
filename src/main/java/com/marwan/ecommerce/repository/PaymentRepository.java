@@ -1,6 +1,7 @@
 package com.marwan.ecommerce.repository;
 
 import com.marwan.ecommerce.model.entity.Payment;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -18,6 +19,7 @@ public interface PaymentRepository extends JpaRepository<Payment, UUID>
 
     @Override
     @EntityGraph(attributePaths = "order")
+    @NullMarked
     Page<Payment> findAll(Pageable pageable);
 
     @EntityGraph(attributePaths = "order")

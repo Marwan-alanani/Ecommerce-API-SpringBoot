@@ -39,9 +39,9 @@ public class GlobalExceptionHandler
 
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST.value());
         Map<String, String> errors = new HashMap<>();
-        exception.getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), error.getDefaultMessage());
-        });
+        exception.getFieldErrors().forEach(error -> errors
+                .put(error.getField(), error.getDefaultMessage())
+        );
         problemDetail.setProperty("errors", errors);
         problemDetail.setTitle("Validation Error");
         return problemDetail;

@@ -65,7 +65,7 @@ public class JwtService
                 .issuedAt(new Date())
                 .expiration(
                         new Date(
-                                System.currentTimeMillis() + expirationInSeconds * 1000
+                                System.currentTimeMillis() + expirationInSeconds * 1000L
                         ))
                 .signWith(jwtConfig.getSecretKey())
                 .issuer(jwtConfig.getIssuer())

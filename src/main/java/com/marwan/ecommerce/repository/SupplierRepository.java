@@ -1,6 +1,7 @@
 package com.marwan.ecommerce.repository;
 
 import com.marwan.ecommerce.model.entity.Supplier;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +14,7 @@ import java.util.UUID;
 public interface SupplierRepository extends JpaRepository<Supplier, UUID>
 {
     @Override
+    @NullMarked
     Page<Supplier> findAll(Pageable pageable);
 
     Page<Supplier> findAllByIsEnabled(Pageable pageable, boolean isEnabled);

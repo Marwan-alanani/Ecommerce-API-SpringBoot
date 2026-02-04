@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -45,12 +44,5 @@ public class AuthenticationService
         User user = userService.getUser(UUID.fromString(jwtService.extractUserId(refreshToken)));
         CustomUserDetails customUserDetails = new CustomUserDetails(user);
         return jwtService.generateAccessToken(customUserDetails);
-    }
-
-    public User getCurrentUser()
-    {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return userService.getUser(userDetails.getUserId());
     }
 }

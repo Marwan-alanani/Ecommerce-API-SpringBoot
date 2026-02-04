@@ -6,7 +6,6 @@ import com.marwan.ecommerce.dto.payment.PaymentPagingOptions;
 import com.marwan.ecommerce.dto.payment.UserPaymentDto;
 import com.marwan.ecommerce.mapper.PaymentMapper;
 import com.marwan.ecommerce.model.entity.Payment;
-import com.marwan.ecommerce.model.enums.UserRole;
 import com.marwan.ecommerce.security.CustomUserDetails;
 import com.marwan.ecommerce.service.payment.PaymentService;
 import jakarta.validation.Valid;

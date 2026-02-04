@@ -29,7 +29,7 @@ public class CartController
     private final CartService cartService;
     private final CartMapper cartMapper;
 
-    @GetMapping("/me") // GET /carts/me
+    @GetMapping("/cart") // GET /carts/me
     public ResponseEntity<CartDto> getCart(@AuthenticationPrincipal CustomUserDetails userDetails)
     {
         Cart cart = cartService.getCartWithUserId(userDetails.getUserId());
@@ -37,7 +37,7 @@ public class CartController
         return ResponseEntity.ok(cartDto);
     }
 
-    @PostMapping("/me") // POST /carts/me
+    @PostMapping("/cart") // POST /carts/me
     public ResponseEntity<CartDto> createCart(
             @AuthenticationPrincipal CustomUserDetails userDetails)
     {
@@ -47,7 +47,7 @@ public class CartController
     }
 
 
-    @PostMapping("/me/items") // POST /carts/me/items
+    @PostMapping("/cart/item") // POST /carts/me/items
     public ResponseEntity<CartItemDto> addCartItem(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody AddCartItemRequest request)
@@ -64,7 +64,7 @@ public class CartController
         return ResponseEntity.ok(cartItemDto);
     }
 
-    @PatchMapping("/me/items") // Patch /carts/me/items
+    @PatchMapping("/cart/item") // Patch /carts/me/items
     public ResponseEntity<CartItemDto> updateCartItem(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody UpdateCartItemRequest request)
@@ -80,7 +80,7 @@ public class CartController
         return ResponseEntity.ok(cartMapper.cartItemEntitytoCartItemDto(item));
     }
 
-    @DeleteMapping("/me/items/{productId}") // DELETE /carts/me/{productId}
+    @DeleteMapping("/cart/item/{productId}") // DELETE /carts/me/{productId}
     public ResponseEntity<Void> removeCartItem(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable UUID productId)
@@ -102,7 +102,7 @@ public class CartController
         return ResponseEntity.ok(cartDto);
     }
 
-    @PutMapping("/me/clear") // PUT /carts/me
+    @PutMapping("/cart/clear") // PUT /carts/me
     public ResponseEntity<Void> clearUserCart(
             @AuthenticationPrincipal CustomUserDetails userDetails)
     {
@@ -110,11 +110,13 @@ public class CartController
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/me") // DELETE /carts/me
+    @DeleteMapping("/cart") // DELETE /carts/me
     public ResponseEntity<Void> removeUserCart(
-            @AuthenticationPrincipal CustomUserDetails userDetails)
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    )
     {
         cartService.removeUserCart(userDetails.getUserId());
         return ResponseEntity.noContent().build();
     }
+    // TODO: add get all carts
 }

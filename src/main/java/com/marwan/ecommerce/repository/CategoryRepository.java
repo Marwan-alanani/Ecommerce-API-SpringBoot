@@ -1,6 +1,7 @@
 package com.marwan.ecommerce.repository;
 
 import com.marwan.ecommerce.model.entity.Category;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +12,7 @@ import java.util.UUID;
 public interface CategoryRepository extends JpaRepository<Category, UUID>
 {
     @Override
+    @NullMarked
     Page<Category> findAll(Pageable pageable);
 
     Optional<Category> findByName(String name);

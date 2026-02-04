@@ -63,7 +63,8 @@ public final class Order
         this.orderStatus = OrderStatus.PAYMENT_FAILED;
     }
 
-    public void markPaymentPending(){
+    public void markPaymentPending()
+    {
         this.orderStatus = OrderStatus.PAYMENT_PENDING;
     }
 
@@ -82,9 +83,7 @@ public final class Order
         );
 
         // populate order items and compute total price
-        cart.getCartItems().forEach(item -> {
-            order.addOrderItem(OrderItem.fromCartItem(item));
-        });
+        cart.getCartItems().forEach(item -> order.addOrderItem(OrderItem.fromCartItem(item)));
         BigDecimal totalPrice = BigDecimal.ZERO;
         for (OrderItem orderItem : order.getOrderItems()) {
             totalPrice = totalPrice.add(orderItem.getTotalPrice());

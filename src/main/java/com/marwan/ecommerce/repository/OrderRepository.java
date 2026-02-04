@@ -1,6 +1,7 @@
 package com.marwan.ecommerce.repository;
 
 import com.marwan.ecommerce.model.entity.Order;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -16,6 +17,7 @@ import java.util.UUID;
 public interface OrderRepository extends JpaRepository<Order, UUID>
 {
     @Override
+    @NullMarked
     Page<Order> findAll(Pageable pageable);
 
     Optional<Order> findByUserIdAndOrderId(UUID userId, UUID orderId);

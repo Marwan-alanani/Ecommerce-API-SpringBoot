@@ -48,7 +48,8 @@ public class UserService
     {
         User user = userRepository.findById(id).
                 orElseThrow(() -> new UserNotFoundException(id));
-        user.setEnabled(false);
+        user.deactivate();
+        userRepository.save(user);
     }
 
     public Page<User> getAll(UserPagingOptions pagingOptions)

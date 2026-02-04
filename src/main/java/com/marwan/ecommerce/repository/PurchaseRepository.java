@@ -1,6 +1,7 @@
 package com.marwan.ecommerce.repository;
 
 import com.marwan.ecommerce.model.entity.Purchase;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +13,7 @@ import java.util.UUID;
 public interface PurchaseRepository extends JpaRepository<Purchase, UUID>
 {
     @Override
+    @NullMarked
     Page<Purchase> findAll(Pageable pageable);
 
     Page<Purchase> findByProductId(Pageable pageable, UUID productId);

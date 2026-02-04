@@ -71,15 +71,13 @@ public class CheckoutServiceTx
 
         // create line item for stripe
         List<LineItemDto> lineItemDtoList = new ArrayList<>();
-        order.getOrderItems().forEach(item -> {
-            lineItemDtoList.add(
-                    new LineItemDto(
-                            item.getProductName(),
-                            item.getUnitPrice(),
-                            item.getQuantity()
-                    )
-            );
-        });
+        order.getOrderItems().forEach(item -> lineItemDtoList.add(
+                new LineItemDto(
+                        item.getProductName(),
+                        item.getUnitPrice(),
+                        item.getQuantity()
+                )
+        ));
 
         return new CheckoutInit(
                 order.getOrderId(),
