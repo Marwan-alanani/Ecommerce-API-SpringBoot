@@ -9,9 +9,8 @@ import org.jspecify.annotations.NullMarked;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -22,7 +21,7 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter
 {
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
     @NullMarked
@@ -48,24 +47,34 @@ public class JwtFilter extends OncePerRequestFilter
             filterChain.doFilter(request, response);
             return;
         }
-        String token = header.replace("Bearer ", "");
-        if (!jwtService.isTokenValid(token)) {
+        String token = header.substring(7);
+        if (!jwtService.isValidAccessToken(token)) {
             filterChain.doFilter(request, response);
             return;
         }
-        UserDetails userDetails = null;
         try {
-            userDetails =
-                    userDetailsService.loadUserByUsername(jwtService.extractEmail(token));
+            var userId = jwtService.extractUserId(token);
+            UserDetails userDetails = userDetailsService.loadUserById(userId);
+
+            var auth = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.getAuthorities()
+            );
+
+            auth.setDetails(
+                    new WebAuthenticationDetailsSource()
+                            .buildDetails(request));
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
         } catch (UsernameNotFoundException e) {
             filterChain.doFilter(request, response);
+            return;
+        } catch (Exception ex) {
+            // if you want to be strict, you can return 401 here
+            filterChain.doFilter(request, response);
+            return;
         }
-        var auth = new UsernamePasswordAuthenticationToken(userDetails, null,
-                userDetails.getAuthorities());
-
-        auth.setDetails(new WebAuthenticationDetails(request));
-        // set auth
-        SecurityContextHolder.getContext().setAuthentication(auth);
         filterChain.doFilter(request, response);
     }
 }

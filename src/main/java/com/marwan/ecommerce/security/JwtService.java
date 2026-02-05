@@ -3,9 +3,11 @@ package com.marwan.ecommerce.security;
 import com.marwan.ecommerce.config.JwtConfig;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -14,45 +16,78 @@ public class JwtService
 {
     private final JwtConfig jwtConfig;
 
-    public boolean isTokenValid(String token)
+    public boolean isValidAccessToken(String token)
     {
         if (token == null || token.trim().isEmpty())
             return false;
 
         try {
-            Jwts.parser()
+            var header = Jwts.parser()
                     .verifyWith(jwtConfig.getSecretKey())
                     .requireIssuer(jwtConfig.getIssuer())
                     .requireAudience(jwtConfig.getAudience())
                     .build()
                     .parseSignedClaims(token)
-                    .getPayload();
-
-            return true;
+                    .getHeader();
+            return header.getType().equals(jwtConfig.getAccessTokenType());
         } catch (JwtException e) {
             return false;
         }
+    }
 
 
+    public boolean isValidRefreshToken(String token)
+    {
+        if (token == null || token.trim().isEmpty())
+            return false;
+
+        try {
+            var header = Jwts.parser()
+                    .verifyWith(jwtConfig.getSecretKey())
+                    .requireIssuer(jwtConfig.getIssuer())
+                    .requireAudience(jwtConfig.getAudience())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getHeader();
+            return header.getType().equals(jwtConfig.getRefreshTokenType());
+        } catch (JwtException e) {
+            return false;
+        }
     }
 
     public String generateAccessToken(CustomUserDetails userDetails)
     {
-        return generateToken(userDetails, jwtConfig.getAccessTokenExpirationInSeconds());
+        return generateToken(userDetails,
+                jwtConfig.getAccessTokenExpirationInSeconds(),
+                jwtConfig.getAccessTokenType()
+        );
+
     }
 
     public String generateRefreshToken(CustomUserDetails userDetails)
     {
-        return generateToken(userDetails, jwtConfig.getRefreshTokenExpirationInSeconds());
+        return generateToken(userDetails,
+                jwtConfig.getRefreshTokenExpirationInSeconds(),
+                jwtConfig.getRefreshTokenType()
+        );
+
     }
 
-    private String generateToken(CustomUserDetails userDetails, int expirationInSeconds)
+    private String generateToken(
+            CustomUserDetails userDetails,
+            int expirationInSeconds,
+            String type)
     {
-        var role = userDetails.getAuthorities().stream().findFirst().get().getAuthority();
+        String role = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(Objects::nonNull)
+                .filter(a -> a.startsWith("ROLE_"))
+                .findFirst()
+                .orElse("ROLE_USER");
 
         return Jwts.builder()
                 .header()
-                .type("JWT")
+                .type(type)
                 .and()
                 .id(UUID.randomUUID().toString())
                 .claim(
@@ -80,10 +115,10 @@ public class JwtService
 
     }
 
-    public String extractUserId(String token)
+    public UUID extractUserId(String token)
     {
         Claims claims = extractAllClaims(token);
-        return claims.getId();
+        return UUID.fromString(claims.getSubject());
 
     }
 
@@ -97,6 +132,8 @@ public class JwtService
     {
         return Jwts.parser()
                 .verifyWith(jwtConfig.getSecretKey())
+                .requireIssuer(jwtConfig.getIssuer())
+                .requireAudience(jwtConfig.getAudience())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

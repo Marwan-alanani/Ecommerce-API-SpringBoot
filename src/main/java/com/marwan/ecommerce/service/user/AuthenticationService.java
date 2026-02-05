@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -32,17 +31,20 @@ public class AuthenticationService
 
         String accessToken = jwtService.generateAccessToken(customUserDetails);
         String refreshToken = jwtService.generateRefreshToken(customUserDetails);
+
         return new AccessAndRefreshTokenDto(accessToken, refreshToken);
     }
 
-    public String renewAccessToken(String refreshToken)
+    public AccessAndRefreshTokenDto renewAccessToken(String refreshToken)
             throws InvalidTokenException, UserNotFoundException
     {
-        if (refreshToken == null || !jwtService.isTokenValid(refreshToken)) {
+        if (refreshToken == null || !jwtService.isValidRefreshToken(refreshToken)) {
             throw new InvalidTokenException(refreshToken);
         }
-        User user = userService.getUser(UUID.fromString(jwtService.extractUserId(refreshToken)));
+        User user = userService.getUser(jwtService.extractUserId(refreshToken));
         CustomUserDetails customUserDetails = new CustomUserDetails(user);
-        return jwtService.generateAccessToken(customUserDetails);
+        var access = jwtService.generateAccessToken(customUserDetails);
+        var refresh = jwtService.generateRefreshToken(customUserDetails);
+        return new AccessAndRefreshTokenDto(access, refresh);
     }
 }

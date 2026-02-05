@@ -29,6 +29,8 @@ spring:
     audience: localhost
     accessTokenExpirationInSeconds: 7200 # 2 hours
     refreshTokenExpirationInSeconds: 604800 # 7 days
+    accessTokenType: "access"
+    refreshTokenType: "refresh"
 
 
 stripe:

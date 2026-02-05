@@ -33,21 +33,6 @@ public class ProductAdminController
     private final ProductService productService;
     private final ProductMapper productMapper;
 
-    @PostMapping
-    public ResponseEntity<ProductResponseDto> createProduct(
-            @Valid @RequestBody CreateProductRequest request,
-            UriComponentsBuilder uriBuilder)
-            throws CategoryNotFoundException
-    {
-        CreateProductCommand command = productMapper.createProductRequestToCommand(request);
-        Product product = productService.createProduct(command);
-        ProductResponseDto productResponseDto = productMapper.productToProductResponseDto(product);
-        var uri = uriBuilder
-                .path("/products/{productId}")
-                .buildAndExpand(product.getProductId())
-                .toUri();
-        return ResponseEntity.created(uri).body(productResponseDto);
-    }
 
     @PatchMapping
     public ResponseEntity<ProductResponseDto> updateProduct(

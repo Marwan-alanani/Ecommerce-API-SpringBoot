@@ -53,11 +53,15 @@ public class AuthController
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<AuthenticationDto> refresh(@CookieValue String refreshToken)
-            throws InvalidTokenException, UserNotFoundException
+    public ResponseEntity<AuthenticationDto> refresh(
+            @CookieValue String refreshToken,
+            HttpServletResponse response
+    ) throws InvalidTokenException, UserNotFoundException
     {
-        String accessToken = authenticationService.renewAccessToken(refreshToken);
-        return ResponseEntity.ok(new AuthenticationDto(accessToken));
+        AccessAndRefreshTokenDto accessAndRefreshTokenDto = authenticationService
+                .renewAccessToken(refreshToken);
+        setRefreshTokenCookie(response, accessAndRefreshTokenDto.refreshToken());
+        return ResponseEntity.ok(new AuthenticationDto(accessAndRefreshTokenDto.accessToken()));
     }
 
     private void setRefreshTokenCookie(HttpServletResponse response, String refreshToken)

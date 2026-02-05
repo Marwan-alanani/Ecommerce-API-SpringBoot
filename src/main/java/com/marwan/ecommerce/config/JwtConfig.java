@@ -16,6 +16,8 @@ public class JwtConfig
     private String issuer;
     private String audience;
     private String secretKey;
+    private String accessTokenType;
+    private String refreshTokenType;
     private int accessTokenExpirationInSeconds;
     private int refreshTokenExpirationInSeconds;
 
