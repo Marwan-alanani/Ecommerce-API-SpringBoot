@@ -23,6 +23,7 @@ public final class Cart
     @Column(nullable = false)
     private UUID userId;
 
+    @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private Instant createdDateTime;
 
@@ -30,10 +31,10 @@ public final class Cart
     private Instant updatedDateTime;
 
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, mappedBy = "cart",
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "cart",
             orphanRemoval = true)
     @Setter(AccessLevel.NONE)
-    private List<CartItem> cartItems;
+    private List<CartItem> cartItems = new ArrayList<>();
 
 
     public boolean isEmpty()
@@ -56,8 +57,13 @@ public final class Cart
 
     public void addCartItem(CartItem cartItem)
     {
-        cartItem.setCart(this);
-        cartItems.add(cartItem);
+        CartItem existingItem = getCartItemByProductId(cartItem.getProduct().getProductId());
+        if (existingItem == null) {
+            cartItem.setCart(this);
+            cartItems.add(cartItem);
+        } else {
+            existingItem.setQuantity(existingItem.getQuantity() + cartItem.getQuantity());
+        }
     }
 
     public CartItem getCartItemByProductId(UUID productId)
@@ -89,12 +95,11 @@ public final class Cart
 
     public static Cart create(UUID userId)
     {
-        Instant now = Instant.now();
         return new Cart(
                 UUID.randomUUID(),
                 userId,
-                now,
-                now,
+                null,
+                null,
                 new ArrayList<>()
         );
     }

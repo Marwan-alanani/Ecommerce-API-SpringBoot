@@ -15,11 +15,9 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Setter
 public final class Product
 {
     @Id
-    @Setter(AccessLevel.NONE)
     private UUID productId;
     @Column(nullable = false)
     private String name;
@@ -41,7 +39,6 @@ public final class Product
     private Category category;
 
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.NONE)
     @CreationTimestamp
     private Instant createdDateTime;
     @Column(nullable = false)
@@ -52,9 +49,57 @@ public final class Product
     private boolean isEnabled;
 
     @Column(nullable = false)
+    @Setter
     private BigDecimal totalPurchasePrice;
+
     @Column(nullable = false)
+    @Setter
     private long totalPurchaseQuantity;
+
+    @Version
+    @Column(nullable = false)
+    private long version;
+
+    public void setName(String name)
+    {
+        if (name == null)
+            return;
+
+        if (name.isBlank())
+            throw new IllegalArgumentException("Product name cannot be blank");
+        this.name = name;
+    }
+
+    public void setDescription(String description)
+    {
+        if (description == null)
+            return;
+        this.description = description;
+    }
+
+    public void setSellingPrice(BigDecimal price)
+    {
+        if (price == null)
+            return;
+        if (price.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Price cannot be negative");
+        }
+        this.sellingPrice = price;
+    }
+
+    public void setPictureUrl(String pictureUrl)
+    {
+        if (pictureUrl == null)
+            return;
+        this.pictureUrl = pictureUrl;
+    }
+
+    public void setCategory(Category category)
+    {
+        if (category == null)
+            return;
+        this.category = category;
+    }
 
     public void decreaseBalance(int quantity)
     {
@@ -78,24 +123,24 @@ public final class Product
     public static Product create(
             String name,
             String description,
-            double price,
+            BigDecimal price,
             String pictureUrl,
             Category category)
     {
-        Instant now = Instant.now();
         return new Product(
                 UUID.randomUUID(),
                 name,
                 description,
-                BigDecimal.valueOf(price),
+                price,
                 pictureUrl,
                 0,
                 category,
-                now,
-                now,
+                null,
+                null,
                 true,
                 BigDecimal.ZERO,
-                0
+                0,
+                0L
         );
     }
 

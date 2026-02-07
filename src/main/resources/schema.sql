@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS product
     is_enabled              boolean        NOT NULL,
     total_purchase_price    DECIMAL(19, 4) NOT NULL,
     total_purchase_quantity BIGINT         NOT NULL,
+    version                 BIGINT         NOT NULL,
 
 
     CONSTRAINT fk_product_category FOREIGN KEY (category_id)
@@ -87,8 +88,7 @@ CREATE TABLE IF NOT EXISTS purchase
 CREATE TABLE IF NOT EXISTS carts
 (
     cart_id           UUID PRIMARY KEY,
-
-    user_id           UUID        NOT NULL,
+    user_id           UUID        NOT NULL UNIQUE,
     created_date_time timestamptz NOT NULL,
     updated_date_time timestamptz NOT NULL,
 
@@ -120,7 +120,8 @@ CREATE TABLE IF NOT EXISTS cart_items
     CONSTRAINT fk_cart_items_product
         FOREIGN KEY (product_id)
             REFERENCES product (product_id)
-            ON DELETE RESTRICT
+            ON DELETE RESTRICT,
+    UNIQUE (cart_id, product_id)
 );
 
 Create TABLE IF NOT EXISTS orders

@@ -95,20 +95,12 @@ public class CartService
     {
 
         Product product = productService.getActiveProduct(command.getProductId());
-
         Cart cart = getOrCreateCart(command.getUserId());
-        CartItem cartItem = cart.getCartItemByProductId(command.getProductId());
-
-        int totalQuantity = (cartItem == null) ? command.getQuantity() :
-                cartItem.getQuantity() + command.getQuantity();
-
-
-        if (cartItem == null) {
-            cartItem = CartItem.fromProductWithQuantity(product, totalQuantity);
-            cart.addCartItem(cartItem);
-        } else {
-            cartItem.setQuantity(totalQuantity);
-        }
+        CartItem cartItem = CartItem.fromProductWithQuantity(
+                product,
+                command.getQuantity()
+        );
+        cart.addCartItem(cartItem);
         cartRepository.save(cart);
         return cartItem;
     }

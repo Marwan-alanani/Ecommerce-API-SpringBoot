@@ -34,8 +34,8 @@ public final class User
     @Column(nullable = false)
     private boolean isEnabled;
 
-    @Column(nullable = false)
     @Setter(AccessLevel.NONE)
+   @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private Instant createdDateTime;
 

@@ -138,7 +138,15 @@ public class ProductService
                 !categoryService.categoryExists(command.categoryId())) {
             throw new CategoryNotFoundException(command.categoryId());
         }
-        productMapper.updateFromCommand(product, command);
+        Category category = categoryService.getCategory(command.categoryId());
+
+        product.setName(command.name());
+        product.setDescription(command.description());
+        product.setSellingPrice(command.price());
+        product.setPictureUrl(command.pictureUrl());
+        product.setCategory(category);
+
+
         productRepository.save(product);
         return product;
     }

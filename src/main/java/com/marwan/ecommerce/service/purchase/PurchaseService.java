@@ -8,11 +8,9 @@ import com.marwan.ecommerce.model.entity.Purchase;
 import com.marwan.ecommerce.repository.PurchaseRepository;
 import com.marwan.ecommerce.service.product.ProductService;
 import com.marwan.ecommerce.service.purchase.command.CreatePurchaseCommand;
-import com.marwan.ecommerce.service.purchase.event.purchaseCreated.PurchaseCreatedEvent;
 import com.marwan.ecommerce.service.supplier.SupplierService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -23,14 +21,13 @@ import static com.marwan.ecommerce.service.common.BaseService.constructPageable;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class PurchaseService
 {
     private final PurchaseRepository purchaseRepository;
     private final ProductService productService;
     private final SupplierService supplierService;
-    private final ApplicationEventPublisher applicationEventPublisher;
 
+    @Transactional
     public Purchase createPurchase(CreatePurchaseCommand command)
             throws ProductNotFoundException, SupplierNotFoundException
     {
@@ -47,14 +44,8 @@ public class PurchaseService
                 command.supplierId()
         );
 
+        // event published on save by default
         purchaseRepository.save(purchase);
-        // raise an event here
-        applicationEventPublisher.publishEvent(
-                new PurchaseCreatedEvent(
-                        purchase.getProductId(),
-                        purchase.getUnitPrice(),
-                        purchase.getQuantity()
-                ));
         return purchase;
     }
 

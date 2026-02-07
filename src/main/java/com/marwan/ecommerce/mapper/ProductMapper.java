@@ -31,10 +31,10 @@ public interface ProductMapper
     @Mapping(target = "price", source = "product.sellingPrice")
     ProductDetailsDto productToProductDetailsDto(Product product, String categoryName);
 
-    @Mapping(target = "updatedDateTime", expression = "java(java.time.Instant.now())")
-    @Mapping(target = "sellingPrice", source = "price")
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateFromCommand(
-            @MappingTarget Product product,
-            UpdateProductCommand command);
+//    @Mapping(target = "updatedDateTime", expression = "java(java.time.Instant.now())")
+//    @Mapping(target = "sellingPrice", source = "price")
+//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+//    void updateFromCommand(
+//            @MappingTarget Product product,
+//            UpdateProductCommand command);
 }

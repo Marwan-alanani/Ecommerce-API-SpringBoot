@@ -22,14 +22,14 @@ public final class CartItem
     private UUID cartItemId;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id")
     private Product product;
 
     @Column(nullable = false)
     private int quantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
@@ -46,29 +46,26 @@ public final class CartItem
 
     public static CartItem fromProduct(Product product)
     {
-        Instant now = Instant.now();
 
         return new CartItem(
                 UUID.randomUUID(),
                 product,
                 1,
                 null,
-                now,
-                now);
+                null,
+                null);
 
     }
 
     public static CartItem fromProductWithQuantity(Product product, int quantity)
     {
-        Instant now = Instant.now();
+
         return new CartItem(
                 UUID.randomUUID(),
                 product,
                 quantity,
                 null,
-                now,
-                now);
+                null,
+                null);
     }
-
-
 }

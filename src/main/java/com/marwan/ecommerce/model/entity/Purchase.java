@@ -1,8 +1,10 @@
 package com.marwan.ecommerce.model.entity;
 
+import com.marwan.ecommerce.service.purchase.event.purchaseCreated.PurchaseCreatedEvent;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -14,7 +16,7 @@ import java.util.UUID;
 @Table(name = "purchase")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public final class Purchase
+public final class Purchase extends AbstractAggregateRoot<Purchase>
 {
     @Id
     @Setter(AccessLevel.NONE)
@@ -35,20 +37,21 @@ public final class Purchase
 
     public static Purchase create(
             UUID productId,
-            double unitPrice,
+            BigDecimal unitPrice,
             int quantity,
             UUID supplierId
     )
     {
-        return new Purchase(
+        Purchase purchase = new Purchase(
                 UUID.randomUUID(),
                 productId,
-                BigDecimal.valueOf(unitPrice),
+                unitPrice,
                 quantity,
                 supplierId,
                 null
         );
-
+        purchase.registerEvent(new PurchaseCreatedEvent(productId, unitPrice, quantity));
+        return purchase;
     }
 
     public BigDecimal getTotalCost()

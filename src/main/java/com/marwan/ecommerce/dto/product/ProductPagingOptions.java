@@ -11,7 +11,8 @@ public class ProductPagingOptions extends PagingOptions<ProductSortingOptions>
             ProductSortingOptions sortBy,
             SortDirection sortDir)
     {
-        if(sortBy == null) sortBy = ProductSortingOptions.CREATED_AT;
+        if (sortBy == null)
+            sortBy = ProductSortingOptions.CREATED_AT;
         super(pageSize, pageNo, sortBy, sortDir);
     }
 }

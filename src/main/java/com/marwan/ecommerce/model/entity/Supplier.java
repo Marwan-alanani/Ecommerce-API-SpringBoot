@@ -29,7 +29,7 @@ public final class Supplier
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.NONE)
     @CreationTimestamp
     private Instant createdDateTime;
