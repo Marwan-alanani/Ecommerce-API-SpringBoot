@@ -32,7 +32,7 @@ public class CheckoutServiceTx
     {
         Payment payment = paymentService.getPayment(paymentId);
         Cart cart = cartService.getCart(cartId);
-        Order order = orderService.getOrder(orderId, true,UUID.randomUUID());
+        Order order = orderService.getOrder(orderId, true, UUID.randomUUID());
 
         payment.addPaymentProvider(paymentProvider);
         payment.setCheckoutSessionId(sessionId);

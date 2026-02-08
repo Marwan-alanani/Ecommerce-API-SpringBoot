@@ -17,7 +17,8 @@ public interface PurchaseMapper
     CreatePurchaseCommand createPurchaseRequestToCreatePurchaseCommand(
             CreatePurchaseRequest request);
 
-//    @Mapping(target = "unitPrice", expression = "java(purchase.getUnitPrice().doubleValue())")
+    //    @Mapping(target = "unitPrice", expression = "java(purchase.getUnitPrice().doubleValue())")
+    @Mapping(target = "totalCost", expression = "java(purchase.getTotalCost())")
     PurchaseDto purchaseToPurchaseDto(Purchase purchase);
 
     List<PurchaseDto> purchaseListToPurchaseDtoList(List<Purchase> purchaseList);
