@@ -55,7 +55,6 @@ public class SecurityConfig
                         )
 
                         .requestMatchers("/purchase/**").hasRole(UserRole.ADMIN.name())
-                        .requestMatchers("/admin/**").hasRole(UserRole.ADMIN.name())
                         .requestMatchers("/webhook/**").permitAll()
 
                         .anyRequest().authenticated()

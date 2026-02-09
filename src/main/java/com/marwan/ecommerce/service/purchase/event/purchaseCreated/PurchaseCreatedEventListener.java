@@ -8,6 +8,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.math.BigDecimal;
@@ -15,12 +16,13 @@ import java.math.RoundingMode;
 
 @Component
 @RequiredArgsConstructor
+
 public class PurchaseCreatedEventListener
 {
     private final ProductRepository productRepository;
 
 
-    @TransactionalEventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void onPurchaseCreated(PurchaseCreatedEvent event)
     {
