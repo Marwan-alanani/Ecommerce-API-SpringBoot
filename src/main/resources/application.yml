@@ -9,7 +9,7 @@ spring:
     email: ${ADMIN_EMAIL}
     password: ${ADMIN_PASSWORD}
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}
+    url: jdbc:postgresql://${DB_HOST}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
