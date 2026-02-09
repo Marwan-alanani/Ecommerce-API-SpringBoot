@@ -1,6 +1,5 @@
 package com.marwan.ecommerce.service.category;
 
-import com.marwan.ecommerce.dto.category.CategoryPagingOptions;
 import com.marwan.ecommerce.dto.category.CategoryWithProductsCountDto;
 import com.marwan.ecommerce.exception.category.CategoryNotFoundException;
 import com.marwan.ecommerce.exception.category.CategoryNameExistsException;
@@ -12,12 +11,12 @@ import com.marwan.ecommerce.service.category.command.CreateCategoryCommand;
 import com.marwan.ecommerce.service.category.command.UpdateCategoryCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-import static com.marwan.ecommerce.service.common.BaseService.constructPageable;
 
 @RequiredArgsConstructor
 @Service
@@ -127,15 +126,14 @@ public class CategoryService
     }
 
     public Page<Category> getAllCategories(
-            CategoryPagingOptions pagingOptions)
+            Pageable pageable
+    )
     {
-        var pageable = constructPageable(pagingOptions);
         return categoryRepository.findAll(pageable);
     }
 
-    public Page<Category> getActiveCategories(CategoryPagingOptions pagingOptions)
+    public Page<Category> getActiveCategories(Pageable pageable)
     {
-        var pageable = constructPageable(pagingOptions);
         return categoryRepository.findAllByIsEnabled(pageable, true);
     }
 

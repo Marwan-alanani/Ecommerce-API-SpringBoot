@@ -1,6 +1,5 @@
 package com.marwan.ecommerce.service.supplier;
 
-import com.marwan.ecommerce.dto.supplier.SupplierPagingOptions;
 import com.marwan.ecommerce.exception.supplier.SupplierEmailExistsException;
 import com.marwan.ecommerce.exception.supplier.SupplierNotFoundException;
 import com.marwan.ecommerce.exception.supplier.SupplierNameExistsException;
@@ -12,12 +11,12 @@ import com.marwan.ecommerce.service.supplier.command.UpdateSupplierCommand;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.marwan.ecommerce.service.common.BaseService.constructPageable;
 
 @Service
 @RequiredArgsConstructor
@@ -59,9 +58,8 @@ public class SupplierService
         return supplierRepository.existsBySupplierIdAndIsEnabled(supplierId, isEnabled);
     }
 
-    public Page<Supplier> getAll(SupplierPagingOptions pagingOptions, Boolean isEnabled)
+    public Page<Supplier> getAll(Pageable pageable, Boolean isEnabled)
     {
-        var pageable = constructPageable(pagingOptions);
         if (isEnabled == null) {
             return supplierRepository.findAll(pageable);
         }

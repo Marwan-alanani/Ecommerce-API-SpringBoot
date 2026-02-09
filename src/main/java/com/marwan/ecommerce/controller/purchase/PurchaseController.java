@@ -3,7 +3,6 @@ package com.marwan.ecommerce.controller.purchase;
 import com.marwan.ecommerce.controller.purchase.request.CreatePurchaseRequest;
 import com.marwan.ecommerce.dto.common.PageDto;
 import com.marwan.ecommerce.dto.purchase.PurchaseDto;
-import com.marwan.ecommerce.dto.purchase.PurchasePagingOptions;
 import com.marwan.ecommerce.exception.product.ProductNotFoundException;
 import com.marwan.ecommerce.exception.purchase.PurchaseNotFoundException;
 import com.marwan.ecommerce.exception.supplier.SupplierNotFoundException;
@@ -14,6 +13,9 @@ import com.marwan.ecommerce.service.purchase.command.CreatePurchaseCommand;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,26 +56,26 @@ public class PurchaseController
 
     @GetMapping
     public ResponseEntity<PageDto<PurchaseDto>> getAll(
-            @Valid PurchasePagingOptions pagingOptions,
+            @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) UUID productId,
             @RequestParam(required = false) UUID supplierId
     )
     {
         Page<Purchase> purchasePage;
         if (productId == null && supplierId == null) {
-            purchasePage = purchaseService.getAll(pagingOptions);
+            purchasePage = purchaseService.getAll(pageable);
         } else if (productId != null && supplierId != null) {
             purchasePage = purchaseService.getAllBySupplierIdAndProductId(
-                    pagingOptions,
+                    pageable,
                     supplierId,
                     productId);
         } else if (supplierId != null) {
             purchasePage = purchaseService.getAllBySupplierId(
-                    pagingOptions,
+                    pageable,
                     supplierId);
         } else {
             purchasePage = purchaseService.getAllByProductId(
-                    pagingOptions,
+                    pageable,
                     productId);
         }
 

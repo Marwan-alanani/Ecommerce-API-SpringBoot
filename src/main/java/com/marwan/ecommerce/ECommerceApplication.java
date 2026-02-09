@@ -3,6 +3,7 @@ package com.marwan.ecommerce;
 import com.marwan.ecommerce.model.entity.User;
 import com.marwan.ecommerce.model.enums.UserRole;
 import com.marwan.ecommerce.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,41 +14,31 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ECommerceApplication
 {
 
+    @Value("${admin.email}")
+    private String adminEmail;
+    @Value("${admin.password}")
+    private String adminPassword;
+
     static void main(String[] args)
     {
         SpringApplication.run(ECommerceApplication.class, args);
     }
 
     // this is for data seeding
-/*    @Bean
+    @Bean
     CommandLineRunner init(UserRepository userRepository, PasswordEncoder passwordEncoder)
     {
         return args -> {
-            userRepository.save(User.create(
-                    "Admin",
-                    "Admin",
-                    UserRole.ADMIN,
-                    "admin@mail.com",
-                    passwordEncoder.encode("password"))
-            );
+            if (userRepository.findByEmail(adminEmail).isEmpty()) {
+                User user = User.create(
+                        "admin",
+                        "admin",
+                        UserRole.ADMIN,
+                        adminEmail,
+                        passwordEncoder.encode(adminPassword)
+                );
+                userRepository.save(user);
+            }
         };
     }
- */   //
-    //            userRepository.save(User.create(
-    //                    "Mazen",
-    //                    "Walid",
-    //                    UserRole.USER,
-    //                    "mazen@mail.com",
-    //                    passwordEncoder.encode("password"))
-    //            );
-    //            userRepository.save(User.create(
-    //                    "Malik",
-    //                    "Walid",
-    //                    UserRole.USER,
-    //                    "malik@mail.com",
-    //                    passwordEncoder.encode("password"))
-    //            );
-    //        };
-    //    }
-
 }

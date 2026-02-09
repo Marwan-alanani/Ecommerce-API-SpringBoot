@@ -2,7 +2,6 @@ package com.marwan.ecommerce.controller.category;
 
 import com.marwan.ecommerce.controller.category.request.CreateCategoryRequest;
 import com.marwan.ecommerce.controller.category.request.UpdateCategoryRequest;
-import com.marwan.ecommerce.dto.category.CategoryPagingOptions;
 import com.marwan.ecommerce.dto.category.CategoryResponseDto;
 import com.marwan.ecommerce.dto.category.CategoryWithProductsCountDto;
 import com.marwan.ecommerce.dto.common.PageDto;
@@ -16,6 +15,9 @@ import com.marwan.ecommerce.service.category.command.UpdateCategoryCommand;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -49,10 +51,10 @@ public class CategoryController
 
     @GetMapping("/active")
     public ResponseEntity<PageDto<CategoryResponseDto>> getAllActive(
-            @Valid CategoryPagingOptions pagingOptions
+            @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable
     )
     {
-        Page<Category> categoryPage = categoryService.getAllCategories(pagingOptions);
+        Page<Category> categoryPage = categoryService.getAllCategories(pageable);
         List<CategoryResponseDto> categoryResponseDtoList =
                 categoryMapper.categoryListToCategoryResponseDtoList(categoryPage.getContent());
 
@@ -64,10 +66,10 @@ public class CategoryController
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<PageDto<CategoryResponseDto>> getAll(
-            @Valid CategoryPagingOptions pagingOptions
+            @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable
     )
     {
-        Page<Category> categoryPage = categoryService.getActiveCategories(pagingOptions);
+        Page<Category> categoryPage = categoryService.getActiveCategories(pageable);
         List<CategoryResponseDto> categoryResponseDtoList =
                 categoryMapper.categoryListToCategoryResponseDtoList(categoryPage.getContent());
 

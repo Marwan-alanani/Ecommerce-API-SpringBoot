@@ -1,7 +1,6 @@
 package com.marwan.ecommerce.service.product;
 
 import com.marwan.ecommerce.dto.product.ProductDetailsDto;
-import com.marwan.ecommerce.dto.product.ProductPagingOptions;
 import com.marwan.ecommerce.exception.category.CategoryNotFoundException;
 import com.marwan.ecommerce.exception.product.ProductNotFoundException;
 import com.marwan.ecommerce.mapper.ProductMapper;
@@ -14,11 +13,10 @@ import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
-import static com.marwan.ecommerce.service.common.BaseService.constructPageable;
 
 @Service
 @RequiredArgsConstructor
@@ -94,35 +92,31 @@ public class ProductService
     }
 
     public Page<Product> getActiveProductsByCategoryId(
-            ProductPagingOptions pagingOptions,
+            Pageable pageable,
             UUID categoryId)
             throws CategoryNotFoundException
     {
         if (!categoryService.categoryActive(categoryId)) {
             throw new CategoryNotFoundException(categoryId);
         }
-        var pageable = constructPageable(pagingOptions);
         return productRepository.findByCategory_CategoryIdAndIsEnabled(pageable, categoryId, true);
     }
 
     public Page<Product> getProductsByCategoryId(
-            ProductPagingOptions pagingOptions,
+            Pageable pageable,
             UUID categoryId)
             throws CategoryNotFoundException
     {
-        var pageable = constructPageable(pagingOptions);
         return productRepository.findByCategory_CategoryId(pageable, categoryId);
     }
 
-    public Page<Product> getActiveProducts(ProductPagingOptions pagingOptions)
+    public Page<Product> getActiveProducts(Pageable pageable)
     {
-        var pageable = constructPageable(pagingOptions);
         return productRepository.findAllByIsEnabled(pageable, true);
     }
 
-    public Page<Product> getAllProducts(ProductPagingOptions pagingOptions)
+    public Page<Product> getAllProducts(Pageable pageable)
     {
-        var pageable = constructPageable(pagingOptions);
         return productRepository.findAll(pageable);
     }
 

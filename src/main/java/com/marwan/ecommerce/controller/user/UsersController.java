@@ -3,7 +3,6 @@ package com.marwan.ecommerce.controller.user;
 import com.marwan.ecommerce.controller.user.request.UpdateUserRequest;
 import com.marwan.ecommerce.dto.common.PageDto;
 import com.marwan.ecommerce.dto.user.UserDto;
-import com.marwan.ecommerce.dto.user.UserPagingOptions;
 import com.marwan.ecommerce.exception.user.UserNotFoundException;
 import com.marwan.ecommerce.mapper.UserMapper;
 import com.marwan.ecommerce.model.entity.User;
@@ -13,6 +12,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -79,10 +81,10 @@ public class UsersController
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageDto<UserDto>> getAllUsers(
-            @Valid UserPagingOptions pagingOptions
+            @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable
     )
     {
-        Page<User> userPage = userService.getAll(pagingOptions);
+        Page<User> userPage = userService.getAll(pageable);
         List<UserDto> userDtoList = userMapper.userListToUserDtoList(userPage.getContent());
 
         return ResponseEntity.ok(toPageDto(userPage, userDtoList));

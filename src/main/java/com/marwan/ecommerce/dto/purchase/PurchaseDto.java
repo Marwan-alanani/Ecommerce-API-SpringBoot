@@ -1,7 +1,7 @@
 package com.marwan.ecommerce.dto.purchase;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 public record PurchaseDto(
@@ -11,7 +11,7 @@ public record PurchaseDto(
         int quantity,
         BigDecimal totalCost,
         UUID supplierId,
-        Date createdDateTime
+        Instant createdDateTime
 )
 {
 

@@ -1,6 +1,5 @@
 package com.marwan.ecommerce.dto.common;
 
-
 import java.util.List;
 
 public record PageDto<T>(

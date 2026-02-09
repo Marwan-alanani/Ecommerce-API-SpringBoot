@@ -2,15 +2,16 @@ package com.marwan.ecommerce.controller.order;
 
 import com.marwan.ecommerce.dto.common.PageDto;
 import com.marwan.ecommerce.dto.order.OrderDto;
-import com.marwan.ecommerce.dto.order.OrderPagingOptions;
 import com.marwan.ecommerce.mapper.OrderMapper;
 import com.marwan.ecommerce.model.entity.Order;
 import com.marwan.ecommerce.model.enums.UserRole;
 import com.marwan.ecommerce.security.CustomUserDetails;
 import com.marwan.ecommerce.service.order.OrderService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,9 +35,11 @@ public class OrderController
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<PageDto<OrderDto>> getAll(@Valid OrderPagingOptions pagingOptions)
+    public ResponseEntity<PageDto<OrderDto>> getAll(
+            @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable
+    )
     {
-        Page<Order> orderPage = orderService.getAll(pagingOptions);
+        Page<Order> orderPage = orderService.getAll(pageable);
         List<OrderDto> orderDtos = orderPage.stream()
                 .map(orderMapper::orderEntityToOrderDto)
                 .toList();
@@ -45,10 +48,10 @@ public class OrderController
 
     @GetMapping("/me")
     public ResponseEntity<PageDto<OrderDto>> getUserOrders(
-            @Valid OrderPagingOptions pagingOptions,
+            @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails)
     {
-        Page<Order> orderPage = orderService.getUserOrders(pagingOptions, userDetails.getUserId());
+        Page<Order> orderPage = orderService.getUserOrders(pageable, userDetails.getUserId());
         List<OrderDto> orderDtos = orderPage.stream()
                 .map(orderMapper::orderEntityToOrderDto)
                 .toList();

@@ -1,6 +1,5 @@
 package com.marwan.ecommerce.service.purchase;
 
-import com.marwan.ecommerce.dto.purchase.PurchasePagingOptions;
 import com.marwan.ecommerce.exception.product.ProductNotFoundException;
 import com.marwan.ecommerce.exception.purchase.PurchaseNotFoundException;
 import com.marwan.ecommerce.exception.supplier.SupplierNotFoundException;
@@ -12,12 +11,12 @@ import com.marwan.ecommerce.service.supplier.SupplierService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.marwan.ecommerce.service.common.BaseService.constructPageable;
 
 @Service
 @RequiredArgsConstructor
@@ -59,32 +58,28 @@ public class PurchaseService
         return purchase.get();
     }
 
-    public Page<Purchase> getAll(PurchasePagingOptions pagingOptions)
+    public Page<Purchase> getAll(Pageable pageable)
     {
-        var pageable = constructPageable(pagingOptions);
         return purchaseRepository.findAll(pageable);
     }
 
     public Page<Purchase> getAllByProductId(
-            PurchasePagingOptions pagingOptions
-            , UUID productId)
+            Pageable pageable,
+            UUID productId)
     {
-        var pageable = constructPageable(pagingOptions);
         return purchaseRepository.findByProductId(pageable, productId);
     }
 
-    public Page<Purchase> getAllBySupplierId(PurchasePagingOptions pagingOptions, UUID supplierId)
+    public Page<Purchase> getAllBySupplierId(Pageable pageable, UUID supplierId)
     {
-        var pageable = constructPageable(pagingOptions);
         return purchaseRepository.findBySupplierId(pageable, supplierId);
     }
 
-    public Page<Purchase> getAllBySupplierIdAndProductId(PurchasePagingOptions pagingOptions,
+    public Page<Purchase> getAllBySupplierIdAndProductId(Pageable pageable,
             UUID supplierId,
             UUID productId)
     {
 
-        var pageable = constructPageable(pagingOptions);
         return purchaseRepository.findBySupplierIdAndProductId(pageable, supplierId, productId);
     }
 

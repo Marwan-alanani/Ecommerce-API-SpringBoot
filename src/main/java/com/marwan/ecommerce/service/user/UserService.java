@@ -1,6 +1,5 @@
 package com.marwan.ecommerce.service.user;
 
-import com.marwan.ecommerce.dto.user.UserPagingOptions;
 import com.marwan.ecommerce.model.enums.UserRole;
 import com.marwan.ecommerce.model.entity.User;
 import com.marwan.ecommerce.repository.UserRepository;
@@ -9,13 +8,13 @@ import com.marwan.ecommerce.exception.user.UserNotFoundException;
 import com.marwan.ecommerce.service.user.command.RegisterCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-import static com.marwan.ecommerce.service.common.BaseService.constructPageable;
 
 @Service
 @RequiredArgsConstructor
@@ -52,9 +51,8 @@ public class UserService
         userRepository.save(user);
     }
 
-    public Page<User> getAll(UserPagingOptions pagingOptions)
+    public Page<User> getAll(Pageable pageable)
     {
-        var pageable = constructPageable(pagingOptions);
         return userRepository.findAll(pageable);
     }
 

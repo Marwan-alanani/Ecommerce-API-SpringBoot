@@ -1,6 +1,5 @@
 package com.marwan.ecommerce.service.payment;
 
-import com.marwan.ecommerce.dto.payment.PaymentPagingOptions;
 import com.marwan.ecommerce.exception.payment.PaymentNotFoundException;
 import com.marwan.ecommerce.model.entity.Payment;
 import com.marwan.ecommerce.model.enums.PaymentStatus;
@@ -9,12 +8,12 @@ import com.marwan.ecommerce.service.order.event.orderPaid.OrderPaidEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-import static com.marwan.ecommerce.service.common.BaseService.constructPageable;
 
 @Service
 @RequiredArgsConstructor
@@ -56,16 +55,13 @@ public class PaymentService
                 .orElseThrow(() -> new PaymentNotFoundException(paymentId));
     }
 
-    public Page<Payment> getPayments(PaymentPagingOptions pagingOptions)
+    public Page<Payment> getPayments(Pageable pageable)
     {
-        var pageable = constructPageable(pagingOptions);
         return paymentRepository.findAll(pageable);
     }
 
-    public Page<Payment> getUserPayments(PaymentPagingOptions pagingOptions, UUID userId)
+    public Page<Payment> getUserPayments(Pageable pageable, UUID userId)
     {
-
-        var pageable = constructPageable(pagingOptions);
         return paymentRepository.findAllByOrder_UserId(pageable, userId);
     }
 

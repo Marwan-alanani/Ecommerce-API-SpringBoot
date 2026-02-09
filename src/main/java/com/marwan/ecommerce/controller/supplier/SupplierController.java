@@ -4,7 +4,6 @@ import com.marwan.ecommerce.controller.supplier.request.CreateSupplierRequest;
 import com.marwan.ecommerce.controller.supplier.request.UpdateSupplierRequest;
 import com.marwan.ecommerce.dto.common.PageDto;
 import com.marwan.ecommerce.dto.supplier.SupplierDto;
-import com.marwan.ecommerce.dto.supplier.SupplierPagingOptions;
 import com.marwan.ecommerce.exception.supplier.SupplierEmailExistsException;
 import com.marwan.ecommerce.exception.supplier.SupplierNotFoundException;
 import com.marwan.ecommerce.exception.supplier.SupplierNameExistsException;
@@ -16,6 +15,9 @@ import com.marwan.ecommerce.service.supplier.command.UpdateSupplierCommand;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,11 +60,11 @@ public class SupplierController
 
     @GetMapping
     public ResponseEntity<PageDto<SupplierDto>> getAll(
-            @Valid SupplierPagingOptions pagingOptions,
+            @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) Boolean isEnabled
     )
     {
-        Page<Supplier> supplierPage = supplierService.getAll(pagingOptions, isEnabled);
+        Page<Supplier> supplierPage = supplierService.getAll(pageable, isEnabled);
         List<SupplierDto> supplierDtoList =
                 supplierMapper.supplierListToSupplierDtoList(supplierPage.getContent());
 
