@@ -12,7 +12,7 @@ services:
       - db
 
   db:
-    image: postgres:14.20-trixie
+    image: postgres:16-alpine
     container_name: ${DB_HOST}
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}

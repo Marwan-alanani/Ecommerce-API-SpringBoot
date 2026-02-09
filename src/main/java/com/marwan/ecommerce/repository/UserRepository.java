@@ -17,6 +17,8 @@ public interface UserRepository extends JpaRepository<User, UUID>
 
     boolean existsByUserIdAndIsEnabled(UUID userId, boolean isEnabled);
 
+    boolean existsByEmail(String email);
+
     @Override
     @NullMarked
     Page<User> findAll(Pageable pageable);

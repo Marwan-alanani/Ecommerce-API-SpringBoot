@@ -27,7 +27,7 @@ public class UserService
     public User create(RegisterCommand command)
             throws EmailExistsException
     {
-        if (userRepository.findByEmail(command.email()).isPresent()) {
+        if (userRepository.existsByEmail(command.email())) {
             throw new EmailExistsException(command.email());
         }
 

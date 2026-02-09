@@ -29,7 +29,7 @@ public class ECommerceApplication
     CommandLineRunner init(UserRepository userRepository, PasswordEncoder passwordEncoder)
     {
         return args -> {
-            if (userRepository.findByEmail(adminEmail).isEmpty()) {
+            if (!userRepository.existsByEmail(adminEmail)) {
                 User user = User.create(
                         "admin",
                         "admin",
