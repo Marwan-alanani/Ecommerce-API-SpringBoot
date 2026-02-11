@@ -37,9 +37,12 @@ public final class Supplier
     @Column(nullable = false)
     @UpdateTimestamp
     private Instant updatedDateTime;
+
     private boolean isEnabled;
 
-    public static Supplier create(String name, String email)
+    public static Supplier create(
+            String name,
+            String email)
     {
         return new Supplier(
                 UUID.randomUUID(),

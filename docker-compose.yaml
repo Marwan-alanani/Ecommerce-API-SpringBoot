@@ -13,14 +13,14 @@ services:
 
   db:
     image: postgres:16-alpine
-    container_name: ${DB_HOST}
+    container_name: postgresDb
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_DB: ecommerce
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data1
 volumes:
   db_data:

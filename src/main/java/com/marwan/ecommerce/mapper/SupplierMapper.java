@@ -10,9 +10,12 @@ import org.mapstruct.*;
 
 import java.util.List;
 
+import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.enabled;
+
 @Mapper(componentModel = "spring")
 public interface SupplierMapper
 {
+        @Mapping(target = "isEnabled", expression = "java(supplier.isEnabled())")
     SupplierDto supplierToSupplierDto(Supplier supplier);
 
     List<SupplierDto> supplierListToSupplierDtoList(List<Supplier> supplierList);

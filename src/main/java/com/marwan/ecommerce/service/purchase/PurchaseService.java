@@ -44,8 +44,7 @@ public class PurchaseService
         );
 
         // event published on save by default
-        purchaseRepository.save(purchase);
-        return purchase;
+        return purchaseRepository.save(purchase);
     }
 
     public Purchase getById(UUID purchaseId)
