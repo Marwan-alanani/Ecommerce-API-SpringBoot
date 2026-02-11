@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class DevDataConfig
     private String adminPassword;
 
     @Bean
+    @Transactional
     CommandLineRunner seedUserData(UserRepository userRepository, PasswordEncoder passwordEncoder)
     {
         return args -> {
@@ -59,6 +61,7 @@ public class DevDataConfig
     }
 
     @Bean
+    @Transactional
     CommandLineRunner seedCategoryData(CategoryService categoryService,
             CategoryRepository categoryRepository)
     {
@@ -80,6 +83,7 @@ public class DevDataConfig
     }
 
     @Bean
+    @Transactional
     CommandLineRunner seedProductData(ProductRepository productRepository,
             CategoryRepository categoryRepository)
     {
