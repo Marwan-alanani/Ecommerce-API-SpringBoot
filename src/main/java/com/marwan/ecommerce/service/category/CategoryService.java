@@ -137,4 +137,9 @@ public class CategoryService
         return categoryRepository.findAllByIsEnabled(pageable, true);
     }
 
+    @Transactional
+    public void saveCategory(Category category)
+    {
+        categoryRepository.save(category);
+    }
 }
