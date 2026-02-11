@@ -14,6 +14,7 @@ import com.marwan.ecommerce.service.product.command.CreateProductCommand;
 import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -99,7 +100,7 @@ public class ProductController
 
     @GetMapping("/active")
     public ResponseEntity<PageDto<ProductResponseDto>> getActiveProducts(
-            @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable,
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) UUID categoryId
     )
             throws CategoryNotFoundException

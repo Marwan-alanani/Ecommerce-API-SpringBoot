@@ -31,7 +31,6 @@ public final class Purchase extends AbstractAggregateRoot<Purchase>
     private UUID supplierId;
     @Column(nullable = false)
 
-    @Setter(AccessLevel.NONE)
     @CreationTimestamp
     private Instant createdDateTime;
 

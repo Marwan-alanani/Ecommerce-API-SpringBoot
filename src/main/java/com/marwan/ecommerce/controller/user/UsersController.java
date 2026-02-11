@@ -11,6 +11,7 @@ import com.marwan.ecommerce.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.NotImplementedException;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -81,7 +82,7 @@ public class UsersController
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageDto<UserDto>> getAllUsers(
-            @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable
     )
     {
         Page<User> userPage = userService.getAll(pageable);

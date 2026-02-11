@@ -8,6 +8,7 @@ import com.marwan.ecommerce.model.entity.Payment;
 import com.marwan.ecommerce.security.CustomUserDetails;
 import com.marwan.ecommerce.service.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -36,7 +37,7 @@ public class PaymentController
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     ResponseEntity<PageDto<AdminPaymentDto>> getAllPayments(
-            @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable
     )
     {
         Page<Payment> paymentPage = paymentService.getPayments(pageable);

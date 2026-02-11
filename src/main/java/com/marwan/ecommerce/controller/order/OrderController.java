@@ -8,6 +8,7 @@ import com.marwan.ecommerce.model.enums.UserRole;
 import com.marwan.ecommerce.security.CustomUserDetails;
 import com.marwan.ecommerce.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -36,7 +37,7 @@ public class OrderController
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<PageDto<OrderDto>> getAll(
-            @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable
     )
     {
         Page<Order> orderPage = orderService.getAll(pageable);
