@@ -50,7 +50,7 @@ public class PaymentController
 
     @GetMapping("/me")
     ResponseEntity<PageDto<UserPaymentDto>> getUserPayments(
-            @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable,
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     )
     {

@@ -32,6 +32,7 @@ public class DevDataConfig
     private String adminEmail;
     @Value("${admin.password}")
     private String adminPassword;
+    private final String userEmail = "defaultuser@mail.com";
 
     @Bean
     @Transactional
@@ -46,15 +47,17 @@ public class DevDataConfig
                         adminEmail,
                         passwordEncoder.encode(adminPassword)
                 );
+                userRepository.save(admin);
 
+            }
+            if (!userRepository.existsByEmail(userEmail)) {
                 User user = User.create(
                         "user",
                         "user",
                         UserRole.USER,
-                        "defaultuser@mail.com",
+                        userEmail,
                         passwordEncoder.encode("password")
                 );
-                userRepository.save(admin);
                 userRepository.save(user);
             }
         };

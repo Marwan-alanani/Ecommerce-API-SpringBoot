@@ -49,7 +49,7 @@ public class OrderController
 
     @GetMapping("/me")
     public ResponseEntity<PageDto<OrderDto>> getUserOrders(
-            @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable,
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails)
     {
         Page<Order> orderPage = orderService.getUserOrders(pageable, userDetails.getUserId());

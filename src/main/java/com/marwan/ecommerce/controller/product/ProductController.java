@@ -77,7 +77,8 @@ public class ProductController
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<PageDto<ProductResponseDto>> getAllProducts(
-            @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable,
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction =
+                    Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) UUID categoryId
     )
             throws CategoryNotFoundException
