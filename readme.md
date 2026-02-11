@@ -1,8 +1,10 @@
 # E-Commerce API – Spring Boot
 
-A production-style RESTful e-commerce backend built with **Spring Boot**, focusing on clean architecture, domain modeling, payments, security, and real-world deployment practices.
+A production-style RESTful e-commerce backend built with **Spring Boot**, focusing on clean architecture, domain
+modeling, payments, security, and real-world deployment practices.
 
-This project demonstrates how a typical online store backend can be structured with authentication, role-based authorization, Stripe payments, event-driven updates, pagination, validation, and Docker deployment.
+This project demonstrates how a typical online store backend can be structured with authentication, role-based
+authorization, Stripe payments, event-driven updates, pagination, validation, and Docker deployment.
 
 ---
 
@@ -23,6 +25,7 @@ This project demonstrates how a typical online store backend can be structured w
 ## Main Features
 
 ### Authentication & Authorization
+
 - JWT **Access + Refresh Tokens**
 - Stateless authentication
 - Role-Based Access Control (RBAC)
@@ -33,6 +36,7 @@ This project demonstrates how a typical online store backend can be structured w
 ---
 
 ### Products & Categories
+
 - CRUD operations
 - Enable / Disable instead of hard delete
 - Product inventory tracking (`balance`)
@@ -43,6 +47,7 @@ This project demonstrates how a typical online store backend can be structured w
 ---
 
 ### Cart
+
 - One cart per user
 - Add / remove / update items
 - Automatic total cost calculation
@@ -51,6 +56,7 @@ This project demonstrates how a typical online store backend can be structured w
 ---
 
 ### Orders
+
 - Order creation from cart
 - Order status lifecycle:
     - `CREATED`
@@ -67,6 +73,7 @@ This project demonstrates how a typical online store backend can be structured w
 ---
 
 ### Payments (Stripe Integration)
+
 - Stripe **Checkout Sessions**
 - Webhook handling for:
     - `payment_intent.succeeded`
@@ -79,6 +86,7 @@ This project demonstrates how a typical online store backend can be structured w
 ---
 
 ### Purchases & Inventory
+
 - Purchases increase product balance
 - Average selling price recalculated automatically
 - **Domain Events** triggered on purchase creation
@@ -89,7 +97,9 @@ This project demonstrates how a typical online store backend can be structured w
 ## Architecture Decisions
 
 ### Product Balance Stored in Product
+
 Inventory (`balance`) is stored directly in the `Product` entity to:
+
 - Avoid expensive joins
 - Allow fast reads
 - Support event-driven updates
@@ -97,7 +107,9 @@ Inventory (`balance`) is stored directly in the `Product` entity to:
 ---
 
 ### Rich Domain Models
+
 Entities contain **behavior related only to themselves**, for example:
+
 - `Product.decreaseBalance()`
 - `Cart.getTotalCost()`
 - `Order.markPaid()`
@@ -107,6 +119,7 @@ Business logic that affects multiple aggregates is handled in services.
 ---
 
 ### Event-Driven Updates
+
 - Purchases trigger `PurchaseCreatedEvent`
 - Listener updates:
     - total purchase price
@@ -135,6 +148,7 @@ Business logic that affects multiple aggregates is handled in services.
 ## Database Design
 
 ### Core Tables
+
 - users
 - roles
 - permissions
@@ -148,6 +162,7 @@ Business logic that affects multiple aggregates is handled in services.
 - purchases
 
 ### Design Principles
+
 - UUID primary keys
 - Soft deletes via `isEnabled`
 - Snapshotting product info in orders
@@ -197,13 +212,16 @@ Business logic that affects multiple aggregates is handled in services.
 
 ## Screenshots
 
-_Add screenshots here:_
-- Swagger UI
-- Login / JWT flow
-- Checkout process
-- Stripe webhook logs
-- Docker running containers
-- Database dashboard
+- ![swagger-ui](screenshots/Swagger-Ui.png)
+- ![login request](screenshots/Login.png)
+- ![login response](screenshots/Login_Response.png)
+- ![checkout](screenshots/Checkout_checkout.png)
+- ![stripe checkout page](screenshots/Stripe_Checkout.png)
+- ![payment received](screenshots/Payment_Received.png)
+- ![order paid](screenshots/Order_Paid.png)
+- ![stripe dashboard](screenshots/Stripe_Dashboard.png)
+- ![docker compose up](screenshots/Docker-compose-up.png)
+- ![docker compose up](screenshots/docker-compose-running.png)
 
 ---
 
@@ -218,8 +236,44 @@ _Add screenshots here:_
 
 ---
 
+## Environment Variables
+
+This project uses environment variables for configuration.
+
+Create a `.env` file in the project root based on `.env.example`.
+
+```bash
+cp .env.example .env
+```
+
 ## How to Run Locally
 
 ### Using Docker
+
 ```bash
 docker-compose up --build
+```
+
+### Using maven
+
+```bash
+mvn spring-boot:run
+```
+
+### Purpose of the Project
+
+This project is designed to demonstrate:
+
+- Real-world backend architecture
+
+- Payment integration
+
+- Security best practices
+
+- Domain-driven thinking
+
+- Event-driven design
+
+- Deployment and DevOps basics
+
+It aims to be portfolio-ready and suitable for technical interviews and architectural discussions.
