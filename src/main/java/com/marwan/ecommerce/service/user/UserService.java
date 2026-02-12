@@ -1,5 +1,6 @@
 package com.marwan.ecommerce.service.user;
 
+import com.marwan.ecommerce.exception.user.InvalidPasswordException;
 import com.marwan.ecommerce.model.enums.UserRole;
 import com.marwan.ecommerce.model.entity.User;
 import com.marwan.ecommerce.repository.UserRepository;
@@ -67,4 +68,18 @@ public class UserService
     {
         return userRepository.existsByUserIdAndIsEnabled(id, true);
     }
+
+    @Transactional
+    public void resetPassword(UUID id, String currentPassword, String newPassword) {
+        userRepository.findById(id)
+            .map(user -> {
+                if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+                    throw new InvalidPasswordException();
+                }
+                user.setPassword(passwordEncoder.encode(newPassword));
+                return userRepository.save(user);
+            })
+            .orElseThrow(() -> new UserNotFoundException(id));
+    }
+
 }
