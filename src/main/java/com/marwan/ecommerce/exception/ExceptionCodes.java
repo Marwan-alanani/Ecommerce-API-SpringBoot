@@ -5,6 +5,7 @@ public class ExceptionCodes
     public static final String EmailExistsException = "user/emailExists";
     public static final String UserNotFoundException = "user/userNotFound";
     public static final String InvalidCredentialsException = "user/invalidCredentials";
+    public static final String InvalidPasswordException = "user/invalidPassword";
     public static final String CategoryNotFoundException = "category/categoryNotFound";
     public static final String CategoryNameExistsException = "category/categoryNameExists";
     public static final String ProductNotFoundException = "product/productNotFound";
