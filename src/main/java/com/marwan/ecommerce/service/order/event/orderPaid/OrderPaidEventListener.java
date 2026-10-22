@@ -15,30 +15,26 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
-public class OrderPaidEventListener
-{
+public class OrderPaidEventListener {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void handleOrderPaidEvent(OrderPaidEvent event)
-    {
-        Order order = orderRepository.findByOrderIdWithOrderItems(event.orderId())
+    public void handleOrderPaidEvent(OrderPaidEvent event) {
+        Order order = orderRepository
+                .findByOrderIdWithOrderItems(event.orderId())
                 .orElseThrow(() -> new OrderNotFoundException(event.orderId()));
 
         for (OrderItem orderItem : order.getOrderItems()) {
-            Product product = productRepository.findById(orderItem.getProductId())
-                    .orElse(null);
+            Product product =
+                    productRepository.findById(orderItem.getProductId()).orElse(null);
             if (product == null)
                 // maybe throwing an error would've been better idk
                 continue;
 
             product.decreaseBalance(orderItem.getQuantity());
             productRepository.save(product);
-
         }
-
     }
-
 }

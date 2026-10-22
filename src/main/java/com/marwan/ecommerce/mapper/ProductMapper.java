@@ -7,20 +7,17 @@ import com.marwan.ecommerce.dto.product.ProductResponseDto;
 import com.marwan.ecommerce.model.entity.Product;
 import com.marwan.ecommerce.service.product.command.CreateProductCommand;
 import com.marwan.ecommerce.service.product.command.UpdateProductCommand;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface ProductMapper
-{
+public interface ProductMapper {
 
+    UpdateProductCommand updateProductRequestToCommand(UpdateProductRequest request);
 
-    UpdateProductCommand updateProductRequestToCommand(
-            UpdateProductRequest request);
-
-    CreateProductCommand createProductRequestToCommand(
-            CreateProductRequest request);
+    CreateProductCommand createProductRequestToCommand(CreateProductRequest request);
 
     @Mapping(target = "categoryId", source = "category.categoryId")
     @Mapping(target = "price", source = "sellingPrice")
@@ -31,10 +28,10 @@ public interface ProductMapper
     @Mapping(target = "price", source = "product.sellingPrice")
     ProductDetailsDto productToProductDetailsDto(Product product, String categoryName);
 
-//    @Mapping(target = "updatedDateTime", expression = "java(java.time.Instant.now())")
-//    @Mapping(target = "sellingPrice", source = "price")
-//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-//    void updateFromCommand(
-//            @MappingTarget Product product,
-//            UpdateProductCommand command);
+    //    @Mapping(target = "updatedDateTime", expression = "java(java.time.Instant.now())")
+    //    @Mapping(target = "sellingPrice", source = "price")
+    //    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    //    void updateFromCommand(
+    //            @MappingTarget Product product,
+    //            UpdateProductCommand command);
 }

@@ -9,8 +9,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = EnumValidator.class)
 @Documented
-public @interface EnumConstraint
-{
+public @interface EnumConstraint {
     Class<? extends Enum<?>> enumClass();
 
     boolean ignoreCase() default false;

@@ -11,7 +11,4 @@ public record OrderDto(
         List<OrderItemDto> orderItems,
         BigDecimal totalPrice,
         Instant createdDateTime,
-        String orderStatus
-)
-{
-}
+        String orderStatus) {}

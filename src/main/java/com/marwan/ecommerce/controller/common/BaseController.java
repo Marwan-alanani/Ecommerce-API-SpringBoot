@@ -5,10 +5,8 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-public abstract class BaseController
-{
-    public static <T> PageDto<T> toPageDto(Page<?> page, List<T> itemsDto)
-    {
+public abstract class BaseController {
+    public static <T> PageDto<T> toPageDto(Page<?> page, List<T> itemsDto) {
         return new PageDto<>(
                 page.getNumber() + 1,
                 page.getNumberOfElements(),
@@ -16,7 +14,6 @@ public abstract class BaseController
                 page.getTotalPages(),
                 page.getTotalElements(),
                 page.hasNext(),
-                page.hasPrevious()
-        );
+                page.hasPrevious());
     }
 }

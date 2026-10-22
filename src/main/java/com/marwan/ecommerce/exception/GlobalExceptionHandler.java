@@ -13,11 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler
-{
+public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
-    public ProblemDetail handleCustomException(CustomException exception)
-    {
+    public ProblemDetail handleCustomException(CustomException exception) {
 
         HttpStatus status = switch (exception) {
             case NotFoundException e -> HttpStatus.NOT_FOUND;
@@ -34,22 +32,18 @@ public class GlobalExceptionHandler
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ProblemDetail handleException(MethodArgumentNotValidException exception)
-    {
+    public ProblemDetail handleException(MethodArgumentNotValidException exception) {
 
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST.value());
         Map<String, String> errors = new HashMap<>();
-        exception.getFieldErrors().forEach(error -> errors
-                .put(error.getField(), error.getDefaultMessage())
-        );
+        exception.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
         problemDetail.setProperty("errors", errors);
         problemDetail.setTitle("Validation Error");
         return problemDetail;
     }
 
     @ExceptionHandler(Exception.class)
-    public ProblemDetail handleException(Exception exception)
-    {
+    public ProblemDetail handleException(Exception exception) {
         ProblemDetail problemDetail = ProblemDetail.forStatus(500);
         problemDetail.setDetail(exception.getMessage());
         problemDetail.setTitle(exception.getClass().getSimpleName());

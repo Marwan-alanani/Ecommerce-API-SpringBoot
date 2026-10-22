@@ -12,14 +12,12 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
-
 @Entity
 @Table(name = "payments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public final class Payment
-{
+public final class Payment {
     @Id
     private UUID paymentId;
 
@@ -46,11 +44,11 @@ public final class Payment
 
     @CreationTimestamp
     private Instant createdDateTime;
+
     @UpdateTimestamp
     private Instant updatedDateTime;
 
-    public static Payment forOrder(Order order)
-    {
+    public static Payment forOrder(Order order) {
         return new Payment(
                 UUID.randomUUID(),
                 null,
@@ -60,22 +58,18 @@ public final class Payment
                 order.getCurrency(),
                 PaymentStatus.CREATED,
                 null,
-                null
-        );
+                null);
     }
 
-    public void addPaymentProvider(PaymentProvider paymentProvider)
-    {
+    public void addPaymentProvider(PaymentProvider paymentProvider) {
         this.provider = paymentProvider;
     }
 
-    public void markSucceeded()
-    {
+    public void markSucceeded() {
         this.status = PaymentStatus.SUCCEEDED;
     }
 
-    public void markFailed()
-    {
+    public void markFailed() {
         this.status = PaymentStatus.FAILED;
     }
 }

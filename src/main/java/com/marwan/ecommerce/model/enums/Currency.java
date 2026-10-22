@@ -1,7 +1,6 @@
 package com.marwan.ecommerce.model.enums;
 
-public enum Currency
-{
+public enum Currency {
     USD,
     EUR,
     GBP,

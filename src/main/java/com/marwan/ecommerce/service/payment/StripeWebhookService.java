@@ -12,16 +12,14 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class StripeWebhookService implements PaymentWebhookService
-{
+public class StripeWebhookService implements PaymentWebhookService {
 
+    private final PaymentService paymentService;
     @Value("${stripe.webhookKey}")
     private String webhookKey;
-    private final PaymentService paymentService;
 
     @Override
-    public void handle(String signature, String payload)
-    {
+    public void handle(String signature, String payload) {
         try {
 
             var event = Webhook.constructEvent(payload, signature, webhookKey);

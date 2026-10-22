@@ -7,7 +7,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "carts")
@@ -15,11 +17,11 @@ import java.util.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Setter
-public final class Cart
-{
+public final class Cart {
     @Id
     @Setter(AccessLevel.NONE)
     private UUID cartId;
+
     @Column(nullable = false)
     private UUID userId;
 
@@ -30,33 +32,28 @@ public final class Cart
     @UpdateTimestamp
     private Instant updatedDateTime;
 
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "cart",
-            orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "cart", orphanRemoval = true)
     @Setter(AccessLevel.NONE)
     private List<CartItem> cartItems = new ArrayList<>();
 
+    public static Cart create(UUID userId) {
+        return new Cart(UUID.randomUUID(), userId, null, null, new ArrayList<>());
+    }
 
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return cartItems.isEmpty();
     }
 
-    public BigDecimal getTotalCost()
-    {
-        return cartItems.stream()
-                .map(CartItem::getTotalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    public BigDecimal getTotalCost() {
+        return cartItems.stream().map(CartItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public List<CartItem> getCartItems()
-    {
+    public List<CartItem> getCartItems() {
         // return a copy
         return new ArrayList<>(cartItems);
     }
 
-    public void addCartItem(CartItem cartItem)
-    {
+    public void addCartItem(CartItem cartItem) {
         CartItem existingItem = getCartItemByProductId(cartItem.getProduct().getProductId());
         if (existingItem == null) {
             cartItem.setCart(this);
@@ -66,15 +63,14 @@ public final class Cart
         }
     }
 
-    public CartItem getCartItemByProductId(UUID productId)
-    {
-        return cartItems.stream().filter(i -> i.getProduct().getProductId().equals(productId))
+    public CartItem getCartItemByProductId(UUID productId) {
+        return cartItems.stream()
+                .filter(i -> i.getProduct().getProductId().equals(productId))
                 .findFirst()
                 .orElse(null);
     }
 
-    public void remove(UUID productId)
-    {
+    public void remove(UUID productId) {
 
         CartItem item = cartItems.stream()
                 .filter(b -> b.getProduct().getProductId().equals(productId))
@@ -85,22 +81,9 @@ public final class Cart
             item.setCart(null);
             cartItems.remove(item);
         }
-
     }
 
-    public void clear()
-    {
+    public void clear() {
         cartItems.clear();
-    }
-
-    public static Cart create(UUID userId)
-    {
-        return new Cart(
-                UUID.randomUUID(),
-                userId,
-                null,
-                null,
-                new ArrayList<>()
-        );
     }
 }

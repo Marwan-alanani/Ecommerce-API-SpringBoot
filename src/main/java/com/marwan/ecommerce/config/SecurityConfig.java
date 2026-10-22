@@ -22,68 +22,45 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
-public class SecurityConfig
-{
+public class SecurityConfig {
     private final JwtFilter jwtFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http)
-    {
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**"
-                        ).permitAll()  // allow Swagger
-                        .requestMatchers(
-                                "/auth/**",
-                                "/login"
-                        ).permitAll()
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/categories",
-                                "/categories/**").permitAll()
-
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/products",
-                                "/products/**").permitAll()
-
-                        .requestMatchers("/suppliers/**").hasAnyRole(
-                                UserRole.ADMIN.name(),
-                                UserRole.SUPPLIER.name()
-                        )
-
-                        .requestMatchers("/purchase/**").hasRole(UserRole.ADMIN.name())
-                        .requestMatchers("/webhook/**").permitAll()
-
-                        .anyRequest().authenticated()
-                )
+    public SecurityFilterChain filterChain(HttpSecurity http) {
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
+                        .permitAll() // allow Swagger
+                        .requestMatchers("/auth/**", "/login")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/categories", "/categories/**")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/products", "/products/**")
+                        .permitAll()
+                        .requestMatchers("/suppliers/**")
+                        .hasAnyRole(UserRole.ADMIN.name(), UserRole.SUPPLIER.name())
+                        .requestMatchers("/purchase/**")
+                        .hasRole(UserRole.ADMIN.name())
+                        .requestMatchers("/webhook/**")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(
-                        sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(e -> {
-                    e.authenticationEntryPoint((req, resp, ex) -> resp.sendError(401));
-                    e.accessDeniedHandler((req, resp, ex) -> resp.sendError(403));
+                    e.authenticationEntryPoint((_, resp, _) -> resp.sendError(401));
+                    e.accessDeniedHandler((_, resp, _) -> resp.sendError(403));
                 });
 
         return http.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder()
-    {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration)
-    {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
 }

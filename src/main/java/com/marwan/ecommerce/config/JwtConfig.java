@@ -1,6 +1,5 @@
 package com.marwan.ecommerce.config;
 
-
 import io.jsonwebtoken.security.Keys;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -11,8 +10,7 @@ import javax.crypto.SecretKey;
 @Configuration
 @ConfigurationProperties(prefix = "spring.jwt")
 @Data
-public class JwtConfig
-{
+public class JwtConfig {
     private String issuer;
     private String audience;
     private String secretKey;
@@ -21,8 +19,7 @@ public class JwtConfig
     private int accessTokenExpirationInSeconds;
     private int refreshTokenExpirationInSeconds;
 
-    public SecretKey getSecretKey()
-    {
+    public SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 }

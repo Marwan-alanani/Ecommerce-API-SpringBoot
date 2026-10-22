@@ -11,8 +11,4 @@ public record PurchaseDto(
         int quantity,
         BigDecimal totalCost,
         UUID supplierId,
-        Instant createdDateTime
-)
-{
-
-}
+        Instant createdDateTime) {}

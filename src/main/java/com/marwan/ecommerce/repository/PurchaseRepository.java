@@ -10,8 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface PurchaseRepository extends JpaRepository<Purchase, UUID>
-{
+public interface PurchaseRepository extends JpaRepository<Purchase, UUID> {
     @Override
     @NullMarked
     Page<Purchase> findAll(Pageable pageable);

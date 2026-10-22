@@ -32,94 +32,67 @@ import static com.marwan.ecommerce.controller.common.BaseController.toPageDto;
 @RestController
 @RequestMapping("/categories")
 @RequiredArgsConstructor
-public class CategoryController
-{
+public class CategoryController {
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
 
     @PostMapping
     public ResponseEntity<CategoryResponseDto> create( // TODO: Uri builder
-            @Valid @RequestBody CreateCategoryRequest request)
-            throws CategoryNameExistsException
-    {
+            @Valid @RequestBody CreateCategoryRequest request) throws CategoryNameExistsException {
         CreateCategoryCommand command = categoryMapper.createCategoryRequestToCommand(request);
         Category category = categoryService.create(command);
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                categoryMapper.categoryToCategoryResponseDto(category)
-        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryMapper.categoryToCategoryResponseDto(category));
     }
-
 
     @GetMapping("/active")
     public ResponseEntity<PageDto<CategoryResponseDto>> getAllActive(
-            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable
-    )
-    {
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC)
+                    Pageable pageable) {
         Page<Category> categoryPage = categoryService.getAllCategories(pageable);
         List<CategoryResponseDto> categoryResponseDtoList =
                 categoryMapper.categoryListToCategoryResponseDtoList(categoryPage.getContent());
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(toPageDto(categoryPage, categoryResponseDtoList));
+        return ResponseEntity.status(HttpStatus.OK).body(toPageDto(categoryPage, categoryResponseDtoList));
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<PageDto<CategoryResponseDto>> getAll(
-            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable
-    )
-    {
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC)
+                    Pageable pageable) {
         Page<Category> categoryPage = categoryService.getActiveCategories(pageable);
         List<CategoryResponseDto> categoryResponseDtoList =
                 categoryMapper.categoryListToCategoryResponseDtoList(categoryPage.getContent());
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(toPageDto(categoryPage, categoryResponseDtoList));
+        return ResponseEntity.status(HttpStatus.OK).body(toPageDto(categoryPage, categoryResponseDtoList));
     }
 
     @GetMapping("/active/{categoryId}")
-    public ResponseEntity<CategoryWithProductsCountDto> getActiveCategory(
-            @PathVariable UUID categoryId)
-            throws CategoryNotFoundException
-    {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                categoryService.getActiveCategoryWithProductCount(categoryId)
-        );
+    public ResponseEntity<CategoryWithProductsCountDto> getActiveCategory(@PathVariable UUID categoryId)
+            throws CategoryNotFoundException {
+        return ResponseEntity.status(HttpStatus.OK).body(categoryService.getActiveCategoryWithProductCount(categoryId));
     }
-
 
     @GetMapping("/{categoryId}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<CategoryWithProductsCountDto> getCategory(
-            @PathVariable UUID categoryId)
-            throws CategoryNotFoundException
-    {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                categoryService.getCategoryWithProductCount(categoryId)
-        );
+    public ResponseEntity<CategoryWithProductsCountDto> getCategory(@PathVariable UUID categoryId)
+            throws CategoryNotFoundException {
+        return ResponseEntity.status(HttpStatus.OK).body(categoryService.getCategoryWithProductCount(categoryId));
     }
 
     @PatchMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<CategoryResponseDto> updateCategory(
-            @Valid @RequestBody UpdateCategoryRequest request)
-            throws CategoryNotFoundException, CategoryNameExistsException
-    {
+    public ResponseEntity<CategoryResponseDto> updateCategory(@Valid @RequestBody UpdateCategoryRequest request)
+            throws CategoryNotFoundException, CategoryNameExistsException {
         UpdateCategoryCommand command = categoryMapper.updateCategoryRequestToCommand(request);
 
         Category category = categoryService.updateCategory(command);
-        return ResponseEntity.status(HttpStatus.OK).body(
-                categoryMapper.categoryToCategoryResponseDto(category)
-        );
+        return ResponseEntity.status(HttpStatus.OK).body(categoryMapper.categoryToCategoryResponseDto(category));
     }
 
     @DeleteMapping("/{categoryId}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Void> deactivateCategory(@PathVariable UUID categoryId)
-            throws CategoryNotFoundException
-    {
+    public ResponseEntity<Void> deactivateCategory(@PathVariable UUID categoryId) throws CategoryNotFoundException {
         categoryService.deactivateCategory(categoryId);
         return ResponseEntity.noContent().build();
     }

@@ -11,19 +11,16 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface CartRepository extends JpaRepository<Cart, UUID>
-{
+public interface CartRepository extends JpaRepository<Cart, UUID> {
     Optional<Cart> findByUserId(UUID userId);
 
     @EntityGraph(attributePaths = "cartItems.product")
     @Query("SELECT c FROM Cart c WHERE c.cartId = :cartId")
     Optional<Cart> getCartWithItems(@Param("cartId") UUID cartId);
 
-
     @EntityGraph(attributePaths = "cartItems.product")
     @Query("SELECT c FROM Cart c WHERE c.userId = :userId")
     Optional<Cart> getCartWithItemsByUserId(@Param("userId") UUID userid);
 
     void deleteByUserId(UUID userId);
-
 }

@@ -4,15 +4,14 @@ import com.marwan.ecommerce.controller.auth.request.LoginRequest;
 import com.marwan.ecommerce.controller.auth.request.RegisterRequest;
 import com.marwan.ecommerce.dto.user.UserDto;
 import com.marwan.ecommerce.model.entity.User;
-import com.marwan.ecommerce.service.user.query.LoginQuery;
 import com.marwan.ecommerce.service.user.command.RegisterCommand;
+import com.marwan.ecommerce.service.user.query.LoginQuery;
 import org.mapstruct.Mapper;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface UserMapper
-{
+public interface UserMapper {
     LoginQuery loginRequestToLoginQuery(LoginRequest request);
 
     RegisterCommand registerRequestToRegisterCommand(RegisterRequest request);
@@ -20,5 +19,4 @@ public interface UserMapper
     UserDto userToUserDto(User user);
 
     List<UserDto> userListToUserDtoList(List<User> user);
-
 }

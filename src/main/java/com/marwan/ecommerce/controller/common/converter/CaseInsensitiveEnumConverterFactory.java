@@ -5,17 +5,13 @@ import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CaseInsensitiveEnumConverterFactory
-        implements ConverterFactory<String, Enum>
-{
+public class CaseInsensitiveEnumConverterFactory implements ConverterFactory<String, Enum> {
 
     @Override
-    public <T extends Enum> Converter<String, T> getConverter(Class<T> targetType)
-    {
+    public <T extends Enum> Converter<String, T> getConverter(Class<T> targetType) {
 
         return source -> {
-            if (source.isBlank())
-                return null;
+            if (source.isBlank()) return null;
             return (T) Enum.valueOf(targetType, source.trim().toUpperCase());
         };
     }

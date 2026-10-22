@@ -17,41 +17,28 @@ import java.util.List;
 
 @DataJpaTest
 @Testcontainers
-public class ProductRepositoryTests
-{
+public class ProductRepositoryTests {
     @Container
-    private static final PostgreSQLContainer<?> postgres =
-            new PostgreSQLContainer<>("postgres:16-alpine");
-
-    @DynamicPropertySource
-    static void props(DynamicPropertyRegistry r)
-    {
-        r.add("spring.datasource.url", postgres::getJdbcUrl);
-        r.add("spring.datasource.username", postgres::getUsername);
-        r.add("spring.datasource.password", postgres::getPassword);
-    }
-
+    private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
     @Autowired
     ProductRepository productRepository;
     @Autowired
     CategoryRepository categoryRepository;
 
+    @DynamicPropertySource
+    static void props(DynamicPropertyRegistry r) {
+        r.add("spring.datasource.url", postgres::getJdbcUrl);
+        r.add("spring.datasource.username", postgres::getUsername);
+        r.add("spring.datasource.password", postgres::getPassword);
+    }
+
     @Test
-    public void ProductRepository_SaveAll_ReturnsSavedProduct()
-    {
+    public void ProductRepository_SaveAll_ReturnsSavedProduct() {
         // Arrange
-        Category category = Category.create(
-                "Furniture"
-        );
+        Category category = Category.create("Furniture");
         categoryRepository.save(category);
 
-        Product product = Product.create(
-                "Bed",
-                "",
-                BigDecimal.valueOf(10.21),
-                "sdfsdfdsf",
-                category
-        );
+        Product product = Product.create("Bed", "", BigDecimal.valueOf(10.21), "sdfsdfdsf", category);
 
         // Act
         var newProduct = productRepository.save(product);
@@ -63,21 +50,12 @@ public class ProductRepositoryTests
     }
 
     @Test
-    public void ProductRepository_FindById_ReturnsProduct()
-    {
+    public void ProductRepository_FindById_ReturnsProduct() {
         // Arrange
-        Category category = Category.create(
-                "Furniture"
-        );
+        Category category = Category.create("Furniture");
         categoryRepository.save(category);
 
-        Product product = Product.create(
-                "Bed",
-                "",
-                BigDecimal.valueOf(10.21),
-                "sdfsdfdsf",
-                category
-        );
+        Product product = Product.create("Bed", "", BigDecimal.valueOf(10.21), "sdfsdfdsf", category);
         var productId = product.getProductId();
         // Act
         var savedProduct = productRepository.save(product);
@@ -90,27 +68,12 @@ public class ProductRepositoryTests
     }
 
     @Test
-    public void ProductRepository_FindAll_ReturnsAllProducts()
-    {
-        Category category = Category.create(
-                "Furniture"
-        );
+    public void ProductRepository_FindAll_ReturnsAllProducts() {
+        Category category = Category.create("Furniture");
         categoryRepository.save(category);
-        Product product = Product.create(
-                "Bed",
-                "",
-                BigDecimal.valueOf(10.21),
-                "sdfsdfdsf",
-                category
-        );
+        Product product = Product.create("Bed", "", BigDecimal.valueOf(10.21), "sdfsdfdsf", category);
 
-        Product product2 = Product.create(
-                "Table",
-                "",
-                BigDecimal.valueOf(10.21),
-                "sdfsdfdsf",
-                category
-        );
+        Product product2 = Product.create("Table", "", BigDecimal.valueOf(10.21), "sdfsdfdsf", category);
         productRepository.save(product);
         productRepository.save(product2);
         List<Product> allProducts = productRepository.findAll();

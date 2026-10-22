@@ -1,7 +1,6 @@
 package com.marwan.ecommerce.exception;
 
-public class ExceptionCodes
-{
+public class ExceptionCodes {
     public static final String EmailExistsException = "user/emailExists";
     public static final String UserNotFoundException = "user/userNotFound";
     public static final String InvalidCredentialsException = "user/invalidCredentials";
@@ -22,4 +21,3 @@ public class ExceptionCodes
     public static final String PaymentException = "payment/invalidPayment";
     public static final String PaymentNotFoundException = "payment/paymentNotFound";
 }
-

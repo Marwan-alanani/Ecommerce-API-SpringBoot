@@ -19,17 +19,14 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class CheckoutServiceTx
-{
+public class CheckoutServiceTx {
     private final CartService cartService;
     private final OrderService orderService;
     private final PaymentService paymentService;
 
-
     @Transactional
-    public void finalizeCheckout(UUID paymentId, PaymentProvider paymentProvider, UUID cartId,
-            UUID orderId, String sessionId)
-    {
+    public void finalizeCheckout(
+            UUID paymentId, PaymentProvider paymentProvider, UUID cartId, UUID orderId, String sessionId) {
         Payment payment = paymentService.getPayment(paymentId);
         Cart cart = cartService.getCart(cartId);
         Order order = orderService.getOrder(orderId, true, UUID.randomUUID());
@@ -44,8 +41,7 @@ public class CheckoutServiceTx
     }
 
     @Transactional
-    public CheckoutInit initiateCheckout(UUID userId)
-    {
+    public CheckoutInit initiateCheckout(UUID userId) {
         // returns order,payment,cart,and LineItemDtoList
 
         Cart cart = cartService.getCartWithUserId(userId);
@@ -55,10 +51,7 @@ public class CheckoutServiceTx
         for (var item : cart.getCartItems()) {
             if (item.getQuantity() > item.getProduct().getBalance()) {
                 throw new NotEnoughProductException(
-                        item.getProduct().getName(),
-                        item.getProduct().getBalance(),
-                        item.getQuantity()
-                );
+                        item.getProduct().getName(), item.getProduct().getBalance(), item.getQuantity());
             }
         }
         // create order
@@ -71,20 +64,15 @@ public class CheckoutServiceTx
 
         // create line item for stripe
         List<LineItemDto> lineItemDtoList = new ArrayList<>();
-        order.getOrderItems().forEach(item -> lineItemDtoList.add(
-                new LineItemDto(
-                        item.getProductName(),
-                        item.getUnitPrice(),
-                        item.getQuantity()
-                )
-        ));
+        order.getOrderItems()
+                .forEach(item -> lineItemDtoList.add(
+                        new LineItemDto(item.getProductName(), item.getUnitPrice(), item.getQuantity())));
 
         return new CheckoutInit(
                 order.getOrderId(),
                 payment.getPaymentId(),
-                cart.getCartId(),
+                cart.getCartId(), // I don't need this
                 order.getCurrency(),
-                lineItemDtoList
-        );
+                lineItemDtoList);
     }
 }

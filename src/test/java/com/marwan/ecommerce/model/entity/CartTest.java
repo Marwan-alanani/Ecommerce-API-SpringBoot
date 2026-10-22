@@ -12,28 +12,14 @@ import java.math.BigDecimal;
 
 @TestComponent
 @ExtendWith(MockitoExtension.class)
-public class CartTest
-{
+public class CartTest {
     @Test
-    public void Cart_AddCartItem_ShouldAddToCart()
-    {
-        User user = User.create(
-                "Marwan",
-                "Walid",
-                UserRole.USER,
-                "marwan@mail.com",
-                ""
-        );
+    public void Cart_AddCartItem_ShouldAddToCart() {
+        User user = User.create("Marwan", "Walid", UserRole.USER, "marwan@mail.com", "");
 
         Cart cart = Cart.create(user.getUserId());
         Category category = Mockito.mock(Category.class);
-        Product product = Product.create(
-                "bed",
-                "",
-                BigDecimal.valueOf(2),
-                "",
-                category
-        );
+        Product product = Product.create("bed", "", BigDecimal.valueOf(2), "", category);
         CartItem cartItem = CartItem.fromProduct(product);
         cart.addCartItem(cartItem);
         cart.addCartItem(cartItem);
@@ -43,33 +29,14 @@ public class CartTest
     }
 
     @Test
-    public void Cart_RemoveCartItem_ShouldRemoveFromCart()
-    {
-        User user = User.create(
-                "Marwan",
-                "Walid",
-                UserRole.USER,
-                "marwan@mail.com",
-                ""
-        );
+    public void Cart_RemoveCartItem_ShouldRemoveFromCart() {
+        User user = User.create("Marwan", "Walid", UserRole.USER, "marwan@mail.com", "");
 
         Cart cart = Cart.create(user.getUserId());
         Category category = Mockito.mock(Category.class);
-        Product product = Product.create(
-                "bed",
-                "",
-                BigDecimal.valueOf(2),
-                "",
-                category
-        );
+        Product product = Product.create("bed", "", BigDecimal.valueOf(2), "", category);
 
-        Product product2 = Product.create(
-                "toothbrush",
-                "",
-                BigDecimal.valueOf(2),
-                "",
-                category
-        );
+        Product product2 = Product.create("toothbrush", "", BigDecimal.valueOf(2), "", category);
         CartItem cartItem = CartItem.fromProduct(product);
         CartItem cartItem2 = CartItem.fromProduct(product2);
         cart.addCartItem(cartItem);
@@ -80,34 +47,15 @@ public class CartTest
     }
 
     @Test
-    public void Cart_GetTotalCost_ShouldReturnTotalCost()
-    {
+    public void Cart_GetTotalCost_ShouldReturnTotalCost() {
 
-        User user = User.create(
-                "Marwan",
-                "Walid",
-                UserRole.USER,
-                "marwan@mail.com",
-                ""
-        );
+        User user = User.create("Marwan", "Walid", UserRole.USER, "marwan@mail.com", "");
 
         Cart cart = Cart.create(user.getUserId());
         Category category = Mockito.mock(Category.class);
-        Product product = Product.create(
-                "bed",
-                "",
-                BigDecimal.valueOf(2),
-                "",
-                category
-        );
+        Product product = Product.create("bed", "", BigDecimal.valueOf(2), "", category);
 
-        Product product2 = Product.create(
-                "toothbrush",
-                "",
-                BigDecimal.valueOf(2),
-                "",
-                category
-        );
+        Product product2 = Product.create("toothbrush", "", BigDecimal.valueOf(2), "", category);
         CartItem cartItem = CartItem.fromProduct(product);
         CartItem cartItem2 = CartItem.fromProduct(product2);
         cart.addCartItem(cartItem);
@@ -115,5 +63,4 @@ public class CartTest
         var total = cartItem2.getTotalPrice().add(cartItem2.getTotalPrice());
         Assertions.assertEquals(total, cart.getTotalCost());
     }
-
 }

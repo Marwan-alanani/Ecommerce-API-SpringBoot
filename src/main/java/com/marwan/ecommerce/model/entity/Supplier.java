@@ -17,8 +17,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Supplier
-{
+public final class Supplier {
     @Id
     @Setter(AccessLevel.NONE)
     private UUID supplierId;
@@ -40,18 +39,7 @@ public final class Supplier
 
     private boolean isEnabled;
 
-    public static Supplier create(
-            String name,
-            String email)
-    {
-        return new Supplier(
-                UUID.randomUUID(),
-                name,
-                email,
-                null,
-                null,
-                true
-        );
+    public static Supplier create(String name, String email) {
+        return new Supplier(UUID.randomUUID(), name, email, null, null, true);
     }
-
 }

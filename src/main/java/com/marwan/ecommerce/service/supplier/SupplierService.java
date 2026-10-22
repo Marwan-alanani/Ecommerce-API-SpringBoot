@@ -1,8 +1,8 @@
 package com.marwan.ecommerce.service.supplier;
 
 import com.marwan.ecommerce.exception.supplier.SupplierEmailExistsException;
-import com.marwan.ecommerce.exception.supplier.SupplierNotFoundException;
 import com.marwan.ecommerce.exception.supplier.SupplierNameExistsException;
+import com.marwan.ecommerce.exception.supplier.SupplierNotFoundException;
 import com.marwan.ecommerce.mapper.SupplierMapper;
 import com.marwan.ecommerce.model.entity.Supplier;
 import com.marwan.ecommerce.repository.SupplierRepository;
@@ -17,18 +17,15 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.UUID;
 
-
 @Service
 @RequiredArgsConstructor
-public class SupplierService
-{
+public class SupplierService {
     private final SupplierRepository supplierRepository;
     private final SupplierMapper supplierMapper;
 
     @Transactional
     public Supplier createSupplier(CreateSupplierCommand command)
-            throws SupplierEmailExistsException, SupplierNameExistsException
-    {
+            throws SupplierEmailExistsException, SupplierNameExistsException {
         if (supplierRepository.existsByEmail(command.email())) {
             throw new SupplierEmailExistsException(command.email());
         }
@@ -41,11 +38,8 @@ public class SupplierService
         return supplier;
     }
 
-    public Supplier get(UUID supplierId)
-            throws SupplierNotFoundException
-    {
-        Optional<Supplier> optionalSupplier = supplierRepository
-                .findBySupplierId(supplierId);
+    public Supplier get(UUID supplierId) throws SupplierNotFoundException {
+        Optional<Supplier> optionalSupplier = supplierRepository.findBySupplierId(supplierId);
 
         if (optionalSupplier.isEmpty()) {
             throw new SupplierNotFoundException(supplierId);
@@ -53,13 +47,11 @@ public class SupplierService
         return optionalSupplier.get();
     }
 
-    public boolean supplierExistsAndEnabled(UUID supplierId, boolean isEnabled)
-    {
+    public boolean supplierExistsAndEnabled(UUID supplierId, boolean isEnabled) {
         return supplierRepository.existsBySupplierIdAndIsEnabled(supplierId, isEnabled);
     }
 
-    public Page<Supplier> getAll(Pageable pageable, Boolean isEnabled)
-    {
+    public Page<Supplier> getAll(Pageable pageable, Boolean isEnabled) {
         if (isEnabled == null) {
             return supplierRepository.findAll(pageable);
         }
@@ -68,11 +60,8 @@ public class SupplierService
 
     @Transactional
     public Supplier update(UpdateSupplierCommand command)
-            throws SupplierNotFoundException, SupplierNameExistsException,
-            SupplierEmailExistsException
-    {
-        Optional<Supplier> optionalSupplier = supplierRepository
-                .findBySupplierId(command.supplierId());
+            throws SupplierNotFoundException, SupplierNameExistsException, SupplierEmailExistsException {
+        Optional<Supplier> optionalSupplier = supplierRepository.findBySupplierId(command.supplierId());
 
         if (optionalSupplier.isEmpty()) {
             throw new SupplierNotFoundException(command.supplierId());
@@ -96,11 +85,8 @@ public class SupplierService
     }
 
     @Transactional
-    public void deactivate(UUID supplierId)
-            throws SupplierNotFoundException
-    {
-        Optional<Supplier> optionalSupplier = supplierRepository
-                .findBySupplierId(supplierId);
+    public void deactivate(UUID supplierId) throws SupplierNotFoundException {
+        Optional<Supplier> optionalSupplier = supplierRepository.findBySupplierId(supplierId);
 
         if (optionalSupplier.isEmpty()) {
             throw new SupplierNotFoundException(supplierId);

@@ -13,13 +13,11 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 @Configuration
-public class SwaggerConfig
-{
+public class SwaggerConfig {
 
     @Bean
-    public OpenAPI customOpenAPI(@Value("${app.url:http://localhost:8080}") String url)
+    public OpenAPI customOpenAPI(@Value("${app.url:http://localhost:8080}") String url) {
 
-    {
         final String securitySchemeName = "bearerAuth";
         return new OpenAPI()
                 .servers(List.of(new Server().url(url).description("Deployed Server")))
@@ -27,13 +25,14 @@ public class SwaggerConfig
                         .title("My Project API")
                         .version("1.0")
                         .description("API documentation with JWT authentication"))
-                .addSecurityItem(new SecurityRequirement()
-                        .addList(securitySchemeName))
+                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()
-                        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
-                                .name(securitySchemeName)
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT")));
+                        .addSecuritySchemes(
+                                securitySchemeName,
+                                new SecurityScheme()
+                                        .name(securitySchemeName)
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")));
     }
 }

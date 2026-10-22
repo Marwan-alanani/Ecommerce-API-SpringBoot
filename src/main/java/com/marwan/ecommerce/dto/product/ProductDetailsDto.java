@@ -10,7 +10,4 @@ public record ProductDetailsDto(
 
         String pictureUrl,
         int balance,
-        String categoryName
-)
-{
-}
+        String categoryName) {}

@@ -11,45 +11,35 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-
 @Service
 @RequiredArgsConstructor
-public class OrderService
-{
+public class OrderService {
     private final OrderRepository orderRepository;
 
-
-    public Page<Order> getUserOrders(Pageable pageable, UUID userId)
-    {
+    public Page<Order> getUserOrders(Pageable pageable, UUID userId) {
         return orderRepository.findAllByUserIdWithOrderItems(pageable, userId);
     }
 
-    public Page<Order> getAll(Pageable  pageable)
-    {
+    public Page<Order> getAll(Pageable pageable) {
         return orderRepository.findAllWithOrderItems(pageable);
     }
 
-
-    public Order getOrderWithOrderItems(UUID orderId, UUID userId, boolean isAdmin)
-    {
+    public Order getOrderWithOrderItems(UUID orderId, UUID userId, boolean isAdmin) {
         if (isAdmin) {
-            return orderRepository.findByOrderIdWithOrderItems(orderId).orElseThrow(
-                    () -> new OrderNotFoundException(orderId));
+            return orderRepository
+                    .findByOrderIdWithOrderItems(orderId)
+                    .orElseThrow(() -> new OrderNotFoundException(orderId));
         }
 
-        return orderRepository.findByUserIdAndOrderIdWithOrderItems(
-                        userId,
-                        orderId)
+        return orderRepository
+                .findByUserIdAndOrderIdWithOrderItems(userId, orderId)
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
     }
 
-    public Order getOrder(UUID orderId , boolean isAdmin , UUID userId)
-    {
+    public Order getOrder(UUID orderId, boolean isAdmin, UUID userId) {
 
         if (isAdmin) {
-            return orderRepository
-                    .findById(orderId)
-                    .orElseThrow(() -> new OrderNotFoundException(orderId));
+            return orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
         }
         return orderRepository
                 .findByUserIdAndOrderId(userId, orderId)
@@ -57,8 +47,7 @@ public class OrderService
     }
 
     @Transactional
-    public void save(Order order)
-    {
+    public void save(Order order) {
         orderRepository.save(order);
     }
 }

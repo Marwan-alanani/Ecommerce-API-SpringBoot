@@ -12,26 +12,18 @@ import org.mapstruct.*;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface CategoryMapper
-{
+public interface CategoryMapper {
     CategoryResponseDto categoryToCategoryResponseDto(Category category);
 
     List<CategoryResponseDto> categoryListToCategoryResponseDtoList(List<Category> categoryList);
 
-    CreateCategoryCommand createCategoryRequestToCommand(
-            CreateCategoryRequest request);
+    CreateCategoryCommand createCategoryRequestToCommand(CreateCategoryRequest request);
 
-    UpdateCategoryCommand updateCategoryRequestToCommand(
-            UpdateCategoryRequest request);
+    UpdateCategoryCommand updateCategoryRequestToCommand(UpdateCategoryRequest request);
 
     default CategoryWithProductsCountDto categoryAndProductCountToCategoryWithProductsCountDto(
-            Category category,
-            int productCount)
-    {
-        return new CategoryWithProductsCountDto(
-                category.getCategoryId(),
-                category.getName(),
-                productCount);
+            Category category, int productCount) {
+        return new CategoryWithProductsCountDto(category.getCategoryId(), category.getName(), productCount);
     }
 
     @Mapping(target = "updatedDateTime", expression = "java(java.time.Instant.now())")

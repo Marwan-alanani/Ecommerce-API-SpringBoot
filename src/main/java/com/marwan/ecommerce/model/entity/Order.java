@@ -17,8 +17,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Order
-{
+public final class Order {
     @Id
     @Setter(AccessLevel.NONE)
     private UUID orderId;
@@ -42,34 +41,7 @@ public final class Order
     @Setter(AccessLevel.NONE)
     private OrderStatus orderStatus;
 
-    public List<OrderItem> getOrderItems()
-    {
-        return new ArrayList<>(orderItems);
-    }
-
-    public void addOrderItem(OrderItem orderItem)
-    {
-        orderItems.add(orderItem);
-        orderItem.setOrder(this);
-    }
-
-    public void markPaid()
-    {
-        this.orderStatus = OrderStatus.PAID;
-    }
-
-    public void markPaymentFailed()
-    {
-        this.orderStatus = OrderStatus.PAYMENT_FAILED;
-    }
-
-    public void markPaymentPending()
-    {
-        this.orderStatus = OrderStatus.PAYMENT_PENDING;
-    }
-
-    public static Order fromCart(Cart cart)
-    {
+    public static Order fromCart(Cart cart) {
 
         // create empty order
         Order order = new Order(
@@ -79,8 +51,7 @@ public final class Order
                 BigDecimal.ZERO,
                 Currency.USD,
                 Instant.now(),
-                OrderStatus.CREATED
-        );
+                OrderStatus.CREATED);
 
         // populate order items and compute total price
         cart.getCartItems().forEach(item -> order.addOrderItem(OrderItem.fromCartItem(item)));
@@ -90,5 +61,26 @@ public final class Order
         }
         order.setTotalPrice(totalPrice);
         return order;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return new ArrayList<>(orderItems);
+    }
+
+    public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    public void markPaid() {
+        this.orderStatus = OrderStatus.PAID;
+    }
+
+    public void markPaymentFailed() {
+        this.orderStatus = OrderStatus.PAYMENT_FAILED;
+    }
+
+    public void markPaymentPending() {
+        this.orderStatus = OrderStatus.PAYMENT_PENDING;
     }
 }

@@ -29,60 +29,44 @@ import static com.marwan.ecommerce.controller.common.BaseController.toPageDto;
 @RestController
 @RequestMapping("/payments")
 @RequiredArgsConstructor
-public class PaymentController
-{
+public class PaymentController {
     private final PaymentService paymentService;
     private final PaymentMapper paymentMapper;
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     ResponseEntity<PageDto<AdminPaymentDto>> getAllPayments(
-            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable
-    )
-    {
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC)
+                    Pageable pageable) {
         Page<Payment> paymentPage = paymentService.getPayments(pageable);
-        List<AdminPaymentDto> paymentDtos = paymentPage.stream()
-                .map(paymentMapper::toAdminPaymentDto)
-                .toList();
+        List<AdminPaymentDto> paymentDtos =
+                paymentPage.stream().map(paymentMapper::toAdminPaymentDto).toList();
         return ResponseEntity.ok(toPageDto(paymentPage, paymentDtos));
-
     }
 
     @GetMapping("/me")
     ResponseEntity<PageDto<UserPaymentDto>> getUserPayments(
-            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
-    )
-    {
-        Page<Payment> paymentPage = paymentService.getUserPayments(
-                pageable,
-                customUserDetails.getUserId()
-        );
-        List<UserPaymentDto> paymentDtos = paymentPage.stream()
-                .map(paymentMapper::toUserPaymentDto)
-                .toList();
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC)
+                    Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Page<Payment> paymentPage = paymentService.getUserPayments(pageable, customUserDetails.getUserId());
+        List<UserPaymentDto> paymentDtos =
+                paymentPage.stream().map(paymentMapper::toUserPaymentDto).toList();
         return ResponseEntity.ok(toPageDto(paymentPage, paymentDtos));
     }
 
-
     @GetMapping("/{paymentId}")
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<?> getPayment(@PathVariable UUID paymentId)
-    {
+    ResponseEntity<?> getPayment(@PathVariable UUID paymentId) {
         Payment payment = paymentService.getPayment(paymentId);
         return ResponseEntity.ok(paymentMapper.toAdminPaymentDto(payment));
     }
 
-
     @GetMapping("/me/{paymentId}")
     ResponseEntity<?> getUserPayment(
-            @PathVariable UUID paymentId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    )
-    {
+            @PathVariable UUID paymentId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         Payment payment = paymentService.getUserPayment(paymentId, userDetails.getUserId());
         return ResponseEntity.ok(paymentMapper.toUserPaymentDto(payment));
     }
-
 }

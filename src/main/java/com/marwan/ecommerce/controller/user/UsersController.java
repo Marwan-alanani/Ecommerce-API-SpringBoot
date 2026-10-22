@@ -26,20 +26,16 @@ import java.util.UUID;
 
 import static com.marwan.ecommerce.controller.common.BaseController.toPageDto;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-public class UsersController
-{
+public class UsersController {
     private final UserService userService;
     private final UserMapper userMapper;
 
     @DeleteMapping("/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> remove(@PathVariable UUID userId)
-            throws UserNotFoundException
-    {
+    public ResponseEntity<Void> remove(@PathVariable UUID userId) throws UserNotFoundException {
 
         userService.deactivate(userId);
         return ResponseEntity.noContent().build();
@@ -47,48 +43,39 @@ public class UsersController
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{userId}")
-    ResponseEntity<UserDto> getUser(@PathVariable UUID userId)
-            throws UserNotFoundException
-    {
+    ResponseEntity<UserDto> getUser(@PathVariable UUID userId) throws UserNotFoundException {
         User user = userService.getUser(userId);
         return ResponseEntity.ok(userMapper.userToUserDto(user));
     }
 
     @GetMapping("/me")
-    ResponseEntity<UserDto> getCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails)
-    {
+    ResponseEntity<UserDto> getCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         User user = userService.getUser(userDetails.getUserId());
         return ResponseEntity.ok(userMapper.userToUserDto(user));
     }
 
     @DeleteMapping
-    ResponseEntity<?> deleteCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails)
-    {
+    ResponseEntity<?> deleteCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
         userService.deactivate(userDetails.getUserId());
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/me")
     ResponseEntity<?> updateUser(
-            @Valid @RequestBody UpdateUserRequest request,
-            @AuthenticationPrincipal CustomUserDetails userDetails)
-    {
+            @Valid @RequestBody UpdateUserRequest request, @AuthenticationPrincipal CustomUserDetails userDetails) {
         // I should have implemented this sooner
         throw new NotImplementedException();
     }
 
-
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageDto<UserDto>> getAllUsers(
-            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable
-    )
-    {
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC)
+                    Pageable pageable) {
         Page<User> userPage = userService.getAll(pageable);
         List<UserDto> userDtoList = userMapper.userListToUserDtoList(userPage.getContent());
 
         return ResponseEntity.ok(toPageDto(userPage, userDtoList));
     }
-
 }

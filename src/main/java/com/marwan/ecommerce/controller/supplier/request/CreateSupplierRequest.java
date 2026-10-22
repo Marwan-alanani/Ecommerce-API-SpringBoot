@@ -9,9 +9,4 @@ public record CreateSupplierRequest(
         @Size(max = 255, min = 3, message = "Supplier name must be between 3 and 255")
         String name,
 
-        @NotBlank
-        @Email(message = "Invalid email")
-        String email
-)
-{
-}
+        @NotBlank @Email(message = "Invalid email") String email) {}

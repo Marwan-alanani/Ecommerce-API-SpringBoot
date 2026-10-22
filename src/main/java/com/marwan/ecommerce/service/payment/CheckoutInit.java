@@ -7,12 +7,4 @@ import java.util.List;
 import java.util.UUID;
 
 public record CheckoutInit(
-        UUID orderId,
-        UUID paymentId,
-        UUID cartId,
-        Currency currency,
-        List<LineItemDto> lineItemDtoList
-)
-{
-
-}
+        UUID orderId, UUID paymentId, UUID cartId, Currency currency, List<LineItemDto> lineItemDtoList) {}

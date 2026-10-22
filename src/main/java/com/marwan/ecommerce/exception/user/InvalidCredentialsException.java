@@ -5,8 +5,6 @@ import com.marwan.ecommerce.exception.abstractions.ValidationException;
 
 public class InvalidCredentialsException extends ValidationException {
     public InvalidCredentialsException() {
-        super(
-                ExceptionCodes.InvalidCredentialsException,
-                "Invalid email or password!");
+        super(ExceptionCodes.InvalidCredentialsException, "Invalid email or password!");
     }
 }

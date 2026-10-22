@@ -12,8 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "order_items")
-public final class OrderItem
-{
+public final class OrderItem {
     @Id
     @Setter(AccessLevel.NONE)
     private UUID orderItemId;
@@ -23,6 +22,7 @@ public final class OrderItem
 
     @Column(nullable = false)
     private String productName;
+
     @Column(nullable = false)
     private String productPictureUrl;
 
@@ -36,15 +36,7 @@ public final class OrderItem
     @JoinColumn(name = "order_id")
     private Order order;
 
-    public BigDecimal getTotalPrice()
-    {
-        return unitPrice.multiply(BigDecimal.valueOf(quantity));
-    }
-
-    public static OrderItem fromCartItem(
-            CartItem cartItem
-    )
-    {
+    public static OrderItem fromCartItem(CartItem cartItem) {
         return new OrderItem(
                 UUID.randomUUID(),
                 cartItem.getProduct().getProductId(),
@@ -52,7 +44,10 @@ public final class OrderItem
                 cartItem.getProduct().getPictureUrl(),
                 cartItem.getProduct().getSellingPrice(),
                 cartItem.getQuantity(),
-                null
-        );
+                null);
+    }
+
+    public BigDecimal getTotalPrice() {
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
     }
 }

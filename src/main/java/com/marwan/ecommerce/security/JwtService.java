@@ -1,7 +1,9 @@
 package com.marwan.ecommerce.security;
 
 import com.marwan.ecommerce.config.JwtConfig;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -12,14 +14,11 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class JwtService
-{
+public class JwtService {
     private final JwtConfig jwtConfig;
 
-    public boolean isValidAccessToken(String token)
-    {
-        if (token == null || token.trim().isEmpty())
-            return false;
+    public boolean isValidAccessToken(String token) {
+        if (token == null || token.trim().isEmpty()) return false;
 
         try {
             var header = Jwts.parser()
@@ -35,11 +34,8 @@ public class JwtService
         }
     }
 
-
-    public boolean isValidRefreshToken(String token)
-    {
-        if (token == null || token.trim().isEmpty())
-            return false;
+    public boolean isValidRefreshToken(String token) {
+        if (token == null || token.trim().isEmpty()) return false;
 
         try {
             var header = Jwts.parser()
@@ -55,29 +51,17 @@ public class JwtService
         }
     }
 
-    public String generateAccessToken(CustomUserDetails userDetails)
-    {
-        return generateToken(userDetails,
-                jwtConfig.getAccessTokenExpirationInSeconds(),
-                jwtConfig.getAccessTokenType()
-        );
-
+    public String generateAccessToken(CustomUserDetails userDetails) {
+        return generateToken(
+                userDetails, jwtConfig.getAccessTokenExpirationInSeconds(), jwtConfig.getAccessTokenType());
     }
 
-    public String generateRefreshToken(CustomUserDetails userDetails)
-    {
-        return generateToken(userDetails,
-                jwtConfig.getRefreshTokenExpirationInSeconds(),
-                jwtConfig.getRefreshTokenType()
-        );
-
+    public String generateRefreshToken(CustomUserDetails userDetails) {
+        return generateToken(
+                userDetails, jwtConfig.getRefreshTokenExpirationInSeconds(), jwtConfig.getRefreshTokenType());
     }
 
-    private String generateToken(
-            CustomUserDetails userDetails,
-            int expirationInSeconds,
-            String type)
-    {
+    private String generateToken(CustomUserDetails userDetails, int expirationInSeconds, String type) {
         String role = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .filter(Objects::nonNull)
@@ -90,46 +74,35 @@ public class JwtService
                 .type(type)
                 .and()
                 .id(UUID.randomUUID().toString())
-                .claim(
-                        "role",
-                        role)
-                .claim(
-                        "email",
-                        userDetails.getUsername())
+                .claim("role", role)
+                .claim("email", userDetails.getUsername())
                 .subject(userDetails.getUserId().toString())
                 .issuedAt(new Date())
-                .expiration(
-                        new Date(
-                                System.currentTimeMillis() + expirationInSeconds * 1000L
-                        ))
+                .expiration(new Date(System.currentTimeMillis() + expirationInSeconds * 1000L))
                 .signWith(jwtConfig.getSecretKey())
                 .issuer(jwtConfig.getIssuer())
-                .audience().add(jwtConfig.getAudience()).and()
+                .audience()
+                .add(jwtConfig.getAudience())
+                .and()
                 .compact();
     }
 
-    public String extractEmail(String token)
-    {
+    public String extractEmail(String token) {
         Claims claims = extractAllClaims(token);
         return (String) claims.get("email");
-
     }
 
-    public UUID extractUserId(String token)
-    {
+    public UUID extractUserId(String token) {
         Claims claims = extractAllClaims(token);
         return UUID.fromString(claims.getSubject());
-
     }
 
-    public String extractRole(String token)
-    {
+    public String extractRole(String token) {
         Claims claims = extractAllClaims(token);
         return (String) (claims.get("role"));
     }
 
-    public Claims extractAllClaims(String token)
-    {
+    public Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(jwtConfig.getSecretKey())
                 .requireIssuer(jwtConfig.getIssuer())

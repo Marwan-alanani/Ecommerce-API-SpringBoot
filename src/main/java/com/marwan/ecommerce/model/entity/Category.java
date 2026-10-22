@@ -15,11 +15,11 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
-public final class Category
-{
+public final class Category {
     @Id
     @Setter(AccessLevel.NONE)
     private UUID categoryId;
+
     @Column(unique = true, nullable = false)
     private String name;
 
@@ -31,27 +31,22 @@ public final class Category
     @Column(nullable = false)
     @UpdateTimestamp
     private Instant updatedDateTime;
+
     private boolean isEnabled;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY,
+    @OneToMany(
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.LAZY,
             mappedBy = "category")
     @Setter(AccessLevel.NONE)
     // can I sort by products.Length?
     private List<Product> products;
 
-    public static Category create(String name)
-    {
-        return new Category(
-                UUID.randomUUID(),
-                name,
-                null,
-                null,
-                true,
-                null);
+    public static Category create(String name) {
+        return new Category(UUID.randomUUID(), name, null, null, true, null);
     }
 
-    public void deactivate()
-    {
+    public void deactivate() {
         isEnabled = false;
     }
 }

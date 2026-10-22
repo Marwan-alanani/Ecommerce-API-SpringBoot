@@ -13,8 +13,4 @@ public record AdminPaymentDto(
         String currency,
         Instant createdDateTime,
         Instant updatedDateTime,
-        String status
-)
-
-{
-}
+        String status) {}

@@ -25,8 +25,8 @@ import java.util.List;
 @Configuration
 @Profile("dev")
 @RequiredArgsConstructor
-public class DevDataConfig
-{
+public class DevDataConfig {
+    private static final String USEREMAIL = "defaultuser@mail.com";
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
@@ -36,12 +36,10 @@ public class DevDataConfig
     private String adminEmail;
     @Value("${admin.password}")
     private String adminPassword;
-    private static final String USEREMAIL = "defaultuser@mail.com";
 
     @Bean
     @Transactional
-    CommandLineRunner initDatabase()
-    {
+    CommandLineRunner initDatabase() {
         return args -> {
             seedUserData();
             seedCategoryData();
@@ -49,42 +47,24 @@ public class DevDataConfig
         };
     }
 
-    private void seedUserData()
-    {
+    private void seedUserData() {
         if (!userRepository.existsByEmail(adminEmail)) {
-            User admin = User.create(
-                    "admin",
-                    "admin",
-                    UserRole.ADMIN,
-                    adminEmail,
-                    passwordEncoder.encode(adminPassword)
-            );
+            User admin =
+                    User.create("admin", "admin", UserRole.ADMIN, adminEmail, passwordEncoder.encode(adminPassword));
             userRepository.save(admin);
-
         }
         if (!userRepository.existsByEmail(USEREMAIL)) {
-            User user = User.create(
-                    "user",
-                    "user",
-                    UserRole.USER,
-                    USEREMAIL,
-                    passwordEncoder.encode("password")
-            );
+            User user = User.create("user", "user", UserRole.USER, USEREMAIL, passwordEncoder.encode("password"));
             userRepository.save(user);
         }
-
     }
 
-    private void seedCategoryData()
-    {
+    private void seedCategoryData() {
         if (categoryRepository.count() == 0) {
             List<CreateCategoryCommand> commands = new ArrayList<>(List.of(
                     new CreateCategoryCommand("Furniture"),
                     new CreateCategoryCommand("Fashion"),
-                    new CreateCategoryCommand("Electronics")
-            )
-
-            );
+                    new CreateCategoryCommand("Electronics")));
 
             for (CreateCategoryCommand command : commands) {
                 categoryService.create(command);
@@ -92,11 +72,9 @@ public class DevDataConfig
         }
     }
 
-    private void seedProductData()
-    {
+    private void seedProductData() {
         if (productRepository.count() == 0) {
-            Category furniture =
-                    categoryRepository.findByName("Furniture").orElse(null);
+            Category furniture = categoryRepository.findByName("Furniture").orElse(null);
             Category fashion = categoryRepository.findByName("Fashion").orElse(null);
             Category electronics = categoryRepository.findByName("Electronics").orElse(null);
 
@@ -105,72 +83,58 @@ public class DevDataConfig
                             "Bed",
                             "",
                             BigDecimal.valueOf(10.2),
-                            "https://encrypted-tbn0.gstatic" +
-                                    ".com/images?q=tbn:ANd9GcSAjEccafdE29oPjq8fXKg2K0HM6_x63WTL9g&s",
-                            furniture
-                    ),
+                            "https://encrypted-tbn0.gstatic"
+                                    + ".com/images?q=tbn:ANd9GcSAjEccafdE29oPjq8fXKg2K0HM6_x63WTL9g&s",
+                            furniture),
                     Product.create(
                             "Drawer",
                             "",
                             BigDecimal.valueOf(10.2),
                             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt_B7WVTx-g0xk63Y5NyCOdtufTn6MtTmGUg&s",
-                            furniture
-                    ),
-
+                            furniture),
                     Product.create(
                             "Desk",
                             "",
                             BigDecimal.valueOf(10.2),
                             "https://www.officestock.com.au/assets/full/CDK126BI.jpg?20210405235659",
-                            furniture
-                    ),
+                            furniture),
                     Product.create(
                             "T-shirt",
                             "",
                             BigDecimal.valueOf(10.2),
-                            "https://encrypted-tbn0.gstatic" +
-                                    ".com/images?q=tbn:ANd9GcSuFDcsZpcD7gF-zD8NQU_N7SSzoOQKrXvThQ&s",
-                            fashion
-                    ),
-
+                            "https://encrypted-tbn0.gstatic"
+                                    + ".com/images?q=tbn:ANd9GcSuFDcsZpcD7gF-zD8NQU_N7SSzoOQKrXvThQ&s",
+                            fashion),
                     Product.create(
                             "Jeans",
                             "",
                             BigDecimal.valueOf(10.2),
                             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2rpOb-4Qw9zEYHDdo3_N7tYczkwZzO4LLrQ&s",
-                            fashion
-                    ),
-
+                            fashion),
                     Product.create(
                             "Jacket",
                             "",
                             BigDecimal.valueOf(10.2),
                             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS9yaUixpCxwbJIHxVgr-7imMUuAlq3J_-DQ&s",
-                            fashion
-                    ),
+                            fashion),
                     Product.create(
                             "TV",
                             "",
                             BigDecimal.valueOf(10.2),
                             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5uPThN2OG8iYPzlCOEmGCvGqy2euKbBVTRQ&s",
-                            electronics
-                    ),
+                            electronics),
                     Product.create(
                             "Mobile Phone",
                             "",
                             BigDecimal.valueOf(10.2),
                             "https://2b.com.eg/media/catalog/product/cache/45bcba66b667d1ca52af48b101a5f0cb/a/p/apple-iphone-16-pro-black-1_1_1_2_1.jpg",
-                            electronics
-                    ),
+                            electronics),
                     Product.create(
                             "Laptop",
                             "",
                             BigDecimal.valueOf(10.2),
                             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxd9zq7NatrST5edevjeknTKTKmuL5ElwDag&s",
-                            electronics
-                    )
-
-            ));
+                            electronics)));
             productRepository.saveAll(products);
         }
     }

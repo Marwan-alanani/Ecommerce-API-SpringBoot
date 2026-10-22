@@ -13,20 +13,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-
 @RequiredArgsConstructor
 @Service
-public class AuthenticationService
-{
+public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtService jwtService;
 
-    public AccessAndRefreshTokenDto login(LoginQuery query)
-    {
+    public AccessAndRefreshTokenDto login(LoginQuery query) {
         Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(query.email(), query.password())
-        );
+                new UsernamePasswordAuthenticationToken(query.email(), query.password()));
         CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
 
         String accessToken = jwtService.generateAccessToken(customUserDetails);
@@ -36,8 +32,7 @@ public class AuthenticationService
     }
 
     public AccessAndRefreshTokenDto renewAccessToken(String refreshToken)
-            throws InvalidTokenException, UserNotFoundException
-    {
+            throws InvalidTokenException, UserNotFoundException {
         if (refreshToken == null || !jwtService.isValidRefreshToken(refreshToken)) {
             throw new InvalidTokenException(refreshToken);
         }

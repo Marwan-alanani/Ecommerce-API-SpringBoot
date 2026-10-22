@@ -9,7 +9,4 @@ public record ProductResponseDto(
         double price,
         String pictureUrl,
         int balance,
-        UUID categoryId
-)
-{
-}
+        UUID categoryId) {}

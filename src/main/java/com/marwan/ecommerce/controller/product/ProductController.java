@@ -29,22 +29,18 @@ import java.util.UUID;
 
 import static com.marwan.ecommerce.controller.common.BaseController.toPageDto;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/products")
-public class ProductController
-{
+public class ProductController {
     private final ProductService productService;
     private final ProductMapper productMapper;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<ProductResponseDto> createProduct(
-            @Valid @RequestBody CreateProductRequest request,
-            UriComponentsBuilder uriBuilder)
-            throws CategoryNotFoundException
-    {
+            @Valid @RequestBody CreateProductRequest request, UriComponentsBuilder uriBuilder)
+            throws CategoryNotFoundException {
         CreateProductCommand command = productMapper.createProductRequestToCommand(request);
         Product product = productService.createProduct(command);
         ProductResponseDto productResponseDto = productMapper.productToProductResponseDto(product);
@@ -57,41 +53,30 @@ public class ProductController
 
     @GetMapping("/active/{productId}")
     public ResponseEntity<ProductDetailsDto> getActiveProduct(@PathVariable UUID productId)
-            throws ProductNotFoundException
-    {
-        ProductDetailsDto productDetailsDto =
-                productService.getActiveProductWithCategoryNameById(productId);
+            throws ProductNotFoundException {
+        ProductDetailsDto productDetailsDto = productService.getActiveProductWithCategoryNameById(productId);
         return ResponseEntity.ok(productDetailsDto);
     }
 
     @GetMapping("/{productId}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<ProductDetailsDto> getProduct(@PathVariable UUID productId)
-            throws ProductNotFoundException
-    {
-        ProductDetailsDto productDetailsDto = productService
-                .getProductWithCategoryNameById(productId);
+    public ResponseEntity<ProductDetailsDto> getProduct(@PathVariable UUID productId) throws ProductNotFoundException {
+        ProductDetailsDto productDetailsDto = productService.getProductWithCategoryNameById(productId);
         return ResponseEntity.ok(productDetailsDto);
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<PageDto<ProductResponseDto>> getAllProducts(
-            @ParameterObject @PageableDefault(sort = "createdDateTime", direction =
-                    Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(required = false) UUID categoryId
-    )
-            throws CategoryNotFoundException
-    {
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC)
+                    Pageable pageable,
+            @RequestParam(required = false) UUID categoryId)
+            throws CategoryNotFoundException {
 
         Page<Product> productPage;
         if (categoryId != null) {
-            productPage = productService.getProductsByCategoryId(
-                    pageable,
-                    categoryId
-            );
-        } else
-            productPage = productService.getAllProducts(pageable);
+            productPage = productService.getProductsByCategoryId(pageable, categoryId);
+        } else productPage = productService.getAllProducts(pageable);
 
         List<ProductResponseDto> productResponseDtos =
                 productMapper.productListToProductResponseDtoList(productPage.getContent());
@@ -101,11 +86,10 @@ public class ProductController
 
     @GetMapping("/active")
     public ResponseEntity<PageDto<ProductResponseDto>> getActiveProducts(
-            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(required = false) UUID categoryId
-    )
-            throws CategoryNotFoundException
-    {
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC)
+                    Pageable pageable,
+            @RequestParam(required = false) UUID categoryId)
+            throws CategoryNotFoundException {
         Page<Product> productPage;
         if (categoryId != null) {
             productPage = productService.getActiveProductsByCategoryId(pageable, categoryId);
@@ -120,10 +104,8 @@ public class ProductController
 
     @PatchMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<ProductResponseDto> updateProduct(
-            @Valid @RequestBody UpdateProductRequest request)
-            throws ProductNotFoundException, CategoryNotFoundException
-    {
+    public ResponseEntity<ProductResponseDto> updateProduct(@Valid @RequestBody UpdateProductRequest request)
+            throws ProductNotFoundException, CategoryNotFoundException {
         UpdateProductCommand command = productMapper.updateProductRequestToCommand(request);
         Product product = productService.updateProduct(command);
         ProductResponseDto productResponseDto = productMapper.productToProductResponseDto(product);
@@ -132,9 +114,7 @@ public class ProductController
 
     @DeleteMapping("/{productId}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Void> deactivateProduct(@PathVariable UUID productId)
-            throws ProductNotFoundException
-    {
+    public ResponseEntity<Void> deactivateProduct(@PathVariable UUID productId) throws ProductNotFoundException {
         productService.deactivateProduct(productId);
         return ResponseEntity.noContent().build();
     }

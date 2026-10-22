@@ -15,12 +15,10 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Setter
-public final class CartItem
-{
+public final class CartItem {
     @Id
     @Setter(AccessLevel.NONE)
     private UUID cartItemId;
-
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id")
@@ -39,33 +37,17 @@ public final class CartItem
     @UpdateTimestamp
     private Instant updatedDateTime;
 
-    public BigDecimal getTotalPrice()
-    {
+    public static CartItem fromProduct(Product product) {
+
+        return new CartItem(UUID.randomUUID(), product, 1, null, null, null);
+    }
+
+    public static CartItem fromProductWithQuantity(Product product, int quantity) {
+
+        return new CartItem(UUID.randomUUID(), product, quantity, null, null, null);
+    }
+
+    public BigDecimal getTotalPrice() {
         return product.getSellingPrice().multiply(BigDecimal.valueOf(quantity));
-    }
-
-    public static CartItem fromProduct(Product product)
-    {
-
-        return new CartItem(
-                UUID.randomUUID(),
-                product,
-                1,
-                null,
-                null,
-                null);
-
-    }
-
-    public static CartItem fromProductWithQuantity(Product product, int quantity)
-    {
-
-        return new CartItem(
-                UUID.randomUUID(),
-                product,
-                quantity,
-                null,
-                null,
-                null);
     }
 }

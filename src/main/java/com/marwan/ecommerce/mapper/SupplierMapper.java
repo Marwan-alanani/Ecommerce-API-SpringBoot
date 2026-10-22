@@ -10,21 +10,16 @@ import org.mapstruct.*;
 
 import java.util.List;
 
-import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.enabled;
-
 @Mapper(componentModel = "spring")
-public interface SupplierMapper
-{
-        @Mapping(target = "isEnabled", expression = "java(supplier.isEnabled())")
+public interface SupplierMapper {
+    @Mapping(target = "isEnabled", expression = "java(supplier.isEnabled())")
     SupplierDto supplierToSupplierDto(Supplier supplier);
 
     List<SupplierDto> supplierListToSupplierDtoList(List<Supplier> supplierList);
 
-    CreateSupplierCommand createSupplierRequestToCreateSupplierCommand(
-            CreateSupplierRequest request);
+    CreateSupplierCommand createSupplierRequestToCreateSupplierCommand(CreateSupplierRequest request);
 
-    UpdateSupplierCommand updateSupplierRequestToUpdateSupplierCommand(
-            UpdateSupplierRequest request);
+    UpdateSupplierCommand updateSupplierRequestToUpdateSupplierCommand(UpdateSupplierRequest request);
 
     @Mapping(target = "updatedDateTime", expression = "java(java.time.Instant.now())")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

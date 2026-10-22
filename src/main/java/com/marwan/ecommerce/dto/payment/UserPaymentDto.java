@@ -12,7 +12,4 @@ public record UserPaymentDto(
         String currency,
         Instant createdDateTime,
         Instant updatedDateTime,
-        String status
-)
-{
-}
+        String status) {}

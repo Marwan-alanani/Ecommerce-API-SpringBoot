@@ -29,48 +29,38 @@ import static com.marwan.ecommerce.controller.common.BaseController.toPageDto;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/orders")
-public class OrderController
-{
+public class OrderController {
     private final OrderService orderService;
     private final OrderMapper orderMapper;
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<PageDto<OrderDto>> getAll(
-            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable
-    )
-    {
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC)
+                    Pageable pageable) {
         Page<Order> orderPage = orderService.getAll(pageable);
-        List<OrderDto> orderDtos = orderPage.stream()
-                .map(orderMapper::orderEntityToOrderDto)
-                .toList();
+        List<OrderDto> orderDtos =
+                orderPage.stream().map(orderMapper::orderEntityToOrderDto).toList();
         return ResponseEntity.ok(toPageDto(orderPage, orderDtos));
     }
 
     @GetMapping("/me")
     public ResponseEntity<PageDto<OrderDto>> getUserOrders(
-            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable,
-            @AuthenticationPrincipal CustomUserDetails userDetails)
-    {
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC)
+                    Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
         Page<Order> orderPage = orderService.getUserOrders(pageable, userDetails.getUserId());
-        List<OrderDto> orderDtos = orderPage.stream()
-                .map(orderMapper::orderEntityToOrderDto)
-                .toList();
+        List<OrderDto> orderDtos =
+                orderPage.stream().map(orderMapper::orderEntityToOrderDto).toList();
         return ResponseEntity.ok(toPageDto(orderPage, orderDtos));
     }
 
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderDto> getOrder(
-            @PathVariable UUID orderId,
-            @AuthenticationPrincipal CustomUserDetails userDetails)
-    {
+            @PathVariable UUID orderId, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Order order = orderService.getOrderWithOrderItems(
-                orderId,
-                userDetails.getUserId(),
-                userDetails.getRole() == UserRole.ADMIN
-        );
+                orderId, userDetails.getUserId(), userDetails.getRole() == UserRole.ADMIN);
         OrderDto orderDto = orderMapper.orderEntityToOrderDto(order);
         return ResponseEntity.ok(orderDto);
     }
-
 }

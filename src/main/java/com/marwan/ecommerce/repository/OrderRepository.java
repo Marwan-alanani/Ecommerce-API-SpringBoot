@@ -14,8 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, UUID>
-{
+public interface OrderRepository extends JpaRepository<Order, UUID> {
     @Override
     @NullMarked
     Page<Order> findAll(Pageable pageable);
@@ -26,19 +25,13 @@ public interface OrderRepository extends JpaRepository<Order, UUID>
     @Query("SELECT o FROM Order o")
     Page<Order> findAllWithOrderItems(Pageable pageable);
 
-
     @EntityGraph(attributePaths = "orderItems")
     @Query("SELECT o FROM Order o WHERE o.orderId=:orderId")
     Optional<Order> findByOrderIdWithOrderItems(@Param("orderId") UUID orderId);
 
-
     @EntityGraph(attributePaths = "orderItems")
     @Query("SELECT o FROM Order o WHERE o.userId=:userId AND o.orderId=:orderId")
-    Optional<Order> findByUserIdAndOrderIdWithOrderItems(
-            @Param("userId") UUID userId,
-            @Param("orderId") UUID orderId
-    );
-
+    Optional<Order> findByUserIdAndOrderIdWithOrderItems(@Param("userId") UUID userId, @Param("orderId") UUID orderId);
 
     @EntityGraph(attributePaths = "orderItems")
     @Query("SELECT o FROM Order o WHERE o.userId=:userId")

@@ -16,21 +16,18 @@ import java.math.RoundingMode;
 
 @Component
 @RequiredArgsConstructor
-
-public class PurchaseCreatedEventListener
-{
+public class PurchaseCreatedEventListener {
     private final ProductRepository productRepository;
-
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void onPurchaseCreated(PurchaseCreatedEvent event)
-    {
+    public void onPurchaseCreated(PurchaseCreatedEvent event) {
 
         int maxAttempts = 5;
         for (int attempt = 1; attempt <= maxAttempts; attempt++) {
             try {
-                Product product = productRepository.findById(event.productId())
+                Product product = productRepository
+                        .findById(event.productId())
                         .orElseThrow(() -> new ProductNotFoundException(event.productId()));
 
                 BigDecimal totalPrice = product.getTotalPurchasePrice()
@@ -41,9 +38,7 @@ public class PurchaseCreatedEventListener
                 product.setTotalPurchasePrice(totalPrice);
                 product.setTotalPurchaseQuantity(totalQuantity);
 
-                BigDecimal averagePrice = totalPrice.divide(
-                        BigDecimal.valueOf(totalQuantity), 3, RoundingMode.HALF_UP
-                );
+                BigDecimal averagePrice = totalPrice.divide(BigDecimal.valueOf(totalQuantity), 3, RoundingMode.HALF_UP);
 
                 product.setSellingPrice(averagePrice);
                 product.increaseBalance(event.quantity());
@@ -51,8 +46,7 @@ public class PurchaseCreatedEventListener
                 productRepository.saveAndFlush(product); // flush to trigger version check now
                 return;
 
-            } catch (ObjectOptimisticLockingFailureException |
-                     jakarta.persistence.OptimisticLockException ex) {
+            } catch (ObjectOptimisticLockingFailureException | jakarta.persistence.OptimisticLockException ex) {
                 if (attempt == maxAttempts) {
                     throw ex; // or wrap in your own exception
                 }

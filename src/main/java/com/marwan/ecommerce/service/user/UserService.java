@@ -1,10 +1,10 @@
 package com.marwan.ecommerce.service.user;
 
-import com.marwan.ecommerce.model.enums.UserRole;
-import com.marwan.ecommerce.model.entity.User;
-import com.marwan.ecommerce.repository.UserRepository;
 import com.marwan.ecommerce.exception.user.EmailExistsException;
 import com.marwan.ecommerce.exception.user.UserNotFoundException;
+import com.marwan.ecommerce.model.entity.User;
+import com.marwan.ecommerce.model.enums.UserRole;
+import com.marwan.ecommerce.repository.UserRepository;
 import com.marwan.ecommerce.service.user.command.RegisterCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,18 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-
 @Service
 @RequiredArgsConstructor
-public class UserService
-{
+public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public User create(RegisterCommand command)
-            throws EmailExistsException
-    {
+    public User create(RegisterCommand command) throws EmailExistsException {
         if (userRepository.existsByEmail(command.email())) {
             throw new EmailExistsException(command.email());
         }
@@ -43,28 +39,21 @@ public class UserService
     }
 
     @Transactional
-    public void deactivate(UUID id) throws UserNotFoundException
-    {
-        User user = userRepository.findById(id).
-                orElseThrow(() -> new UserNotFoundException(id));
+    public void deactivate(UUID id) throws UserNotFoundException {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         user.deactivate();
         userRepository.save(user);
     }
 
-    public Page<User> getAll(Pageable pageable)
-    {
+    public Page<User> getAll(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
-    public User getUser(UUID id)
-            throws UserNotFoundException
-    {
-        return userRepository.findById(id).
-                orElseThrow(() -> new UserNotFoundException(id));
+    public User getUser(UUID id) throws UserNotFoundException {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    public boolean userExists(UUID id)
-    {
+    public boolean userExists(UUID id) {
         return userRepository.existsByUserIdAndIsEnabled(id, true);
     }
 }

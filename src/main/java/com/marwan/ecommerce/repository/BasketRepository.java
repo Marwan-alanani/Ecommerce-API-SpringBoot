@@ -8,8 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface BasketRepository extends JpaRepository<Cart, UUID>
-{
+public interface BasketRepository extends JpaRepository<Cart, UUID> {
     Optional<Cart> findBasketByUserId(UUID userId);
-
 }

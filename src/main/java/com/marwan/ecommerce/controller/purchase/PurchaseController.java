@@ -29,61 +29,45 @@ import static com.marwan.ecommerce.controller.common.BaseController.toPageDto;
 @RequestMapping("/purchases")
 @RequiredArgsConstructor
 @RestController
-public class PurchaseController
-{
+public class PurchaseController {
     private final PurchaseService purchaseService;
     private final PurchaseMapper purchaseMapper;
 
     @PostMapping
     public ResponseEntity<PurchaseDto> create(@Valid @RequestBody CreatePurchaseRequest request)
-            throws SupplierNotFoundException, ProductNotFoundException
-    {
-        CreatePurchaseCommand command =
-                purchaseMapper.createPurchaseRequestToCreatePurchaseCommand(request);
+            throws SupplierNotFoundException, ProductNotFoundException {
+        CreatePurchaseCommand command = purchaseMapper.createPurchaseRequestToCreatePurchaseCommand(request);
         Purchase purchase = purchaseService.createPurchase(command);
         PurchaseDto purchaseDto = purchaseMapper.purchaseToPurchaseDto(purchase);
         return ResponseEntity.status(HttpStatus.CREATED).body(purchaseDto);
     }
 
     @GetMapping("/{purchaseId}")
-    public ResponseEntity<PurchaseDto> get(@PathVariable UUID purchaseId)
-            throws PurchaseNotFoundException
-    {
+    public ResponseEntity<PurchaseDto> get(@PathVariable UUID purchaseId) throws PurchaseNotFoundException {
         Purchase purchase = purchaseService.getById(purchaseId);
         PurchaseDto purchaseDto = purchaseMapper.purchaseToPurchaseDto(purchase);
         return ResponseEntity.ok(purchaseDto);
-
     }
 
     @GetMapping
     public ResponseEntity<PageDto<PurchaseDto>> getAll(
-            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable,
+            @ParameterObject @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC)
+                    Pageable pageable,
             @RequestParam(required = false) UUID productId,
-            @RequestParam(required = false) UUID supplierId
-    )
-    {
+            @RequestParam(required = false) UUID supplierId) {
         Page<Purchase> purchasePage;
         if (productId == null && supplierId == null) {
             purchasePage = purchaseService.getAll(pageable);
         } else if (productId != null && supplierId != null) {
-            purchasePage = purchaseService.getAllBySupplierIdAndProductId(
-                    pageable,
-                    supplierId,
-                    productId);
+            purchasePage = purchaseService.getAllBySupplierIdAndProductId(pageable, supplierId, productId);
         } else if (supplierId != null) {
-            purchasePage = purchaseService.getAllBySupplierId(
-                    pageable,
-                    supplierId);
+            purchasePage = purchaseService.getAllBySupplierId(pageable, supplierId);
         } else {
-            purchasePage = purchaseService.getAllByProductId(
-                    pageable,
-                    productId);
+            purchasePage = purchaseService.getAllByProductId(pageable, productId);
         }
 
-        List<PurchaseDto> purchaseDtos = purchaseMapper
-                .purchaseListToPurchaseDtoList(purchasePage.getContent());
+        List<PurchaseDto> purchaseDtos = purchaseMapper.purchaseListToPurchaseDtoList(purchasePage.getContent());
 
         return ResponseEntity.ok(toPageDto(purchasePage, purchaseDtos));
     }
-
 }

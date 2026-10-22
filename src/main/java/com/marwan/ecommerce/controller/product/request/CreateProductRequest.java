@@ -1,6 +1,9 @@
 package com.marwan.ecommerce.controller.product.request;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.URL;
 
 import java.util.UUID;
@@ -13,16 +16,10 @@ public record CreateProductRequest(
         @Size(max = 1000, message = "Description must not exceed 1000 character")
         String description,
 
-        @NotNull(message = "Product price is required")
-        @Positive(message = "Product price must be greater than zero")
+        @NotNull(message = "Product price is required") @Positive(message = "Product price must be greater than zero")
         double price,
 
-        @NotBlank(message = "Picture URL cannot be blank")
-        @URL(message = "Picture URL must be a valid URL")
+        @NotBlank(message = "Picture URL cannot be blank") @URL(message = "Picture URL must be a valid URL")
         String pictureUrl,
 
-        @NotNull(message = "Category id can't be null")
-        UUID categoryId
-)
-{
-}
+        @NotNull(message = "Category id can't be null") UUID categoryId) {}

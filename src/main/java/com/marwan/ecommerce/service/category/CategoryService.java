@@ -1,8 +1,8 @@
 package com.marwan.ecommerce.service.category;
 
 import com.marwan.ecommerce.dto.category.CategoryWithProductsCountDto;
-import com.marwan.ecommerce.exception.category.CategoryNotFoundException;
 import com.marwan.ecommerce.exception.category.CategoryNameExistsException;
+import com.marwan.ecommerce.exception.category.CategoryNotFoundException;
 import com.marwan.ecommerce.mapper.CategoryMapper;
 import com.marwan.ecommerce.model.entity.Category;
 import com.marwan.ecommerce.repository.CategoryRepository;
@@ -17,19 +17,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-
 @RequiredArgsConstructor
 @Service
-public class CategoryService
-{
+public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final ProductRepository productRepository;
 
     @Transactional
-    public Category create(CreateCategoryCommand command)
-            throws CategoryNameExistsException
-    {
+    public Category create(CreateCategoryCommand command) throws CategoryNameExistsException {
         if (categoryRepository.findByName(command.name()).isPresent()) {
             throw new CategoryNameExistsException(command.name());
         }
@@ -38,68 +34,51 @@ public class CategoryService
         return category;
     }
 
-    public boolean categoryActive(UUID id)
-    {
+    public boolean categoryActive(UUID id) {
         return categoryRepository.existsByCategoryIdAndIsEnabled(id, true);
     }
 
-    public boolean categoryExists(UUID id)
-    {
+    public boolean categoryExists(UUID id) {
         return categoryRepository.existsById(id);
     }
 
     // too complex, might refactor later
-    public CategoryWithProductsCountDto getActiveCategoryWithProductCount(
-            UUID categoryId)
-            throws CategoryNotFoundException
-    {
-        Category category = categoryRepository.findByCategoryIdAndIsEnabled(categoryId, true)
+    public CategoryWithProductsCountDto getActiveCategoryWithProductCount(UUID categoryId)
+            throws CategoryNotFoundException {
+        Category category = categoryRepository
+                .findByCategoryIdAndIsEnabled(categoryId, true)
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
+        int productCount = productRepository.countByCategory_CategoryIdAndIsEnabled(categoryId, true);
 
-        int productCount = productRepository
-                .countByCategory_CategoryIdAndIsEnabled(categoryId, true);
-
-        return categoryMapper.categoryAndProductCountToCategoryWithProductsCountDto(
-                category,
-                productCount);
+        return categoryMapper.categoryAndProductCountToCategoryWithProductsCountDto(category, productCount);
     }
 
-    public CategoryWithProductsCountDto getCategoryWithProductCount(
-            UUID categoryId)
-            throws CategoryNotFoundException
-    {
-        Category category = categoryRepository.findByCategoryId(categoryId)
+    public CategoryWithProductsCountDto getCategoryWithProductCount(UUID categoryId) throws CategoryNotFoundException {
+        Category category = categoryRepository
+                .findByCategoryId(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
-
 
         int productCount = productRepository.countByCategory_CategoryId(categoryId);
 
-        return categoryMapper.categoryAndProductCountToCategoryWithProductsCountDto(
-                category,
-                productCount);
+        return categoryMapper.categoryAndProductCountToCategoryWithProductsCountDto(category, productCount);
     }
 
-    public Category getActiveCategory(UUID categoryId)
-            throws CategoryNotFoundException
-    {
-        return categoryRepository.findByCategoryIdAndIsEnabled(categoryId, true)
+    public Category getActiveCategory(UUID categoryId) throws CategoryNotFoundException {
+        return categoryRepository
+                .findByCategoryIdAndIsEnabled(categoryId, true)
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
-
     }
 
-    public Category getCategory(UUID categoryId)
-            throws CategoryNotFoundException
-    {
-        return categoryRepository.findByCategoryId(categoryId)
+    public Category getCategory(UUID categoryId) throws CategoryNotFoundException {
+        return categoryRepository
+                .findByCategoryId(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
-
     }
 
-    public void deactivateCategory(UUID categoryId)
-            throws CategoryNotFoundException
-    {
-        Category category = categoryRepository.findByCategoryId(categoryId)
+    public void deactivateCategory(UUID categoryId) throws CategoryNotFoundException {
+        Category category = categoryRepository
+                .findByCategoryId(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
         category.deactivate();
         categoryRepository.save(category);
@@ -107,8 +86,7 @@ public class CategoryService
 
     @Transactional
     public Category updateCategory(UpdateCategoryCommand command)
-            throws CategoryNotFoundException, CategoryNameExistsException
-    {
+            throws CategoryNotFoundException, CategoryNameExistsException {
         Category category = categoryRepository
                 .findByCategoryId(command.categoryId())
                 .orElseThrow(() -> new CategoryNotFoundException(command.categoryId()));
@@ -125,21 +103,16 @@ public class CategoryService
         return category;
     }
 
-    public Page<Category> getAllCategories(
-            Pageable pageable
-    )
-    {
+    public Page<Category> getAllCategories(Pageable pageable) {
         return categoryRepository.findAll(pageable);
     }
 
-    public Page<Category> getActiveCategories(Pageable pageable)
-    {
+    public Page<Category> getActiveCategories(Pageable pageable) {
         return categoryRepository.findAllByIsEnabled(pageable, true);
     }
 
     @Transactional
-    public void saveCategory(Category category)
-    {
+    public void saveCategory(Category category) {
         categoryRepository.save(category);
     }
 }

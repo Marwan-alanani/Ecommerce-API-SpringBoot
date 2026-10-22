@@ -12,8 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, UUID>
-{
+public interface ProductRepository extends JpaRepository<Product, UUID> {
     Optional<Product> findByProductIdAndIsEnabled(UUID productId, boolean isEnabled);
 
     @EntityGraph(attributePaths = "category")
@@ -26,10 +25,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID>
 
     List<Product> findByCategory_CategoryId(UUID categoryId);
 
-    Page<Product> findByCategory_CategoryIdAndIsEnabled(
-            Pageable pageable,
-            UUID categoryId,
-            boolean isEnabled);
+    Page<Product> findByCategory_CategoryIdAndIsEnabled(Pageable pageable, UUID categoryId, boolean isEnabled);
 
     Page<Product> findAllByIsEnabled(Pageable pageable, boolean isEnabled);
 

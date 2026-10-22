@@ -6,10 +6,7 @@ import jakarta.validation.constraints.Positive;
 import java.util.UUID;
 
 public record UpdateCartItemRequest(
-        @NotNull(message = "Product id is required")
-        UUID productId,
+        @NotNull(message = "Product id is required") UUID productId,
+
         @Positive(message = "quantity must be greater than zero")
-        int quantity
-)
-{
-}
+        int quantity) {}

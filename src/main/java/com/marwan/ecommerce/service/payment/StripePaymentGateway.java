@@ -14,11 +14,9 @@ import java.math.RoundingMode;
 import java.util.Locale;
 
 @Service
-public class StripePaymentGateway implements PaymentGateway
-{
+public class StripePaymentGateway implements PaymentGateway {
     @Override
-    public CheckoutSessionDto createCheckoutSession(CreateCheckoutSessionCommand command)
-    {
+    public CheckoutSessionDto createCheckoutSession(CreateCheckoutSessionCommand command) {
 
         try {
 
@@ -27,12 +25,9 @@ public class StripePaymentGateway implements PaymentGateway
                     .setMode(SessionCreateParams.Mode.PAYMENT)
                     .setSuccessUrl("https://localhost:4242/success")
                     .setCancelUrl("https://localhost:4242/cancel")
-                    .setPaymentIntentData(
-                            SessionCreateParams.PaymentIntentData.builder()
-                                    .putMetadata("paymentId", command.paymentId().toString())
-                                    .build()
-                    );
-
+                    .setPaymentIntentData(SessionCreateParams.PaymentIntentData.builder()
+                            .putMetadata("paymentId", command.paymentId().toString())
+                            .build());
 
             command.items().forEach(item -> {
                 var lineItem = createLineItem(item, command.currency());
@@ -40,30 +35,21 @@ public class StripePaymentGateway implements PaymentGateway
             });
 
             Session session = Session.create(paramsBuilder.build());
-            return new CheckoutSessionDto(
-                    session.getUrl(),
-                    PaymentProvider.STRIPE,
-                    session.getId());
+            return new CheckoutSessionDto(session.getUrl(), PaymentProvider.STRIPE, session.getId());
         } catch (StripeException e) {
             throw new PaymentException();
         }
-
     }
 
-    private SessionCreateParams.LineItem createLineItem(LineItemDto item, String currency)
-    {
+    private SessionCreateParams.LineItem createLineItem(LineItemDto item, String currency) {
         return SessionCreateParams.LineItem.builder()
                 .setQuantity(item.quantity())
                 .setPriceData(createPriceData(item, currency))
                 .build();
     }
 
-    private SessionCreateParams.LineItem.PriceData createPriceData(LineItemDto item,
-            String currency)
-    {
-        var unitPrice = item.unitPrice()
-                .movePointRight(2)
-                .setScale(0, RoundingMode.HALF_UP);
+    private SessionCreateParams.LineItem.PriceData createPriceData(LineItemDto item, String currency) {
+        var unitPrice = item.unitPrice().movePointRight(2).setScale(0, RoundingMode.HALF_UP);
 
         return SessionCreateParams.LineItem.PriceData.builder()
                 .setCurrency(currency.toLowerCase(Locale.ROOT))
@@ -72,8 +58,7 @@ public class StripePaymentGateway implements PaymentGateway
                 .build();
     }
 
-    private SessionCreateParams.LineItem.PriceData.ProductData createProductData(LineItemDto item)
-    {
+    private SessionCreateParams.LineItem.PriceData.ProductData createProductData(LineItemDto item) {
         return SessionCreateParams.LineItem.PriceData.ProductData.builder()
                 .setName(item.name())
                 .build();

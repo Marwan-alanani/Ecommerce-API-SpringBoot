@@ -11,8 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface SupplierRepository extends JpaRepository<Supplier, UUID>
-{
+public interface SupplierRepository extends JpaRepository<Supplier, UUID> {
     @Override
     @NullMarked
     Page<Supplier> findAll(Pageable pageable);
@@ -23,15 +22,11 @@ public interface SupplierRepository extends JpaRepository<Supplier, UUID>
 
     boolean existsByName(String name);
 
-
     boolean existsByEmail(String email);
 
-
     int countByName(String name);
-
 
     int countByEmail(String email);
 
     boolean existsBySupplierIdAndIsEnabled(UUID supplierId, boolean isEnabled);
-
 }

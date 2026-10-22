@@ -6,10 +6,5 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public record UpdateCategoryRequest(
-        @NotNull(message = "Category Id is required")
-        UUID categoryId,
-        @NotBlank(message = "Category name cannot be blank")
-        String name
-)
-{
-}
+        @NotNull(message = "Category Id is required") UUID categoryId,
+        @NotBlank(message = "Category name cannot be blank") String name) {}

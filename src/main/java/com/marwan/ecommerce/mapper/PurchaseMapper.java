@@ -12,10 +12,8 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface PurchaseMapper
-{
-    CreatePurchaseCommand createPurchaseRequestToCreatePurchaseCommand(
-            CreatePurchaseRequest request);
+public interface PurchaseMapper {
+    CreatePurchaseCommand createPurchaseRequestToCreatePurchaseCommand(CreatePurchaseRequest request);
 
     //    @Mapping(target = "unitPrice", expression = "java(purchase.getUnitPrice().doubleValue())")
     @Mapping(target = "totalCost", expression = "java(purchase.getTotalCost())")

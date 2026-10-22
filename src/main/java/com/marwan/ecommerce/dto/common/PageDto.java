@@ -9,7 +9,4 @@ public record PageDto<T>(
         long totalPages,
         long totalElements,
         boolean hasNext,
-        boolean hasPrevious
-)
-{
-}
+        boolean hasPrevious) {}

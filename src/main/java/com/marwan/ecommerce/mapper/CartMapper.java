@@ -8,8 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface CartMapper
-{
+public interface CartMapper {
     @Mapping(target = "cartItems", source = "cartItems")
     @Mapping(target = "totalCost", expression = "java(cart.getTotalCost())")
     CartDto cartEntitytoCartDto(Cart cart);

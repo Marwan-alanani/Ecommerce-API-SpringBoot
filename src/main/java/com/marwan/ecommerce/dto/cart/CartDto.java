@@ -4,11 +4,4 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-public record CartDto(
-        UUID cartId,
-        UUID userId,
-        List<CartItemDto> cartItems,
-        BigDecimal totalCost
-)
-{
-}
+public record CartDto(UUID cartId, UUID userId, List<CartItemDto> cartItems, BigDecimal totalCost) {}

@@ -10,24 +10,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/webhook")
-public class WebhookController
-{
+public class WebhookController {
     private final PaymentWebhookService paymentWebhookService;
 
     @PostMapping("/payment")
     public ResponseEntity<?> handlePaymentWebhook(
-            @RequestHeader("Stripe-Signature") String signature,
-            @RequestBody String payload
-    )
-    {
+            @RequestHeader("Stripe-Signature") String signature, @RequestBody String payload) {
         paymentWebhookService.handle(signature, payload);
         return ResponseEntity.ok().build();
-
     }
 
     @ExceptionHandler(SignatureVerificationException.class)
-    public ResponseEntity<?> handlePaymentWebhookException()
-    {
+    public ResponseEntity<?> handlePaymentWebhookException() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

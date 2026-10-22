@@ -46,3 +46,7 @@ spring:
 stripe:
   secretKey: ${STRIPE_SECRET_KEY}
   webhookKey: ${WEBHOOK_KEY}
+server:
+  compression:
+    enabled: true
+    mime-types: [ "text/html","application/json" ]

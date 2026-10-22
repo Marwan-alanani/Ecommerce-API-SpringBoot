@@ -9,8 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface CategoryRepository extends JpaRepository<Category, UUID>
-{
+public interface CategoryRepository extends JpaRepository<Category, UUID> {
     @Override
     @NullMarked
     Page<Category> findAll(Pageable pageable);
@@ -21,7 +20,6 @@ public interface CategoryRepository extends JpaRepository<Category, UUID>
 
     Optional<Category> findByCategoryId(UUID categoryId);
 
-
     Optional<Category> findByNameAndIsEnabled(String name, boolean isEnabled);
 
     int countByName(String name);
@@ -29,5 +27,4 @@ public interface CategoryRepository extends JpaRepository<Category, UUID>
     Page<Category> findAllByIsEnabled(Pageable pageable, boolean isEnabled);
 
     boolean existsByCategoryIdAndIsEnabled(UUID categoryId, boolean isEnabled);
-
 }

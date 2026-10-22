@@ -12,8 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface PaymentRepository extends JpaRepository<Payment, UUID>
-{
+public interface PaymentRepository extends JpaRepository<Payment, UUID> {
     @EntityGraph(attributePaths = "order")
     Page<Payment> findAllByOrder_UserId(Pageable pageable, UUID userId);
 

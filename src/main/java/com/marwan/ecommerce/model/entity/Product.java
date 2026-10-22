@@ -15,10 +15,10 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public final class Product
-{
+public final class Product {
     @Id
     private UUID productId;
+
     @Column(nullable = false)
     private String name;
 
@@ -41,6 +41,7 @@ public final class Product
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private Instant createdDateTime;
+
     @Column(nullable = false)
     @UpdateTimestamp
     private Instant updatedDateTime;
@@ -60,73 +61,8 @@ public final class Product
     @Column(nullable = false)
     private long version;
 
-    public void setName(String name)
-    {
-        if (name == null)
-            return;
-
-        if (name.isBlank())
-            throw new IllegalArgumentException("Product name cannot be blank");
-        this.name = name;
-    }
-
-    public void setDescription(String description)
-    {
-        if (description == null)
-            return;
-        this.description = description;
-    }
-
-    public void setSellingPrice(BigDecimal price)
-    {
-        if (price == null)
-            return;
-        if (price.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Price cannot be negative");
-        }
-        this.sellingPrice = price;
-    }
-
-    public void setPictureUrl(String pictureUrl)
-    {
-        if (pictureUrl == null)
-            return;
-        this.pictureUrl = pictureUrl;
-    }
-
-    public void setCategory(Category category)
-    {
-        if (category == null)
-            return;
-        this.category = category;
-    }
-
-    public void decreaseBalance(int quantity)
-    {
-        if (quantity <= 0)
-            throw new IllegalArgumentException("Quantity must be greater than zero");
-
-        if (balance < quantity)
-            throw new NotEnoughProductException(name, balance, quantity);
-
-        balance -= quantity;
-    }
-
-    public void increaseBalance(int quantity)
-    {
-        if (quantity <= 0)
-            throw new IllegalArgumentException("Quantity must be greater than zero");
-
-        balance += quantity;
-    }
-
     public static Product create(
-            String name,
-            String description,
-            BigDecimal price,
-            String pictureUrl,
-            Category category)
-    {
+            String name, String description, BigDecimal price, String pictureUrl, Category category) {
         return new Product(
                 UUID.randomUUID(),
                 name,
@@ -140,14 +76,54 @@ public final class Product
                 true,
                 BigDecimal.ZERO,
                 0,
-                0L
-        );
+                0L);
     }
 
-    public void deactivate()
-    {
+    public void setName(String name) {
+        if (name == null) return;
+
+        if (name.isBlank()) throw new IllegalArgumentException("Product name cannot be blank");
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        if (description == null) return;
+        this.description = description;
+    }
+
+    public void setSellingPrice(BigDecimal price) {
+        if (price == null) return;
+        if (price.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Price cannot be negative");
+        }
+        this.sellingPrice = price;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        if (pictureUrl == null) return;
+        this.pictureUrl = pictureUrl;
+    }
+
+    public void setCategory(Category category) {
+        if (category == null) return;
+        this.category = category;
+    }
+
+    public void decreaseBalance(int quantity) {
+        if (quantity <= 0) throw new IllegalArgumentException("Quantity must be greater than zero");
+
+        if (balance < quantity) throw new NotEnoughProductException(name, balance, quantity);
+
+        balance -= quantity;
+    }
+
+    public void increaseBalance(int quantity) {
+        if (quantity <= 0) throw new IllegalArgumentException("Quantity must be greater than zero");
+
+        balance += quantity;
+    }
+
+    public void deactivate() {
         isEnabled = false;
     }
-
-
 }

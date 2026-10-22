@@ -1,7 +1,6 @@
 package com.marwan.ecommerce.model.enums;
 
-public enum SortDirection
-{
+public enum SortDirection {
     ASC,
     DESC
 }

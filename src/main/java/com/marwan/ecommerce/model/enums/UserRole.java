@@ -1,7 +1,6 @@
 package com.marwan.ecommerce.model.enums;
 
-public enum UserRole
-{
+public enum UserRole {
     ADMIN,
     USER,
     SUPPLIER

@@ -1,6 +1,5 @@
 package com.marwan.ecommerce.model.enums;
 
-public enum PaymentProvider
-{
+public enum PaymentProvider {
     STRIPE
 }

@@ -22,15 +22,12 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class CartService
-{
+public class CartService {
     private final CartRepository cartRepository;
     private final ProductService productService;
 
-    public Cart createCart(UUID userId) throws CartAlreadyExistsForUserException
-    {
-        Cart cart = cartRepository.getCartWithItemsByUserId(userId)
-                .orElse(null);
+    public Cart createCart(UUID userId) throws CartAlreadyExistsForUserException {
+        Cart cart = cartRepository.getCartWithItemsByUserId(userId).orElse(null);
 
         if (cart != null) {
             throw new CartAlreadyExistsForUserException(userId);
@@ -40,11 +37,9 @@ public class CartService
         return cart;
     }
 
-    private Cart getOrCreateCart(UUID userId)
-    {
+    private Cart getOrCreateCart(UUID userId) {
 
-        Cart cart = cartRepository.getCartWithItemsByUserId(userId)
-                .orElse(null);
+        Cart cart = cartRepository.getCartWithItemsByUserId(userId).orElse(null);
 
         if (cart == null) {
             cart = Cart.create(userId);
@@ -53,30 +48,22 @@ public class CartService
         return cart;
     }
 
-    public void saveCart(Cart cart)
-    {
+    public void saveCart(Cart cart) {
         cartRepository.save(cart);
     }
 
-    public Cart getCart(UUID cartId)
-            throws CartNotFoundException
-    {
-        return cartRepository.getCartWithItems(cartId)
-                .orElseThrow(() -> new CartNotFoundException(cartId));
+    public Cart getCart(UUID cartId) throws CartNotFoundException {
+        return cartRepository.getCartWithItems(cartId).orElseThrow(() -> new CartNotFoundException(cartId));
     }
 
-    public Cart getCartWithUserId(UUID userId)
-            throws CartWithUserIdNotFoundException
-    {
-        return cartRepository.getCartWithItemsByUserId(userId)
+    public Cart getCartWithUserId(UUID userId) throws CartWithUserIdNotFoundException {
+        return cartRepository
+                .getCartWithItemsByUserId(userId)
                 .orElseThrow(() -> new CartWithUserIdNotFoundException(userId));
-
     }
 
     public CartItem updateCartItem(UpdateCartItemCommand command)
-            throws NotEnoughProductException, ProductNotFoundException,
-            CartWithUserIdNotFoundException
-    {
+            throws NotEnoughProductException, ProductNotFoundException, CartWithUserIdNotFoundException {
 
         Product product = productService.getActiveProduct(command.productId());
         Cart cart = getOrCreateCart(command.userId());
@@ -88,47 +75,34 @@ public class CartService
         return cartItem;
     }
 
-
     public CartItem addCartItem(AddCartItemCommand command)
-            throws NotEnoughProductException, ProductNotFoundException,
-            CartWithUserIdNotFoundException
-    {
+            throws NotEnoughProductException, ProductNotFoundException, CartWithUserIdNotFoundException {
 
         Product product = productService.getActiveProduct(command.getProductId());
         Cart cart = getOrCreateCart(command.getUserId());
-        CartItem cartItem = CartItem.fromProductWithQuantity(
-                product,
-                command.getQuantity()
-        );
+        CartItem cartItem = CartItem.fromProductWithQuantity(product, command.getQuantity());
         cart.addCartItem(cartItem);
         cartRepository.save(cart);
         return cartItem;
     }
 
-    public void removeCartItem(RemoveCartItemCommand command)
-            throws CartWithUserIdNotFoundException
-    {
+    public void removeCartItem(RemoveCartItemCommand command) throws CartWithUserIdNotFoundException {
         Cart cart = getCartWithUserId(command.userId());
         cart.remove(command.productId());
         cartRepository.save(cart);
     }
 
-
-    public void clearCart(UUID userId)
-            throws CartWithUserIdNotFoundException
-    {
+    public void clearCart(UUID userId) throws CartWithUserIdNotFoundException {
         Cart cart = getCartWithUserId(userId);
         cart.clear();
         cartRepository.save(cart);
     }
 
-    public void removeUserCart(UUID userId)
-    {
+    public void removeUserCart(UUID userId) {
         cartRepository.deleteByUserId(userId);
     }
 
-    public void removeCart(UUID cartId)
-    {
+    public void removeCart(UUID cartId) {
         cartRepository.deleteById(cartId);
     }
 }
